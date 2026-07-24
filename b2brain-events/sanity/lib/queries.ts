@@ -72,7 +72,10 @@ export const EVENT_QUERY = defineQuery(`
     "categoryIds": categories[]._ref,
     "categories": categories[]->{ _id, title, "slug": slug.current },
 
-    heroCard{ label, big, rows[]{ label, value, tag } },
+    heroVideo{
+      youtubeUrl, alt, label, caption, openOnYouTube,
+      "thumbnail": thumbnail{ ..., asset-> }
+    },
 
     stats[]{ num, label, meta },
     tldr,

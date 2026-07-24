@@ -22,7 +22,14 @@ export type EventCard = {
   categories?: { _id: string; title: string; slug: string }[]
 }
 
-export type HeroCardRow = { label: string; value: string; tag?: 'none' | 'booked' | 'fast' }
+export type HeroVideo = {
+  youtubeUrl?: string
+  thumbnail?: SanityImage
+  alt?: string
+  label?: string
+  caption?: string
+  openOnYouTube?: boolean
+}
 
 export type EventDoc = {
   _id: string
@@ -55,7 +62,7 @@ export type EventDoc = {
   categoryIds?: string[]
   categories?: { _id: string; title: string; slug: string }[]
 
-  heroCard?: { label?: string; big?: string; rows?: HeroCardRow[] }
+  heroVideo?: HeroVideo
 
   stats?: { num?: string; label?: string; meta?: string }[]
   tldr?: string

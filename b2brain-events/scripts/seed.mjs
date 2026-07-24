@@ -327,15 +327,14 @@ const dreamforce = {
   series: ref('series.dreamforce'),
   categories: [{ ...ref('category.technology'), _key: 'c1' }],
 
-  heroCard: {
-    _type: 'heroCard',
-    label: 'Booth floor · illustrative',
-    big: '75 target accounts briefed before day one. 100% of booth context captured to Salesforce.',
-    rows: [
-      { _type: 'heroCardRow', _key: 'r1', label: 'Day 1 booth scans', value: '248', tag: 'none' },
-      { _type: 'heroCardRow', _key: 'r2', label: 'Meetings booked on-floor', value: '18', tag: 'booked' },
-      { _type: 'heroCardRow', _key: 'r3', label: 'Avg follow-up time', value: '3.2 hr', tag: 'fast' },
-    ],
+  heroVideo: {
+    _type: 'heroVideo',
+    youtubeUrl: 'https://www.youtube.com/watch?v=qJLAzhDomGg',
+    // No custom thumbnail -> YouTube's own still is used automatically.
+    alt: 'Dreamforce 2025 — Agents, Data and Apps in action',
+    label: 'FROM DREAMFORCE 2025',
+    caption: 'Agents, Data and Apps in action — Salesforce',
+    openOnYouTube: false,
   },
 
   stats: [
@@ -348,12 +347,38 @@ const dreamforce = {
   tldr:
     "Dreamforce 2026 runs September 15–17 at San Francisco's Moscone Center — Salesforce's flagship event drawing 170,000+ attendees, 110+ exhibitors, and 1,600+ sessions across Agentforce, Data Cloud, and revenue-transformation tracks. For exhibitors, the draw is buyer density: RevOps, IT, and CX decision-makers concentrate here, making booth-conversation-to-meeting speed the metric that decides ROI.",
 
+  /* Four slides matching the supplied Dreamforce photos. Captions and alt text
+     are seeded here; drop the images onto these slots in the Studio, or run
+     `npm run upload:gallery` to attach them from a local folder in this order. */
   gallery: [
-    { _type: 'galleryItem', _key: 'g1', caption: 'Main keynote hall — Dreamforce 2025', accent: 'purple' },
-    { _type: 'galleryItem', _key: 'g2', caption: 'Expo floor, Moscone South', accent: 'orange' },
-    { _type: 'galleryItem', _key: 'g3', caption: 'Partner booths — Agentforce zone', accent: 'green' },
-    { _type: 'galleryItem', _key: 'g4', caption: 'Evening networking, Yerba Buena', accent: 'yellow' },
-    { _type: 'galleryItem', _key: 'g5', caption: 'Registration, Moscone West', accent: 'pink' },
+    {
+      _type: 'galleryItem',
+      _key: 'g1',
+      caption: 'Dreamforce National Park — the Moscone campus transformed',
+      alt: 'Landscaped park entrance with a large sculpture and the Dreamforce National Park arch, attendees walking through',
+      accent: 'green',
+    },
+    {
+      _type: 'galleryItem',
+      _key: 'g2',
+      caption: 'Attendees with Astro on the campus lawn',
+      alt: 'An attendee taking a selfie with the oversized Astro mascot outside a Moscone building',
+      accent: 'orange',
+    },
+    {
+      _type: 'galleryItem',
+      _key: 'g3',
+      caption: 'Welcome to Dreamforce — Moscone South',
+      alt: 'Crowds on the lawn below a large Welcome to Dreamforce banner on the Moscone South facade',
+      accent: 'purple',
+    },
+    {
+      _type: 'galleryItem',
+      _key: 'g4',
+      caption: 'Main stage — the Agentforce keynote',
+      alt: 'Two people in conversation on the Dreamforce main stage beside three humanoid robots',
+      accent: 'yellow',
+    },
   ],
 
   why: {
@@ -561,7 +586,7 @@ const smts = {
     { ...ref('category.supply-chain'), _key: 'c2' },
   ],
 
-  // No heroCard on purpose — this is the full-width hero variant.
+  // No heroVideo on purpose — this is the full-width hero variant.
 
   stats: [
     { _type: 'statCell', _key: 's1', num: '6,500+', label: 'Attendees', meta: 'regional operators' },

@@ -119,11 +119,23 @@ development. If you already run an events collection page elsewhere:
 | Meta cell "Dates" | `startDate` + `endDate` | cell |
 | Meta cell "Location" | `venue->name` · `venue->city` | cell |
 | Meta cell "Format" | `formatNote` ?? `format` | cell |
-| Operator card eyebrow | `heroCard.label` | field |
-| Operator card headline | `heroCard.big` | field |
-| Operator card rows | `heroCard.rows[] {label, value, tag}` | field |
-| Countdown line under card | *(computed)* + `labels.heroRefreshNote` | field |
-| **Whole right column** | `heroCard` | **layout** — hero becomes full-width |
+| Video eyebrow | `heroVideo.label` | field |
+| Video thumbnail | `heroVideo.thumbnail` | falls back to YouTube's own still |
+| Video caption | `heroVideo.caption` | field |
+| Playback mode | `heroVideo.openOnYouTube` | off = inline player, on = link out |
+| Countdown line under video | *(computed)* + `labels.heroRefreshNote` | field |
+| **Whole right column** | `heroVideo.youtubeUrl` | **layout** — hero becomes full-width |
+
+> The hero's right column was a stat card ("operator card") in the original
+> reference build. It is now a **video** from a previous edition — it proves the
+> event is real to someone who has never attended, and gives the page a media
+> asset worth linking to. The old `heroCard` type is removed from the schema.
+>
+> The player is a **click-to-load facade**: until someone clicks, it is a still
+> image and a black play square. No YouTube request, no third-party cookies, no
+> effect on page speed. The iframe mounts only on click, via
+> `youtube-nocookie.com`. Set *Open on YouTube instead of playing inline* when
+> the uploader has disabled embedding.
 
 > `subhead` exists in the reference data object but **is never printed in the hero**.
 > The field is kept and repurposed as the meta-description fallback. Documented

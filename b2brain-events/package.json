@@ -10,6 +10,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "seed": "node scripts/seed.mjs",
+    "upload:gallery": "node scripts/upload-gallery.mjs",
     "typegen": "sanity schema extract --path=./sanity/extract.json && sanity typegen generate"
   },
   "dependencies": {

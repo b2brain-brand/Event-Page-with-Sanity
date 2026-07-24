@@ -1,14 +1,17 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { countdown, fmtRange, has } from '@/lib/format'
 import { B, L, S } from '@/lib/defaults'
+import { youTubeId, youTubeThumb, youTubeWatch } from '@/lib/youtube'
+import { HeroVideoPlayer } from './HeroVideo'
 import type { EventDoc, SiteSettings } from '@/lib/types'
 
 /**
  * HERO  ->  mHero()
  *
  * Two layouts from one component, decided by the data:
- *   heroCard present -> 1.35fr / 1fr grid with the orange operator card
- *   heroCard absent  -> single full-width column
+ *   heroVideo present -> 1.35fr / 1fr grid with the video beside the H1
+ *   heroVideo absent  -> single full-width column
  * That is the whole graceful-degradation idea in miniature.
  *
  * `now` is passed in from the page so the countdown chip, the CTA eyebrow and
@@ -89,35 +92,56 @@ export function Hero({
     </>
   )
 
-  const card = event.heroCard
-  const visual = has(card) && has(card?.big) && (
+  /* ------------------------------------------------------------------ VIDEO
+     The right column is footage from a previous edition. Two modes:
+     - inline (default): a click-to-load facade, so no YouTube request is made
+       until someone actually plays it
+     - link-out: an anchor to YouTube, for videos where the uploader has
+       disabled embedding
+     No video at all -> the hero renders as a single full-width column.        */
+  const v = event.heroVideo
+  const videoId = youTubeId(v?.youtubeUrl)
+  const customThumb = v?.thumbnail?.asset?.url
+  const thumbUrl = customThumb || (videoId ? youTubeThumb(videoId) : '')
+  const thumbAlt = v?.alt || v?.caption || `${event.name} video`
+
+  const visual = videoId && (
     <div className="hero__visual">
-      <div className="hero__card">
-        {has(card?.label) && <small>* {card!.label}</small>}
-        <div className="hero__card-big">{card!.big}</div>
-        {has(card?.rows) && (
-          <div className="hero__card-rows">
-            {card!.rows!.map((r, i) => {
-              const tagged = r.tag === 'booked' || r.tag === 'fast'
-              return (
-                <div className="hero__card-row" key={`${r.label}-${i}`}>
-                  <span>{r.label}</span>
-                  {tagged ? (
-                    <span
-                      className={
-                        r.tag === 'fast'
-                          ? 'hero__card-tag hero__card-tag--orange'
-                          : 'hero__card-tag'
-                      }
-                    >
-                      {r.value}
-                    </span>
-                  ) : (
-                    <b className="mono-num">{r.value}</b>
-                  )}
-                </div>
-              )
-            })}
+      <div className="herovid">
+        {has(v?.label) && <small className="herovid__eyebrow">* {v!.label}</small>}
+
+        {v?.openOnYouTube ? (
+          <a
+            className="herovid__btn"
+            href={youTubeWatch(videoId)}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={v?.caption ? `Watch on YouTube: ${v.caption}` : 'Watch on YouTube'}
+          >
+            <span className="herovid__thumb">
+              {customThumb ? (
+                <Image src={thumbUrl} alt={thumbAlt} fill sizes="(max-width: 991px) 100vw, 520px" />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={thumbUrl} alt={thumbAlt} loading="lazy" />
+              )}
+              <span className="video__play" aria-hidden="true" />
+            </span>
+          </a>
+        ) : (
+          <HeroVideoPlayer
+            videoId={videoId}
+            thumbUrl={thumbUrl}
+            alt={thumbAlt}
+            caption={v?.caption}
+            isSanityImage={Boolean(customThumb)}
+          />
+        )}
+
+        {has(v?.caption) && (
+          <div className="herovid__cap">
+            {v!.caption}
+            {v?.openOnYouTube && <span className="herovid__ext"> · Watch on YouTube ↗</span>}
           </div>
         )}
       </div>

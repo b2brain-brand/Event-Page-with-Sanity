@@ -8,7 +8,7 @@ import { eventCategory } from './documents/eventCategory'
 import { siteSettings } from './documents/siteSettings'
 
 // Objects
-import { heroCard, heroCardRow } from './objects/hero'
+import { heroVideo } from './objects/hero'
 import { statCell } from './objects/stats'
 import { galleryItem } from './objects/gallery'
 import { whyBlock, pullquote } from './objects/why'
@@ -37,8 +37,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   siteSettings,
 
   // objects — page modules, in page order
-  heroCard,
-  heroCardRow,
+  heroVideo,
   statCell,
   galleryItem,
   whyBlock,

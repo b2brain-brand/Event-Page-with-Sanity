@@ -203,12 +203,12 @@ export const event = defineType({
       validation: (r) => r.unique(),
     }),
     defineField({
-      name: 'heroCard',
-      title: 'Hero operator card',
-      type: 'heroCard',
+      name: 'heroVideo',
+      title: 'Hero video',
+      type: 'heroVideo',
       group: 'identity',
       description:
-        'Optional. Present = two-column hero. Absent = full-width hero, exactly like the sparse example in the reference build.',
+        'Footage from a previous edition, shown to the right of the H1. Present = two-column hero. Absent = full-width hero.',
     }),
     defineField({
       name: 'heroPrimaryCtaLabel',
