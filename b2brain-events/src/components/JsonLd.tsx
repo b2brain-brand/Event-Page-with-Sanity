@@ -100,7 +100,15 @@ export function EventJsonLd({
       '@id': `${origin}/#organization`,
       name: orgName,
       url: origin,
-      sameAs: S(settings, 'organizationSameAs') || undefined,
+      // Entity signal: the real profiles this site belongs to. Prefer the
+      // footer's social links so there is one list to maintain, not two.
+      sameAs:
+        (S(settings, 'socialLinks') || [])
+          .map((s2) => s2?.url)
+          .filter(Boolean).length > 0
+          ? (S(settings, 'socialLinks') || []).map((s2) => s2?.url).filter(Boolean)
+          : S(settings, 'organizationSameAs') || undefined,
+      logo: `${origin}/b2brain-logo.webp`,
     },
     {
       '@type': 'WebPage',

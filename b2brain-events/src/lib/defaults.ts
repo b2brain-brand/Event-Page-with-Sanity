@@ -115,47 +115,71 @@ export const TOC_DEFAULTS: Record<string, string> = {
 
 export const SETTINGS_DEFAULTS: SiteSettings = {
   logoText: 'B2Brain',
+  logoHref: 'https://www.b2brain.com/',
   navLinks: [
-    { label: 'Platform', href: '/platform' },
-    { label: 'Use Cases', href: '/use-cases' },
-    { label: 'Pricing', href: '/pricing' },
-    { label: 'Events', href: '/events', isCurrent: true },
-    { label: 'Blog', href: '/blog' },
+    {
+      label: 'Platform',
+      href: 'https://www.b2brain.com/platform',
+      children: [
+        { label: 'New Pipeline Generation', href: 'https://www.b2brain.com/new-pipeline-generation' },
+        { label: 'Event Attendees', href: 'https://www.b2brain.com/event-attendees' },
+        { label: 'Event Exhibitors', href: 'https://www.b2brain.com/event-exhibitors' },
+      ],
+    },
+    { label: 'Pricing', href: 'https://www.b2brain.com/pricing' },
+    { label: 'Events', href: 'https://www.b2brain.com/events', isCurrent: true },
+    { label: 'Blogs', href: 'https://www.b2brain.com/blogs' },
   ],
-  navLoginLabel: 'Log In',
-  navLoginHref: '/login',
+  navLoginLabel: 'Start Free Trial',
+  navLoginHref: 'https://apps.apple.com/us/app/b2brain-event-lead-capture/id6757783820',
   navCtaLabel: 'Book a Demo',
-  navCtaHref: '#cta',
+  navCtaHref: 'https://www.b2brain.com/demo',
+  breadcrumb: {
+    homeLabel: 'Home',
+    homeHref: 'https://www.b2brain.com/',
+    eventsLabel: 'Events',
+    eventsHref: 'https://www.b2brain.com/events',
+  },
   tocLabel: 'On this page',
   tocCtaLabel: 'Plan your booth',
   footerBlurb:
     'The Event Meeting Platform. Turn trade-show conversations into booked meetings and measurable pipeline.',
+  socialLinks: [
+    { platform: 'instagram', url: 'https://www.instagram.com/getb2brain/' },
+    { platform: 'x', url: 'https://x.com/getb2brain' },
+    { platform: 'facebook', url: 'http://facebook.com/b2brain/' },
+    { platform: 'linkedin', url: 'https://www.linkedin.com/company/b2brain/' },
+    { platform: 'youtube', url: 'https://www.youtube.com/@b2brain/videos' },
+  ],
+  contactEmail: 'support@b2brain.com',
+  legalLinks: [
+    { label: 'Privacy', href: 'https://www.b2brain.com/privacy-policy' },
+    { label: 'Terms', href: 'https://www.b2brain.com/terms-of-service' },
+  ],
   footerColumns: [
     {
       heading: 'Platform',
       links: [
-        { label: 'Overview', href: '/platform' },
-        { label: 'Pre-event', href: '/platform#pre-event' },
-        { label: 'On the floor', href: '/platform#on-the-floor' },
-        { label: 'Post-event', href: '/platform#post-event' },
+        { label: 'Platform', href: 'https://www.b2brain.com/platform' },
+        { label: 'New Pipeline Generation', href: 'https://www.b2brain.com/new-pipeline-generation' },
+        { label: 'Event Attendees', href: 'https://www.b2brain.com/event-attendees' },
+        { label: 'Event Exhibitors', href: 'https://www.b2brain.com/event-exhibitors' },
       ],
     },
     {
-      heading: 'Events',
+      heading: 'Resources',
       links: [
-        { label: 'All events', href: '/events' },
-        { label: 'Manufacturing', href: '/events?category=manufacturing' },
-        { label: 'Supply chain', href: '/events?category=supply-chain' },
-        { label: 'Technology', href: '/events?category=technology' },
+        { label: 'Events', href: 'https://www.b2brain.com/events' },
+        { label: 'Blogs', href: 'https://www.b2brain.com/blogs' },
+        { label: 'Pricing', href: 'https://www.b2brain.com/pricing' },
       ],
     },
     {
       heading: 'Company',
       links: [
-        { label: 'About', href: '/about' },
-        { label: 'Pricing', href: '/pricing' },
-        { label: 'Book a demo', href: '/book-a-demo' },
-        { label: 'Contact', href: '/contact' },
+        { label: 'About us', href: 'https://www.b2brain.com/about' },
+        { label: 'Book a Demo', href: 'https://www.b2brain.com/demo' },
+        { label: 'Contact', href: 'mailto:support@b2brain.com' },
       ],
     },
   ],
@@ -165,14 +189,20 @@ export const SETTINGS_DEFAULTS: SiteSettings = {
   heroSecondaryCtaLabel: 'Register for the event',
   ctaHeadlineTemplate: 'Walk into {event} with a target list — and out with meetings booked.',
   ctaPrimaryLabel: 'Book a Demo',
-  ctaPrimaryHref: '/book-a-demo',
+  ctaPrimaryHref: 'https://www.b2brain.com/demo',
   ctaSecondaryLabelTemplate: 'Get the {event} prep guide',
-  ctaSecondaryHref: '/prep-guide',
+  ctaSecondaryHref: 'https://www.b2brain.com/demo',
   ctaFallbackEyebrow: 'BOOK A DEMO',
   roiIndustryAverage: 8,
   roiLtmCopy:
     'At these inputs your **Leads-to-Meeting (LTM) rate is {ltm}** — versus an **~{avg} industry average** for badge-scanner-only teams. LTM is the metric B2Brain is built to move.',
   organizationName: 'B2Brain',
+  organizationSameAs: [
+    'https://www.instagram.com/getb2brain/',
+    'https://x.com/getb2brain',
+    'https://www.linkedin.com/company/b2brain/',
+    'https://www.youtube.com/@b2brain/videos',
+  ],
 }
 
 /** Read a section label: Sanity value, else the reference-build default. */

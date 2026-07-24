@@ -147,7 +147,13 @@ export type SectionLabels = Record<string, string | undefined>
 
 export type SiteSettings = {
   logoText?: string
-  navLinks?: { label?: string; href?: string; isCurrent?: boolean }[]
+  logoHref?: string
+  navLinks?: {
+    label?: string
+    href?: string
+    isCurrent?: boolean
+    children?: { label?: string; href?: string }[]
+  }[]
   navLoginLabel?: string
   navLoginHref?: string
   navCtaLabel?: string
@@ -158,6 +164,9 @@ export type SiteSettings = {
   footerColumns?: { heading?: string; links?: { label?: string; href?: string }[] }[]
   footerCopyright?: string
   footerLegal?: string
+  socialLinks?: { platform?: string; url?: string }[]
+  contactEmail?: string
+  legalLinks?: { label?: string; href?: string }[]
   labels?: SectionLabels
   tocLabels?: SectionLabels
   roiLabels?: SectionLabels

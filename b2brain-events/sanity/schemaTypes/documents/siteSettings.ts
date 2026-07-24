@@ -55,6 +55,14 @@ export const siteSettings = defineType({
       ],
     }),
     defineField({
+      name: 'logoHref',
+      title: 'Logo link',
+      type: 'string',
+      group: 'chrome',
+      description: 'Where the logo goes. The main site root.',
+      initialValue: 'https://www.b2brain.com/',
+    }),
+    defineField({
       name: 'navLoginLabel',
       title: 'Nav log-in label',
       type: 'string',
@@ -82,6 +90,31 @@ export const siteSettings = defineType({
       group: 'chrome',
       description: 'Default "#cta" scrolls to the closing banner rather than leaving the page.',
       initialValue: '#cta',
+    }),
+    defineField({
+      name: 'socialLinks',
+      title: 'Social profiles',
+      type: 'array',
+      of: [defineArrayMember({ type: 'socialLink' })],
+      group: 'chrome',
+      description:
+        'Rendered as 36px bordered squares in the footer, and emitted as Organization "sameAs" — an entity signal search engines use to connect this site to your real profiles.',
+    }),
+    defineField({
+      name: 'contactEmail',
+      title: 'Contact email',
+      type: 'string',
+      group: 'chrome',
+      description: 'Shown in the footer as a mailto link.',
+      initialValue: 'support@b2brain.com',
+    }),
+    defineField({
+      name: 'legalLinks',
+      title: 'Legal links',
+      type: 'array',
+      of: [defineArrayMember({ type: 'navLink' })],
+      group: 'chrome',
+      description: 'Bottom-right of the footer. Privacy, Terms.',
     }),
 
     /* ---------------------------------------------------------- BREADCRUMB */

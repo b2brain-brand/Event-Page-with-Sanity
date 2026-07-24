@@ -26,7 +26,7 @@ import {
 } from './objects/sentiment'
 import { playbookBlock, playbookMotion } from './objects/playbook'
 import { faqItem } from './objects/faq'
-import { seo, source, navLink, footerColumn } from './objects/shared'
+import { seo, source, navLink, footerColumn, socialLink } from './objects/shared'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // documents
@@ -68,4 +68,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   source,
   navLink,
   footerColumn,
+  socialLink,
 ]

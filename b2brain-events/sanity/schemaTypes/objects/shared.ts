@@ -95,8 +95,63 @@ export const navLink = defineType({
       description: 'Renders the label in full black instead of 70% — used for "Events".',
       initialValue: false,
     }),
+    defineField({
+      name: 'children',
+      title: 'Dropdown items',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'childLink',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.required() }),
+            defineField({ name: 'href', title: 'URL or path', type: 'string', validation: (r) => r.required() }),
+          ],
+          preview: { select: { title: 'label', subtitle: 'href' } },
+        }),
+      ],
+      description:
+        'Nav only. Add items here and this link becomes a dropdown — e.g. Platform → New Pipeline Generation / Event Attendees / Event Exhibitors. Leave empty for a plain link.',
+    }),
   ],
-  preview: { select: { title: 'label', subtitle: 'href' } },
+  preview: {
+    select: { title: 'label', subtitle: 'href', children: 'children' },
+    prepare: ({ title, subtitle, children }) => ({
+      title: (children || []).length ? `${title}  ▾` : title,
+      subtitle,
+    }),
+  },
+})
+
+export const socialLink = defineType({
+  name: 'socialLink',
+  title: 'Social profile',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'platform',
+      title: 'Platform',
+      type: 'string',
+      description: 'Picks the icon. Only these five have glyphs.',
+      options: {
+        list: [
+          { title: 'Instagram', value: 'instagram' },
+          { title: 'X (Twitter)', value: 'x' },
+          { title: 'Facebook', value: 'facebook' },
+          { title: 'LinkedIn', value: 'linkedin' },
+          { title: 'YouTube', value: 'youtube' },
+        ],
+      },
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'url',
+      title: 'Profile URL',
+      type: 'url',
+      validation: (r) => r.required().uri({ scheme: ['http', 'https'] }),
+    }),
+  ],
+  preview: { select: { title: 'platform', subtitle: 'url' } },
 })
 
 export const footerColumn = defineType({
