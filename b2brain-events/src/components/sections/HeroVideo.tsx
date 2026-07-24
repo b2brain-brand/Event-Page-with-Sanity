@@ -24,17 +24,20 @@ import {
  */
 export function HeroVideoPlayer({
   videoId,
+  thumbUrl,
   caption,
   eventName,
   openOnYouTube = false,
 }: {
   videoId: string
+  /** Resolved on the server, so the HTML ships a URL that exists. */
+  thumbUrl: string
   caption?: string
   eventName: string
   openOnYouTube?: boolean
 }) {
   const [playing, setPlaying] = useState(false)
-  const [src, setSrc] = useState(youTubeThumb(videoId))
+  const [src, setSrc] = useState(thumbUrl || youTubeThumb(videoId))
 
   const alt = caption ? `${caption} — video thumbnail` : `${eventName} video`
 

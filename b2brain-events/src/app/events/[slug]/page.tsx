@@ -15,6 +15,7 @@ import {
 import { EventPage } from '@/components/EventPage'
 import { EventJsonLd } from '@/components/JsonLd'
 import { S } from '@/lib/defaults'
+import { resolveYouTubeThumb, youTubeId } from '@/lib/youtube'
 import type { EventCard, EventDoc, SiteSettings } from '@/lib/types'
 
 /**
@@ -115,6 +116,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     })
   }
 
+  // Resolve the hero thumbnail here rather than guessing in the browser: the
+  // HTML then carries a URL that exists, so the hero's largest image never
+  // 404s and swaps. Cached for a day, and this page is statically generated.
+  const heroVideoId = youTubeId(event.heroVideo?.youtubeUrl)
+  const heroThumbUrl = heroVideoId ? await resolveYouTubeThumb(heroVideoId) : undefined
+
   const now = new Date()
   const pageUrl = `${siteUrl}/events/${slug}`
   const image = event.seo?.ogImage ?? settings?.defaultOgImage
@@ -127,7 +134,13 @@ export default async function Page({ params }: { params: Promise<Params> }) {
         pageUrl={pageUrl}
         ogImageUrl={image ? ogUrl(image) : undefined}
       />
-      <EventPage event={event} settings={settings} related={related} now={now} />
+      <EventPage
+        event={event}
+        settings={settings}
+        related={related}
+        now={now}
+        heroThumbUrl={heroThumbUrl}
+      />
     </>
   )
 }

@@ -52,14 +52,16 @@ export function EventPage({
   settings,
   related,
   now,
+  heroThumbUrl,
 }: {
   event: EventDoc
   settings: SiteSettings | null
   related: EventCard[]
   now: Date
+  heroThumbUrl?: string
 }) {
   const modules: Module[] = [
-    { id: 'overview', navKey: 'overview', node: Hero({ event, settings, now }) },
+    { id: 'overview', navKey: 'overview', node: Hero({ event, settings, now, heroThumbUrl }) },
     { id: 'stats', node: Stats({ event }) },
     { id: 'answer', node: Answer({ event, settings }) },
     { id: 'gallery', navKey: 'gallery', node: GallerySection({ event, settings }) },

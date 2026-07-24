@@ -43,6 +43,32 @@ export function youTubeThumbFallback(id: string): string {
 }
 
 /**
+ * Pick the best thumbnail that actually exists, ON THE SERVER.
+ *
+ * Guessing maxres and correcting in the browser costs a 404 round-trip and
+ * leaves the hero's largest element blank while it swaps — measurable LCP
+ * damage on the one image above the fold. So we check once at render time
+ * instead, and ship the correct URL in the HTML.
+ *
+ * The check is cached for a day: these pages are statically generated, so in
+ * practice this runs at build time and costs nothing at request time. Any
+ * failure falls back to hqdefault, which YouTube guarantees for every video.
+ */
+export async function resolveYouTubeThumb(id: string): Promise<string> {
+  const maxres = youTubeThumb(id)
+  try {
+    const res = await fetch(maxres, {
+      method: 'HEAD',
+      next: { revalidate: 86400 },
+    })
+    if (res.ok) return maxres
+  } catch {
+    /* network hiccup — fall through */
+  }
+  return youTubeThumbFallback(id)
+}
+
+/**
  * Privacy-preserving embed host — no cookies until the viewer actually plays.
  * `autoplay=1` is correct here because the iframe is only mounted after a click.
  */

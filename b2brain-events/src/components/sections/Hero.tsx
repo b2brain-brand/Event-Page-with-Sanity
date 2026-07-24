@@ -20,10 +20,13 @@ export function Hero({
   event,
   settings,
   now,
+  heroThumbUrl,
 }: {
   event: EventDoc
   settings: SiteSettings | null
   now: Date
+  /** Best existing YouTube still, resolved on the server by the page. */
+  heroThumbUrl?: string
 }) {
   if (!has(event?.name)) return null
 
@@ -106,6 +109,7 @@ export function Hero({
 
         <HeroVideoPlayer
           videoId={videoId}
+          thumbUrl={heroThumbUrl || ''}
           caption={v?.caption}
           eventName={event.name}
           openOnYouTube={Boolean(v?.openOnYouTube)}
