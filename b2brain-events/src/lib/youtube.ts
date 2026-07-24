@@ -69,6 +69,23 @@ export async function resolveYouTubeThumb(id: string): Promise<string> {
 }
 
 /**
+ * Resolve every YouTube still a page needs, in one parallel pass.
+ *
+ * The page collects each URL it is about to render — the hero video and the
+ * review cards — and gets back an id -> thumbnail map. Duplicates are collapsed
+ * first, so the same video linked twice costs one check.
+ */
+export async function resolveYouTubeThumbs(
+  urls: (string | null | undefined)[],
+): Promise<Record<string, string>> {
+  const ids = [...new Set(urls.map(youTubeId).filter((x): x is string => Boolean(x)))]
+  const entries = await Promise.all(
+    ids.map(async (id) => [id, await resolveYouTubeThumb(id)] as const),
+  )
+  return Object.fromEntries(entries)
+}
+
+/**
  * Privacy-preserving embed host — no cookies until the viewer actually plays.
  * `autoplay=1` is correct here because the iframe is only mounted after a click.
  */

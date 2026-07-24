@@ -1,7 +1,8 @@
-import Image from 'next/image'
 import { has } from '@/lib/format'
 import { L } from '@/lib/defaults'
+import { youTubeId } from '@/lib/youtube'
 import { Section, SectionHead } from '../SectionHead'
+import { YouTubeFacade } from '../YouTubeFacade'
 import type { EventDoc, SiteSettings } from '@/lib/types'
 
 /**
@@ -11,7 +12,16 @@ import type { EventDoc, SiteSettings } from '@/lib/types'
  * organiser's own site will never run, which is exactly why it earns links and
  * citations — and why the Reddit block should always include a Mixed tone.
  */
-export function Sentiment({ event, settings }: { event: EventDoc; settings: SiteSettings | null }) {
+export function Sentiment({
+  event,
+  settings,
+  thumbs,
+}: {
+  event: EventDoc
+  settings: SiteSettings | null
+  /** videoId -> resolved thumbnail URL, from the page. */
+  thumbs: Record<string, string>
+}) {
   const s = event.sentiment
   if (!s) return null
 
@@ -32,40 +42,29 @@ export function Sentiment({ event, settings }: { event: EventDoc; settings: Site
           <div className="sent__label">{L(settings, 'sentimentVideoLabel')}</div>
           <div className="videos">
             {videos.map((v, i) => {
-              const inner = (
-                <>
-                  <div className="video__thumb">
-                    {v.thumbnail?.asset?.url ? (
-                      <Image
-                        src={v.thumbnail.asset.url}
-                        alt=""
-                        fill
-                        sizes="(max-width: 991px) 100vw, 360px"
-                        style={{ objectFit: 'cover' }}
-                      />
-                    ) : (
+              // Same behaviour as the hero: a YouTube URL gives a real
+              // thumbnail and a working player. No URL keeps the reference
+              // build's grey placeholder rather than rendering a dead card.
+              const id = youTubeId(v.url)
+              return (
+                <div className="video" key={i}>
+                  {id ? (
+                    <YouTubeFacade
+                      variant="card"
+                      videoId={id}
+                      thumbUrl={thumbs[id]}
+                      title={v.title || 'Event video'}
+                      openOnYouTube={Boolean(v.openOnYouTube)}
+                    />
+                  ) : (
+                    <div className="video__thumb">
                       <div className="video__play" />
-                    )}
-                  </div>
+                    </div>
+                  )}
                   <div className="video__body">
                     <div className="video__title">{v.title}</div>
                     {has(v.src) && <div className="video__src">{v.src}</div>}
                   </div>
-                </>
-              )
-              return has(v.url) ? (
-                <a
-                  className="video"
-                  key={i}
-                  href={v.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {inner}
-                </a>
-              ) : (
-                <div className="video" key={i}>
-                  {inner}
                 </div>
               )
             })}

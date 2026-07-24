@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { countdown, fmtRange, has } from '@/lib/format'
 import { B, L, S } from '@/lib/defaults'
 import { youTubeId } from '@/lib/youtube'
-import { HeroVideoPlayer } from './HeroVideo'
+import { YouTubeFacade } from '../YouTubeFacade'
 import type { EventDoc, SiteSettings } from '@/lib/types'
 
 /**
@@ -20,13 +20,13 @@ export function Hero({
   event,
   settings,
   now,
-  heroThumbUrl,
+  thumbs,
 }: {
   event: EventDoc
   settings: SiteSettings | null
   now: Date
-  /** Best existing YouTube still, resolved on the server by the page. */
-  heroThumbUrl?: string
+  /** videoId -> resolved thumbnail URL. */
+  thumbs: Record<string, string>
 }) {
   if (!has(event?.name)) return null
 
@@ -107,11 +107,11 @@ export function Hero({
       <div className="herovid">
         {has(v?.label) && <small className="herovid__eyebrow">* {v!.label}</small>}
 
-        <HeroVideoPlayer
+        <YouTubeFacade
+          variant="hero"
           videoId={videoId}
-          thumbUrl={heroThumbUrl || ''}
-          caption={v?.caption}
-          eventName={event.name}
+          thumbUrl={thumbs[videoId]}
+          title={v?.caption || `${event.name} video`}
           openOnYouTube={Boolean(v?.openOnYouTube)}
         />
 

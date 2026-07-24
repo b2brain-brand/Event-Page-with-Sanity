@@ -113,7 +113,7 @@ export type EventDoc = {
   }
 
   sentiment?: {
-    videos?: { title?: string; src?: string; url?: string; thumbnail?: SanityImage }[]
+    videos?: { title?: string; src?: string; url?: string; openOnYouTube?: boolean }[]
     reddit?: { quote?: string; sub?: string; tone?: 'Positive' | 'Mixed' }[]
     testimonials?: { q?: string; a?: string }[]
   }

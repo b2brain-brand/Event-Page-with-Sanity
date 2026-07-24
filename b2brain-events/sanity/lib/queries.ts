@@ -119,7 +119,7 @@ export const EVENT_QUERY = defineQuery(`
     },
 
     sentiment{
-      videos[]{ title, src, url, "thumbnail": thumbnail{ ..., asset-> } },
+      videos[]{ title, src, url, openOnYouTube },
       reddit[]{ quote, sub, tone },
       testimonials[]{ q, a }
     },

@@ -1,4 +1,6 @@
+import React from 'react'
 import { defineType, defineField, defineArrayMember } from 'sanity'
+import { YouTubeThumb } from '../../components/YouTubeThumb'
 
 /**
  * WHAT PEOPLE SAY  ->  .videos / .reddit / .tstml
@@ -17,7 +19,24 @@ export const videoReview = defineType({
   name: 'videoReview',
   title: 'Video',
   type: 'object',
+  description: 'Paste a YouTube link. The thumbnail appears automatically — nothing to upload.',
   fields: [
+    defineField({
+      name: 'url',
+      title: 'YouTube URL',
+      type: 'url',
+      description:
+        'Any YouTube link works — watch?v=…, youtu.be/…, /shorts/…. The thumbnail is fetched from YouTube automatically. Leave blank and the card shows the grey placeholder.',
+      validation: (r) =>
+        r.uri({ scheme: ['http', 'https'] }).custom((value) => {
+          if (!value) return true
+          const ok =
+            /(?:youtube\.com\/(?:watch\?[^#]*v=|embed\/|shorts\/|live\/)|youtu\.be\/)[\w-]{11}/.test(
+              value,
+            )
+          return ok || 'That does not look like a YouTube video link.'
+        }),
+    }),
     defineField({
       name: 'title',
       title: 'Video title',
@@ -33,21 +52,22 @@ export const videoReview = defineType({
       validation: (r) => r.required().max(48),
     }),
     defineField({
-      name: 'url',
-      title: 'Link (optional)',
-      type: 'url',
+      name: 'openOnYouTube',
+      title: 'Open on YouTube instead of playing inline',
+      type: 'boolean',
       description:
-        'Makes the card clickable. Leave blank and the card renders exactly as in the reference build — a static thumb with the play mark.',
-    }),
-    defineField({
-      name: 'thumbnail',
-      title: 'Thumbnail (optional)',
-      type: 'image',
-      options: { hotspot: true },
-      description: '16:9. Without one the card shows the grey placeholder with the play square.',
+        'Off (recommended): the player loads in place on click. On: the click opens YouTube in a new tab.',
+      initialValue: false,
     }),
   ],
-  preview: { select: { title: 'title', subtitle: 'src', media: 'thumbnail' } },
+  preview: {
+    select: { title: 'title', subtitle: 'src', url: 'url' },
+    prepare: ({ title, subtitle, url }) => ({
+      title,
+      subtitle,
+      media: React.createElement(YouTubeThumb, { url }),
+    }),
+  },
 })
 
 export const redditReview = defineType({

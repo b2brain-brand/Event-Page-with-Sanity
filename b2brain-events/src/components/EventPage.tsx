@@ -52,16 +52,17 @@ export function EventPage({
   settings,
   related,
   now,
-  heroThumbUrl,
+  thumbs,
 }: {
   event: EventDoc
   settings: SiteSettings | null
   related: EventCard[]
   now: Date
-  heroThumbUrl?: string
+  /** videoId -> resolved thumbnail URL, for every YouTube embed on the page. */
+  thumbs: Record<string, string>
 }) {
   const modules: Module[] = [
-    { id: 'overview', navKey: 'overview', node: Hero({ event, settings, now, heroThumbUrl }) },
+    { id: 'overview', navKey: 'overview', node: Hero({ event, settings, now, thumbs }) },
     { id: 'stats', node: Stats({ event }) },
     { id: 'answer', node: Answer({ event, settings }) },
     { id: 'gallery', navKey: 'gallery', node: GallerySection({ event, settings }) },
@@ -72,7 +73,7 @@ export function EventPage({
     { id: 'audience', navKey: 'audience', node: Audience({ event, settings }) },
     { id: 'cost', navKey: 'cost', node: CostSection({ event, settings }) },
     { id: 'logistics', navKey: 'logistics', node: Logistics({ event, settings }) },
-    { id: 'sentiment', navKey: 'sentiment', node: Sentiment({ event, settings }) },
+    { id: 'sentiment', navKey: 'sentiment', node: Sentiment({ event, settings, thumbs }) },
     { id: 'playbook', navKey: 'playbook', node: Playbook({ event, settings }) },
     { id: 'similar', navKey: 'similar', node: Similar({ events: related, settings }) },
     { id: 'faq', navKey: 'faq', node: FaqSection({ event, settings }) },
