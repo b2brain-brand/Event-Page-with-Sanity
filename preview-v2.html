@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Event Page Template V2 — B2Brain — The Event Meeting Platform</title>
+<meta name="description" content="Programmatic, modular event-page template for B2Brain. Every module is a variable; empty data hides its section so no page ever looks incomplete." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!--
+================================================================================
+  B2BRAIN · EVENT PAGE TEMPLATE V2.0  (programmatic SEO, fully modular)
+  Built 2026-07-22. V1 lives alongside this file at preview.html (do not delete).
+  Design: 100% compliant with context/04_design_system.skill.xml (brutalist).
+--------------------------------------------------------------------------------
+  HOW IT WORKS
+  - The whole page renders from ONE data object (window.EVENTS[slug]).
+    That object is the "backend feed" — in production it is a Webflow CMS item.
+  - Every module is a VARIABLE with its own slot. If a field / array is empty,
+    its element (or the whole section, and its TOC entry) is not rendered.
+    -> Missing data never leaves an empty box. Sparse events still look complete.
+  - The floating PREVIEW MODE bar (bottom-right, dev-only, never ships) switches
+    between a data-RICH event and a data-SPARSE event so you can see the
+    graceful degradation live.
+
+  WEBFLOW MAPPING (each JS field -> a Webflow CMS field + native rule)
+    identity.*        -> Plain Text / Date / Link fields, bound to hero elements
+    stats[]           -> repeating "Stat" fields; hide cell if number empty
+    tldr              -> Rich Text (short); hide block if empty
+    gallery[]         -> Multi-image field or nested "Photo" collection list;
+                         Collection List auto-hides when it has 0 items
+    agenda.days[]     -> nested "Agenda Day" collection (tabs) + "Session" items
+    speakers[]        -> nested "Speaker" collection list (auto-hides if empty)
+    exhibitors.*      -> nested "Sponsor" collection + Plain Text notable list
+    audience.*        -> Number/Plain Text; persona = nested collection
+    cost.roi          -> Number defaults; calculator is one small script
+    logistics.*       -> Plain Text + nested "Pass" / "Hotel" collections
+    sentiment.*       -> nested "Video" / "Reddit" / "Testimonial" collections
+    similar[]         -> Multi-Reference back into the Events collection
+    faq[]             -> nested "FAQ" collection -> FAQPage JSON-LD
+  In Webflow, "empty -> hidden" is the native Conditional Visibility setting on
+  each element/collection-list. This mockup reproduces that behaviour in JS so
+  you can preview it before it is built.
+
+  NOTE: all sample copy/numbers below are ILLUSTRATIVE placeholders for design
+  review. Real pages must use sourced event data (see meta.sources) and pass the
+  citation-verifier before publishing.
+================================================================================
+-->
+
+<style>
+/* ============================================================ TOKENS */
+:root{
+  --font-heading:'Archivo',Arial,sans-serif;
+  --font-body:'Inter',Arial,sans-serif;
+  --black:#000; --white:#fff;
+  --black-70:rgba(0,0,0,.7); --black-50:rgba(0,0,0,.5); --black-05:rgba(0,0,0,.05);
+  --purple:#6c58ba; --purple-light:#e3e0f5;
+  --orange:#ff382c; --orange-light:#ffe4de;
+  --yellow:#ffeb46; --yellow-light:#fff8b8;
+  --pink:#ff7cc0;
+  --green:#89f86e; --green-badge:#e2fdd5; --green-light:#e7fde0; --ceramic:#12340c;
+  --border-light:#f0f0f0; --whitesmoke:#f5f5f5; --cloudy-grey:#6b6b6b; --offwhite:#fafafa;
+  --container:1160px; --container-lg:1344px; --margin:30px;
+  --pad-xl:100px; --pad-3xl:160px;
+  --nav-h:64px; --toc-h:56px;
+  --radius:0;
+}
+/* ============================================================ RESET / BASE */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font-body);font-size:16px;line-height:24px;color:var(--black);background:var(--white);-webkit-font-smoothing:antialiased;overflow-x:clip}
+img,svg{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+h1,h2,h3,h4,h5{font-family:var(--font-heading);font-weight:500;margin:0;color:var(--black)}
+h1{font-size:64px;line-height:72px;letter-spacing:-1.92px}
+h2{font-size:56px;line-height:64px;letter-spacing:-1.68px}
+h3{font-size:40px;line-height:48px;letter-spacing:-.8px}
+h4{font-size:28px;line-height:36px;letter-spacing:-.4px}
+h5{font-size:22px;line-height:30px}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+.container{width:100%;max-width:var(--container);margin:0 auto;padding:0 var(--margin)}
+.container--lg{max-width:var(--container-lg)}
+.eyebrow{font-family:var(--font-body);font-size:14px;font-weight:600;line-height:20px;letter-spacing:.56px;text-transform:uppercase;color:var(--black);display:inline-block}
+.eyebrow--asterisk::before{content:'*';margin-right:3px}
+.muted{color:var(--black-70)}
+.mono-num{font-family:var(--font-heading);font-weight:500}
+
+/* ============================================================ BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;font-size:16px;font-weight:500;line-height:24px;letter-spacing:-.32px;border:1px solid transparent;border-radius:0;cursor:pointer;transition:background .25s ease,color .25s ease,border-color .25s ease}
+.btn--primary{background:var(--black);color:var(--white)}
+.btn--primary:hover{background:var(--purple)}
+.btn--ghost{background:transparent;color:var(--black);border:1px solid var(--black)}
+.btn--ghost:hover{background:var(--black);color:var(--white)}
+.btn--sm{padding:8px 18px;font-size:14px}
+.link-underline{position:relative;font-weight:500;color:var(--black);display:inline-block}
+.link-underline::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1px;background:var(--black);transition:width .3s ease}
+.link-underline:hover::after{width:100%}
+.link-arrow::after{content:'\2192';margin-left:6px;display:inline-block;transition:transform .25s ease}
+.link-arrow:hover::after{transform:translateX(4px)}
+
+/* ============================================================ NAV */
+.nav{position:sticky;top:0;z-index:80;background:var(--white);border-bottom:1px solid var(--black)}
+.nav__inner{display:flex;align-items:center;justify-content:space-between;max-width:var(--container-lg);margin:0 auto;padding:12px var(--margin);height:var(--nav-h)}
+.nav__logo{display:flex;align-items:center;gap:10px;font-family:var(--font-heading);font-weight:600;font-size:19px;letter-spacing:-.4px}
+.nav__logo-mark{width:22px;height:22px;background:var(--black);position:relative}
+.nav__logo-mark::after{content:'';position:absolute;inset:6px;background:var(--orange)}
+.nav__links{display:flex;gap:26px}
+.nav__links a{font-size:14px;font-weight:500;color:var(--black-70)}
+.nav__links a:hover{color:var(--black)}
+.nav__cta{display:flex;align-items:center;gap:16px}
+.nav__login{font-size:14px;font-weight:500}
+@media(max-width:991px){.nav__links{display:none}}
+
+/* ============================================================ TOC / SUBNAV */
+.toc{position:sticky;top:var(--nav-h);z-index:70;background:var(--white);border-bottom:1px solid var(--black)}
+.toc__inner{display:flex;align-items:center;gap:20px;max-width:var(--container-lg);margin:0 auto;padding:0 var(--margin);height:var(--toc-h)}
+.toc__label{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-50);white-space:nowrap}
+.toc__links{display:flex;gap:22px;overflow-x:auto;flex:1;scrollbar-width:none}
+.toc__links::-webkit-scrollbar{display:none}
+.toc__links a{font-size:14px;font-weight:500;color:var(--black-70);white-space:nowrap;padding:4px 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.toc__links a:hover{color:var(--black)}
+.toc__links a.is-active{color:var(--black);border-bottom-color:var(--orange)}
+.toc .btn{white-space:nowrap}
+@media(max-width:991px){.toc__label,.toc .btn{display:none}}
+
+/* ============================================================ SECTION RHYTHM */
+.sec{border-bottom:1px solid var(--black);padding:var(--pad-xl) 0}
+@keyframes heroIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.sec__head{max-width:720px;margin-bottom:44px}
+.sec__head h2{margin-top:14px}
+.sec__head p{margin-top:16px;font-size:18px;line-height:28px;color:var(--black-70)}
+.sec__flag{display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:44px}
+.sec__flag .sec__head{margin-bottom:0}
+
+/* ============================================================ HERO */
+.hero{border-bottom:1px solid var(--black);padding:56px 0 0;animation:heroIn .55s ease both}
+.hero__grid{display:grid;grid-template-columns:1.35fr 1fr;gap:64px;align-items:start}
+.hero__crumb{font-size:13px;color:var(--black-50);margin-bottom:22px}
+.hero__crumb a:hover{color:var(--black)}
+.hero__eyebrow{display:inline-flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:20px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--black);padding:5px 10px;font-size:12px;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.chip--orange{background:var(--orange-light)}
+.chip--green{background:var(--green-badge);color:var(--ceramic)}
+.chip--purple{background:var(--purple-light)}
+.chip--yellow{background:var(--yellow-light)}
+.chip__dot{width:7px;height:7px;background:var(--orange)}
+.hero h1{font-size:60px;line-height:66px;letter-spacing:-1.8px}
+.hero__sub{margin-top:20px;font-size:19px;line-height:29px;color:var(--black-70);max-width:560px}
+.hero__ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+.hero__meta{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--black);margin:38px 0 0}
+.hero__meta div{padding:16px 18px;border-right:1px solid var(--black)}
+.hero__meta div:last-child{border-right:none}
+.hero__meta dt{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-50)}
+.hero__meta dd{margin:6px 0 0;font-family:var(--font-heading);font-size:18px;font-weight:500;letter-spacing:-.3px}
+/* hero operator visual card */
+.hero__visual{border:1px solid var(--black);background:var(--orange-light);padding:22px}
+.hero__card{background:var(--white);border:1px solid var(--black);padding:20px}
+.hero__card small{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-70)}
+.hero__card-big{font-family:var(--font-heading);font-weight:500;font-size:22px;line-height:28px;letter-spacing:-.4px;margin:10px 0 14px}
+.hero__card-rows{border-top:1px solid var(--border-light)}
+.hero__card-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border-light);font-size:14px}
+.hero__card-tag{font-size:12px;font-weight:600;padding:2px 8px;background:var(--green-badge);color:var(--ceramic)}
+.hero__card-tag--orange{background:var(--orange-light);color:var(--orange)}
+.hero__count{margin-top:16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--black-70)}
+.hero__count b{font-family:var(--font-heading);font-size:15px}
+.hero__pad{padding-bottom:64px}
+@media(max-width:991px){.hero__grid{grid-template-columns:1fr;gap:36px}.hero h1{font-size:44px;line-height:50px;letter-spacing:-1.3px}.hero__meta{grid-template-columns:1fr}.hero__meta div{border-right:none;border-bottom:1px solid var(--black)}.hero__meta div:last-child{border-bottom:none}}
+
+/* ============================================================ AT-A-GLANCE */
+.glance{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--black)}
+.glance__cell{padding:30px 26px;border-right:1px solid var(--black)}
+.glance__cell:last-child{border-right:none}
+.glance__num{font-family:var(--font-heading);font-weight:500;font-size:44px;line-height:1;letter-spacing:-1.2px}
+.glance__label{margin-top:12px;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.glance__meta{margin-top:6px;font-size:13px;color:var(--black-70)}
+@media(max-width:991px){.glance{grid-template-columns:repeat(2,1fr)}.glance__cell:nth-child(2){border-right:none}.glance__cell:nth-child(1),.glance__cell:nth-child(2){border-bottom:1px solid var(--black)}}
+@media(max-width:640px){.glance{grid-template-columns:1fr}.glance__cell{border-right:none;border-bottom:1px solid var(--black)}.glance__cell:last-child{border-bottom:none}}
+
+/* ============================================================ ANSWER / TLDR */
+.answer{border:1px solid var(--black);background:var(--purple-light);padding:44px 48px}
+.answer h2{font-size:30px;line-height:38px;letter-spacing:-.5px;max-width:900px}
+.answer p{margin-top:16px;font-size:18px;line-height:29px;max-width:820px}
+@media(max-width:640px){.answer{padding:30px 24px}}
+
+/* ============================================================ GALLERY SLIDER */
+.slider{position:relative;border:1px solid var(--black);overflow:hidden}
+.slider__track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.slide{min-width:100%;position:relative;aspect-ratio:16/8}
+.slide__ph{position:absolute;inset:0;background:var(--whitesmoke);display:flex;align-items:center;justify-content:center}
+.slide__ph span{font-size:13px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-50)}
+.slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slide__cap{position:absolute;left:0;bottom:0;background:var(--white);border-top:1px solid var(--black);border-right:1px solid var(--black);padding:10px 16px;font-size:13px;font-weight:500;max-width:75%}
+.slide__idx{position:absolute;right:0;top:0;background:var(--black);color:var(--white);font-family:var(--font-heading);font-size:13px;padding:6px 12px}
+.slider__nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.slider__btn{pointer-events:auto;width:46px;height:46px;background:var(--white);border:1px solid var(--black);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:background .2s,color .2s}
+.slider__btn:hover{background:var(--black);color:var(--white)}
+.slider__btn--prev{border-left:none}
+.slider__btn--next{border-right:none}
+.slider__dots{display:flex;gap:8px;justify-content:center;padding:16px;border-top:1px solid var(--black)}
+.slider__dot{width:9px;height:9px;background:var(--white);border:1px solid var(--black);cursor:pointer;padding:0}
+.slider__dot.is-active{background:var(--black)}
+.gallery__foot{margin-top:14px;font-size:13px;color:var(--black-50)}
+
+/* ============================================================ WHY / PULLQUOTE */
+.why__grid{display:grid;grid-template-columns:1.3fr 1fr;gap:56px;align-items:start}
+.why__body p{font-size:17px;line-height:28px;color:var(--black-70)}
+.why__body p+p{margin-top:16px}
+.pullquote{border:1px solid var(--black);border-left:4px solid var(--purple);padding:28px 30px;background:var(--white)}
+.pullquote__text{font-family:var(--font-heading);font-weight:500;font-size:22px;line-height:31px;letter-spacing:-.4px}
+.pullquote__attr{margin-top:16px;font-size:13px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--black-70)}
+@media(max-width:991px){.why__grid{grid-template-columns:1fr;gap:32px}}
+
+/* ============================================================ TABS (agenda) */
+.tabs{display:flex;border:1px solid var(--black);border-bottom:none;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;padding:14px 22px;font-size:14px;font-weight:500;border-right:1px solid var(--black);background:var(--white);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.tab:last-child{border-right:none}
+.tab.is-active{background:var(--black);color:var(--white)}
+.tab.is-active .tab__meta{color:rgba(255,255,255,.6)}
+.tab__meta{display:block;font-size:11px;color:var(--black-50);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+.agenda__panel{border:1px solid var(--black);display:none}
+.agenda__panel.is-active{display:block}
+.agenda__row{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:center;padding:16px 22px;border-bottom:1px solid var(--border-light)}
+.agenda__row:last-child{border-bottom:none}
+.agenda__time{font-family:var(--font-heading);font-weight:500;font-size:15px}
+.agenda__title{font-weight:500}
+.agenda__loc{font-size:13px;color:var(--black-70);margin-top:3px}
+.agenda__track{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:4px 10px;border:1px solid var(--black);white-space:nowrap}
+.tracks{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.tracks span{font-size:13px;font-weight:500;border:1px solid var(--black);padding:6px 12px}
+@media(max-width:640px){.agenda__row{grid-template-columns:1fr;gap:6px}.agenda__track{justify-self:start}}
+
+/* ============================================================ SPEAKERS */
+.speakers{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--black)}
+.speaker{padding:24px;border-right:1px solid var(--black);border-bottom:1px solid var(--black)}
+.speaker__av{width:52px;height:52px;background:var(--purple-light);border:1px solid var(--black);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:600;font-size:18px;margin-bottom:16px}
+.speaker__name{font-family:var(--font-heading);font-weight:500;font-size:18px;letter-spacing:-.3px}
+.speaker__role{margin-top:6px;font-size:13px;color:var(--black-70);line-height:19px}
+.speaker__key{display:inline-block;margin-top:12px;font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;background:var(--purple-light);color:var(--purple);padding:3px 8px}
+@media(max-width:991px){.speakers{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.speakers{grid-template-columns:1fr}.speaker{border-right:none}}
+
+/* ============================================================ EXHIBITORS */
+.exh__tiers{display:flex;flex-direction:column;border:1px solid var(--black)}
+.exh__tier{display:grid;grid-template-columns:180px 1fr;border-bottom:1px solid var(--black)}
+.exh__tier:last-child{border-bottom:none}
+.exh__tier-name{padding:20px 22px;border-right:1px solid var(--black);font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;background:var(--whitesmoke)}
+.exh__logos{display:flex;flex-wrap:wrap}
+.exh__logo{flex:0 0 auto;min-width:150px;padding:18px 22px;border-right:1px solid var(--border-light);border-bottom:1px solid var(--border-light);font-family:var(--font-heading);font-weight:500;font-size:15px;color:var(--black-70)}
+.exh__notable{margin-top:26px;border:1px solid var(--black);border-left:4px solid var(--orange);padding:22px 24px}
+.exh__notable h4{font-size:15px;letter-spacing:-.2px;margin-bottom:10px}
+.exh__notable p{font-size:15px;line-height:24px;color:var(--black-70)}
+@media(max-width:640px){.exh__tier{grid-template-columns:1fr}.exh__tier-name{border-right:none;border-bottom:1px solid var(--black)}}
+
+/* ============================================================ AUDIENCE */
+.aud__grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--black)}
+.aud__col{padding:32px}
+.aud__col:first-child{border-right:1px solid var(--black)}
+.aud__bar{margin-bottom:16px}
+.aud__bar-top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px}
+.aud__bar-top b{font-family:var(--font-heading);font-weight:500}
+.aud__bar-track{height:10px;background:var(--whitesmoke);border:1px solid var(--black)}
+.aud__bar-fill{height:100%;background:var(--purple)}
+.aud__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.aud__chips span{font-size:13px;border:1px solid var(--black);padding:5px 11px}
+.aud__match{margin-top:26px;background:var(--purple-light);border:1px solid var(--black);padding:24px 26px}
+.aud__match h4{font-size:16px;margin-bottom:8px}
+.aud__match p{font-size:15px;line-height:24px}
+@media(max-width:640px){.aud__grid{grid-template-columns:1fr}.aud__col:first-child{border-right:none;border-bottom:1px solid var(--black)}}
+
+/* ============================================================ ROI CALC */
+.roi{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--black)}
+.roi__inputs{padding:34px;border-right:1px solid var(--black)}
+.roi__field{margin-bottom:18px}
+.roi__field label{display:block;font-size:12px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px}
+.roi__field input{width:100%;border:1px solid var(--black);border-radius:0;padding:11px 13px;font-family:var(--font-body);font-size:15px;background:var(--white)}
+.roi__field input:focus{outline:2px solid var(--purple);outline-offset:-2px}
+.roi__row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.roi__out{padding:34px;background:var(--purple-light);display:flex;flex-direction:column;justify-content:center}
+.roi__out-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px}
+.roi__stat-num{font-family:var(--font-heading);font-weight:500;font-size:40px;line-height:1;letter-spacing:-1px}
+.roi__stat-label{margin-top:8px;font-size:12px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--black-70)}
+.roi__pipeline{border-top:1px solid var(--black);padding-top:22px}
+.roi__pipeline .roi__stat-num{font-size:52px}
+.roi__ltm{margin-top:18px;font-size:13px;color:var(--black-70);line-height:19px}
+.roi__ltm b{color:var(--black)}
+@media(max-width:640px){.roi{grid-template-columns:1fr}.roi__inputs{border-right:none;border-bottom:1px solid var(--black)}}
+
+/* ============================================================ LOGISTICS */
+.log__grid{display:grid;grid-template-columns:repeat(2,1fr);border:1px solid var(--black)}
+.log__cell{padding:28px 30px;border-right:1px solid var(--black);border-bottom:1px solid var(--black)}
+.log__cell h4{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+.log__cell h4::before{content:'';width:9px;height:9px;background:var(--yellow)}
+.log__cell p,.log__cell li{font-size:15px;line-height:23px;color:var(--black-70)}
+.log__cell li{padding:6px 0;border-bottom:1px solid var(--border-light)}
+.log__cell li:last-child{border-bottom:none}
+.passes{border:1px solid var(--black);margin-top:0}
+.passes__row{display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 18px;border-bottom:1px solid var(--border-light)}
+.passes__row:last-child{border-bottom:none}
+.passes__name{font-weight:500}
+.passes__note{font-size:13px;color:var(--black-70);margin-top:3px}
+.passes__price{font-family:var(--font-heading);font-weight:500;font-size:18px}
+@media(max-width:640px){.log__grid{grid-template-columns:1fr}.log__cell{border-right:none}}
+
+/* ============================================================ SENTIMENT */
+.sent__block{margin-bottom:40px}
+.sent__block:last-child{margin-bottom:0}
+.sent__label{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-50);margin-bottom:18px}
+.videos{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.video{border:1px solid var(--black)}
+.video__thumb{position:relative;aspect-ratio:16/9;background:var(--whitesmoke);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--black)}
+.video__play{width:46px;height:46px;background:var(--black);display:flex;align-items:center;justify-content:center}
+.video__play::after{content:'';border-left:14px solid var(--white);border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:3px}
+.video__body{padding:16px 18px}
+.video__title{font-weight:500;font-size:15px;line-height:21px}
+.video__src{margin-top:10px;font-size:12px;color:var(--black-70)}
+.reddit{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.rcard{border:1px solid var(--black);border-top:4px solid var(--green);padding:22px}
+.rcard__quote{font-size:15px;line-height:23px}
+.rcard__meta{margin-top:16px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--black-70)}
+.rcard__tone{font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;background:var(--green-badge);color:var(--ceramic)}
+.rcard__tone--mixed{background:var(--yellow-light);color:#7a6a00}
+.tstml{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.tcard{border:1px solid var(--black);padding:26px 28px}
+.tcard__q{font-family:var(--font-heading);font-weight:500;font-size:18px;line-height:27px;letter-spacing:-.3px}
+.tcard__a{margin-top:16px;font-size:13px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;color:var(--black-70)}
+@media(max-width:991px){.videos,.reddit{grid-template-columns:1fr 1fr}.tstml{grid-template-columns:1fr}}
+@media(max-width:640px){.videos,.reddit{grid-template-columns:1fr}}
+
+/* ============================================================ PLAYBOOK */
+.play{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--black)}
+.play__card{padding:30px 28px;border-right:1px solid var(--black)}
+.play__card:last-child{border-right:none}
+.play__step{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-70)}
+.play__icon{width:34px;height:34px;position:relative;margin:16px 0 18px;background:var(--black)}
+.play__card--1 .play__icon::after{content:'';position:absolute;inset:9px;background:var(--purple)}
+.play__card--2 .play__icon::after{content:'';position:absolute;inset:9px;background:var(--orange)}
+.play__card--3 .play__icon::after{content:'';position:absolute;inset:9px;background:var(--green)}
+.play__card h4{font-size:20px;line-height:26px;letter-spacing:-.3px}
+.play__card p{margin-top:12px;font-size:15px;line-height:23px;color:var(--black-70)}
+@media(max-width:991px){.play{grid-template-columns:1fr}.play__card{border-right:none;border-bottom:1px solid var(--black)}.play__card:last-child{border-bottom:none}}
+
+/* ============================================================ SIMILAR */
+.similar{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--black)}
+.scard{padding:28px;border-right:1px solid var(--black);transition:background .2s}
+.scard:last-child{border-right:none}
+.scard:hover{background:var(--whitesmoke)}
+.scard__date{font-size:12px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--black-70)}
+.scard__name{font-family:var(--font-heading);font-weight:500;font-size:22px;line-height:28px;letter-spacing:-.4px;margin:12px 0 8px}
+.scard__loc{font-size:14px;color:var(--black-70)}
+.scard__link{margin-top:20px;font-size:14px;font-weight:500}
+@media(max-width:991px){.similar{grid-template-columns:1fr}.scard{border-right:none;border-bottom:1px solid var(--black)}.scard:last-child{border-bottom:none}}
+
+/* ============================================================ FAQ */
+.faq__grid{display:grid;grid-template-columns:340px 1fr;gap:56px;align-items:start}
+.faq__list{border-top:1px solid var(--black)}
+.faq__item{border-bottom:1px solid var(--black)}
+.faq__q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 0;background:none;border:none;cursor:pointer;text-align:left;font-family:var(--font-heading);font-weight:500;font-size:20px;line-height:27px;letter-spacing:-.3px}
+.faq__icon{position:relative;width:16px;height:16px;flex:0 0 auto}
+.faq__icon::before,.faq__icon::after{content:'';position:absolute;background:var(--black);transition:transform .25s ease}
+.faq__icon::before{left:0;top:7px;width:16px;height:1.5px}
+.faq__icon::after{left:7px;top:0;width:1.5px;height:16px}
+.faq__item.is-open .faq__icon::after{transform:scaleY(0)}
+.faq__a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq__a-inner{padding:0 0 24px;font-size:16px;line-height:25px;color:var(--black-70);max-width:720px}
+@media(max-width:991px){.faq__grid{grid-template-columns:1fr;gap:28px}}
+
+/* ============================================================ CTA */
+.cta{padding:var(--pad-3xl) 0}
+.cta__inner{position:relative;background:var(--orange-light);border:1px solid var(--black);padding:88px 40px;text-align:center;overflow:hidden}
+.cta__px{position:absolute;background:var(--orange)}
+.cta__px--tl{top:0;left:0;width:70px;height:70px}
+.cta__px--br{bottom:0;right:0;width:110px;height:70px}
+.cta__inner h2{font-size:44px;line-height:52px;letter-spacing:-1.2px;max-width:760px;margin:14px auto 0;position:relative}
+.cta__ctas{display:flex;gap:14px;justify-content:center;margin-top:30px;flex-wrap:wrap;position:relative}
+.cta__weeks{position:relative}
+
+/* ============================================================ FOOTER */
+.footer{background:var(--white);padding:88px 0 32px}
+.footer__grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px}
+.footer__brand p{margin-top:16px;font-size:14px;line-height:21px;color:var(--black-70);max-width:280px}
+.footer__col h5{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
+.footer__col a{display:block;font-size:14px;color:var(--black-70);padding:5px 0}
+.footer__col a:hover{color:var(--black)}
+.footer__bottom{display:flex;justify-content:space-between;align-items:center;margin-top:56px;padding-top:24px;border-top:1px solid var(--black);font-size:13px;color:var(--cloudy-grey);flex-wrap:wrap;gap:12px}
+.footer__stamp{font-size:12px;color:var(--black-50);margin-top:8px}
+@media(max-width:991px){.footer__grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.footer__grid{grid-template-columns:1fr}}
+
+/* ============================================================ DEMO BAR (dev only) */
+.demobar{position:fixed;right:20px;bottom:20px;z-index:200;background:var(--black);color:var(--white);border:1px solid var(--black);width:290px;box-shadow:none}
+.demobar__head{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.25);display:flex;align-items:center;gap:8px}
+.demobar__dot{width:8px;height:8px;background:var(--green)}
+.demobar__head b{font-family:var(--font-heading);font-size:13px;letter-spacing:.3px}
+.demobar__body{padding:14px 16px}
+.demobar__body p{font-size:12px;line-height:18px;color:rgba(255,255,255,.7);margin-bottom:12px}
+.demobar__opt{display:block;width:100%;text-align:left;background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.35);padding:10px 12px;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:8px;transition:background .15s,color .15s}
+.demobar__opt:hover{background:rgba(255,255,255,.12)}
+.demobar__opt.is-active{background:var(--white);color:var(--black)}
+.demobar__opt small{display:block;font-size:11px;font-weight:400;opacity:.7;margin-top:2px}
+.demobar__min{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:16px;line-height:1}
+.demobar.min .demobar__body{display:none}
+@media print{.demobar{display:none}}
+@media(max-width:640px){.demobar{right:10px;bottom:10px;width:calc(100% - 20px)}}
+</style>
+</head>
+<body>
+
+<!-- ================= SITE-WIDE NAV ================= -->
+<header class="nav">
+  <div class="nav__inner">
+    <a href="#" class="nav__logo"><span class="nav__logo-mark" aria-hidden="true"></span>B2Brain</a>
+    <nav class="nav__links">
+      <a href="#">Platform</a><a href="#">Use Cases</a><a href="#">Pricing</a>
+      <a href="#" style="color:var(--black)">Events</a><a href="#">Blog</a>
+    </nav>
+    <div class="nav__cta">
+      <a href="#" class="nav__login">Log In</a>
+      <a href="#cta" class="btn btn--primary btn--sm">Book a Demo</a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= STICKY TOC (auto-built from present sections) ================= -->
+<nav class="toc" id="toc" aria-label="On this page">
+  <div class="toc__inner">
+    <span class="toc__label">On this page</span>
+    <div class="toc__links" id="tocLinks"></div>
+    <a href="#cta" class="btn btn--primary btn--sm">Plan your booth</a>
+  </div>
+</nav>
+
+<!-- ================= RENDER TARGET ================= -->
+<main id="root"></main>
+
+<!-- ================= DEV-ONLY PREVIEW SWITCHER (never ships) ================= -->
+<aside class="demobar" id="demobar" aria-label="Preview mode (development only)">
+  <div class="demobar__head"><span class="demobar__dot"></span><b>PREVIEW MODE</b>
+    <button class="demobar__min" id="demoMin" title="Minimise">–</button>
+  </div>
+  <div class="demobar__body">
+    <p>Same template, different data feed. Watch whole sections + their nav links appear and disappear — no empty boxes either way.</p>
+    <button class="demobar__opt is-active" data-slug="dreamforce-2026">Dreamforce 2026<small>Data-RICH · all modules populated</small></button>
+    <button class="demobar__opt" data-slug="smts-2026">SE Manufacturing Tech Show<small>Data-SPARSE · many fields empty</small></button>
+  </div>
+</aside>
+
+<script>
+/* =====================================================================
+   1. THE DATA FEED  (in production, one Webflow CMS item per event)
+   Empty string / empty array / omitted key => that slot is not rendered.
+   ===================================================================== */
+window.EVENTS = {
+
+  /* ---------- DATA-RICH EXAMPLE ---------- */
+  "dreamforce-2026":{
+    meta:{ slug:"dreamforce-2026", lastUpdated:"2026-07-18",
+      sources:["salesforce.com/dreamforce","Dreamforce 2025 recap deck","r/salesforce"] },
+    identity:{
+      type:"Technology Conference", name:"Dreamforce 2026",
+      tagline:"The Salesforce ecosystem's biggest week — 170,000 operators, admins, and executives in one San Francisco week.",
+      subhead:"If your buyers run on Salesforce, a large share of next year's pipeline walks this floor. Here is the full picture — agenda, who exhibits, who attends, and the booth math — in one place.",
+      startDate:"2026-09-15", endDate:"2026-09-17",
+      venue:"Moscone Center", city:"San Francisco, CA",
+      format:"In-person + Salesforce+ broadcast", hashtag:"#DF26",
+      officialUrl:"https://www.salesforce.com/dreamforce/", registerUrl:"#",
+      heroCard:{ label:"Booth floor · illustrative", big:"75 target accounts briefed before day one. 100% of booth context captured to Salesforce.",
+        rows:[["Day 1 booth scans","248",""],["Meetings booked on-floor","18","booked"],["Avg follow-up time","3.2 hr","fast"]] }
+    },
+    stats:[
+      {num:"170K+",label:"Attendees",meta:"customers, partners, admins"},
+      {num:"110+",label:"Exhibitors",meta:"across the campus"},
+      {num:"1,600+",label:"Sessions",meta:"keynotes to workshops"},
+      {num:"3 days",label:"Show floor",meta:"Moscone campus"}
+    ],
+    tldr:"Dreamforce 2026 runs September 15–17 at San Francisco's Moscone Center — Salesforce's flagship event drawing 170,000+ attendees, 110+ exhibitors, and 1,600+ sessions across Agentforce, Data Cloud, and revenue-transformation tracks. For exhibitors, the draw is buyer density: RevOps, IT, and CX decision-makers concentrate here, making booth-conversation-to-meeting speed the metric that decides ROI.",
+    gallery:[
+      {caption:"Main keynote hall — Dreamforce 2025",accent:"purple"},
+      {caption:"Expo floor, Moscone South",accent:"orange"},
+      {caption:"Partner booths — Agentforce zone",accent:"green"},
+      {caption:"Evening networking, Yerba Buena",accent:"yellow"},
+      {caption:"Registration, Moscone West",accent:"pink"}
+    ],
+    why:{
+      headline:"Roughly a third of the Salesforce-adjacent SaaS pipeline for the coming year gets sourced in this one week.",
+      body:["Dreamforce is not a lead-volume event; it is a buyer-density event. The people walking Moscone are the exact committee that signs $25K+ ACV deals — RevOps leads, IT owners, and the executives who sponsor them.",
+        "That changes the exhibitor job. The win is not scanning the most badges; it is leaving the floor with the most qualified conversations that already have context, an owner, and a scheduled next step."],
+      pullquote:{ text:"We captured 540 leads at our last big show. Eight became meetings. At Dreamforce we needed a different number — and a different workflow to get it.", attr:"Director of Field Marketing · mid-market manufacturing SaaS" }
+    },
+    agenda:{
+      tracks:["Agentforce","Data Cloud","Sales","Service","Marketing","Platform & Dev","Industries"],
+      days:[
+        {label:"Day 1",meta:"Tue · Sep 15",items:[
+          {time:"9:00 AM",title:"Opening Keynote — the Agentforce era",loc:"Moscone North · Hall D",track:"Agentforce"},
+          {time:"1:00 PM",title:"Data Cloud in production: patterns that scale",loc:"Moscone West · 2005",track:"Data Cloud"},
+          {time:"4:00 PM",title:"Pipeline attribution for field & events teams",loc:"Moscone South · 210",track:"Marketing"}
+        ]},
+        {label:"Day 2",meta:"Wed · Sep 16",items:[
+          {time:"10:00 AM",title:"RevOps main stage: the compound-efficiency play",loc:"Moscone North · Hall D",track:"Sales"},
+          {time:"2:00 PM",title:"Service agents that resolve, not deflect",loc:"Moscone West · 3001",track:"Service"}
+        ]},
+        {label:"Day 3",meta:"Thu · Sep 17",items:[
+          {time:"11:00 AM",title:"Industries deep-dive: manufacturing & supply chain",loc:"Moscone South · 156",track:"Industries"},
+          {time:"3:00 PM",title:"Closing keynote + roadmap",loc:"Moscone North · Hall D",track:"Platform & Dev"}
+        ]}
+      ]
+    },
+    speakers:[
+      {name:"M. Benioff",role:"Chair & CEO, Salesforce",initials:"MB",keynote:true},
+      {name:"P. Rahill",role:"VP, Agentforce Product",initials:"PR",keynote:false},
+      {name:"S. Kang",role:"SVP, Data Cloud",initials:"SK",keynote:false},
+      {name:"D. Okafor",role:"CMO, enterprise manufacturing",initials:"DO",keynote:false},
+      {name:"L. Moreau",role:"Head of RevOps, logistics SaaS",initials:"LM",keynote:false},
+      {name:"T. Vasquez",role:"Field Marketing Director",initials:"TV",keynote:false},
+      {name:"R. Iyer",role:"Partner, GTM advisory",initials:"RI",keynote:false},
+      {name:"K. Novak",role:"VP Sales, industrial tech",initials:"KN",keynote:false}
+    ],
+    exhibitors:{
+      tiers:[
+        {tier:"Platinum",names:["Slack","Tableau","MuleSoft","AWS","Google Cloud"]},
+        {tier:"Gold",names:["Snowflake","Databricks","Accenture","Deloitte Digital","Vonage"]},
+        {tier:"Startup alley",names:["18 vertical SaaS startups"]}
+      ],
+      notable:"For B2B revenue teams, the exhibitors worth mapping are the ones your buyers already evaluate: data platforms, CPQ, and the systems-integrators who influence the deal. Cross-reference the exhibitor list against your open opportunities before you land."
+    },
+    audience:{
+      titleMix:[
+        {label:"RevOps / Sales Ops",pct:24},{label:"IT / Platform owners",pct:21},
+        {label:"Marketing / Field",pct:19},{label:"C-suite / VP",pct:17},{label:"Admins / Developers",pct:19}
+      ],
+      industries:["Manufacturing","Financial services","Healthcare","Retail / CPG","Logistics","Technology"],
+      match:"If your ICP is a Salesforce-run B2B company with 200+ employees and a committee-based buy, your buyer is here at higher density than any other week of the year. If you sell to non-Salesforce SMBs, spend your booth budget elsewhere."
+    },
+    cost:{
+      boothRange:"A 10x10 booth at Dreamforce lands around $18K–$45K before build, travel, and staff — a fully-loaded presence is commonly $80K–$150K.",
+      roi:{ spend:90000, reps:4, days:3, convosPerRepDay:10, qualRate:50, meetingRate:52, acv:40000 }
+    },
+    logistics:{
+      cells:[
+        {h:"Getting there",body:"SFO (15 min) and OAK (25 min) both serve downtown. Moscone is walkable from Union Square hotels; use BART to Powell St."},
+        {h:"Where to stay",list:["Marriott Marquis — connected to Moscone","Hotel Nikko — 4-min walk","InterContinental — official room block"]},
+        {h:"On-site",list:["Registration opens 7:00 AM daily","Free Wi-Fi campus-wide","Meal service in South & West"]},
+        {h:"Lead retrieval",body:"Dreamforce provides a badge-scan app to sponsors. It captures the badge — not the conversation. The context (use case, blockers, next step) is on your team to keep."}
+      ],
+      passes:[
+        {name:"Full Conference Pass",note:"All keynotes, sessions, expo",price:"$1,999"},
+        {name:"Expo+ Pass",note:"Expo floor + select sessions",price:"$499"},
+        {name:"Partner Pass",note:"For registered partners",price:"Varies"}
+      ]
+    },
+    sentiment:{
+      videos:[
+        {title:"Dreamforce 2025 — full opening keynote recap",src:"YouTube · Salesforce"},
+        {title:"What Dreamforce is actually like as an exhibitor",src:"YouTube · GTM creator"},
+        {title:"Best booth strategies we saw at DF25",src:"YouTube · field-marketing vlog"}
+      ],
+      reddit:[
+        {quote:"Worth it if you have customers on SF already. The expo floor is overwhelming — plan your booth route or you'll waste day one.",sub:"r/salesforce",tone:"Positive"},
+        {quote:"Insane scale. Great for pipeline if you exhibit, less so if you just attend without a plan.",sub:"r/sales",tone:"Mixed"},
+        {quote:"The after-hours networking is where the real conversations happen. Book those meetings in advance.",sub:"r/marketing",tone:"Positive"}
+      ],
+      testimonials:[
+        {q:"We booked 22 qualified meetings from the booth in three days — our best show of the year by a wide margin.",a:"VP Marketing · supply-chain SaaS"},
+        {q:"The difference was follow-up speed. Every conversation was in Salesforce with context before the rep left the floor.",a:"RevOps Lead · industrial tech"}
+      ]
+    },
+    playbook:{
+      pre:{h:"Land with a ranked target list, not a blank badge scanner.",b:"Pull the exhibitor and attendee lists, cross-reference your CRM, and walk in with a tiered list of who to meet and what they last bought."},
+      floor:{h:"Voice in, Salesforce record out — book the meeting before they leave the booth.",b:"Capture the use case, blockers, and next step in seconds. On-spot meeting booking beats a business card that goes cold by Tuesday."},
+      post:{h:"Morning-after report. Pipeline tied to the booth. Defensible at QBR.",b:"Every conversation synced with context and owner, so the pipeline you report from Dreamforce holds up when the CFO asks."}
+    },
+    similar:[
+      {name:"Salesforce World Tour",date:"Nov 12, 2026",city:"New York, NY"},
+      {name:"SaaStr Annual 2026",date:"Sep 8–10, 2026",city:"San Mateo, CA"},
+      {name:"MODEX 2026",date:"Mar 9–12, 2026",city:"Atlanta, GA"}
+    ],
+    faq:[
+      {q:"When and where is Dreamforce 2026?",a:"Dreamforce 2026 runs September 15–17, 2026 at the Moscone Center in San Francisco, CA, with a Salesforce+ broadcast for remote attendees."},
+      {q:"Who attends Dreamforce?",a:"About 170,000 Salesforce customers, partners, admins, developers, and executives — skewing heavily toward RevOps, IT, marketing, and C-suite decision-makers at mid-market and enterprise companies."},
+      {q:"How much does it cost to exhibit at Dreamforce?",a:"A basic 10x10 booth typically runs $18K–$45K before build, travel, and staffing; a fully-loaded presence is commonly $80K–$150K all-in."},
+      {q:"Does Dreamforce provide lead retrieval?",a:"Yes — sponsors get a badge-scan app. It records the badge, not the conversation context, so exhibitors still need a way to capture use case, blockers, and next steps."},
+      {q:"How should an exhibitor prepare for Dreamforce?",a:"Build a ranked target list against your CRM before the show, staff the booth to capture conversation context on the spot, and follow up within 24 hours while the context is fresh."}
+    ]
+  },
+
+  /* ---------- DATA-SPARSE EXAMPLE (many fields intentionally empty) ---------- */
+  "smts-2026":{
+    meta:{ slug:"smts-2026", lastUpdated:"2026-07-10", sources:["organizer site"] },
+    identity:{
+      type:"Trade Show", name:"SE Manufacturing Technology Show 2026",
+      tagline:"The Southeast's regional gathering for manufacturing and automation buyers.",
+      subhead:"A focused two-day regional show. Here is what we could confirm — with the booth math for exhibitors.",
+      startDate:"2026-10-20", endDate:"2026-10-21",
+      venue:"Music City Center", city:"Nashville, TN",
+      format:"In-person", hashtag:"",
+      officialUrl:"#", registerUrl:"#",
+      heroCard:null
+    },
+    stats:[
+      {num:"6,500+",label:"Attendees",meta:"regional operators"},
+      {num:"140+",label:"Exhibitors",meta:""}
+    ],
+    tldr:"The SE Manufacturing Technology Show 2026 runs October 20–21 at Nashville's Music City Center — a regional trade show for manufacturing and automation buyers across the Southeast, with 140+ exhibitors and roughly 6,500 attendees.",
+    gallery:[],
+    why:{
+      headline:"A regional show where the buyers are local plant and operations leaders — smaller, but high-intent.",
+      body:["Regional manufacturing shows over-index on decision-makers who came specifically to source equipment and software. Lower foot traffic, higher purchase intent per conversation."],
+      pullquote:null
+    },
+    agenda:{ tracks:["Automation","Robotics","Supply chain","Maintenance"], days:[] },
+    speakers:[],
+    exhibitors:{ tiers:[], notable:"" },
+    audience:{
+      titleMix:[{label:"Plant / Ops management",pct:41},{label:"Engineering",pct:33},{label:"Procurement",pct:26}],
+      industries:["Manufacturing","Automotive","Aerospace","Logistics"],
+      match:"If you sell to Southeast US plant and operations leaders, this is a concentrated regional buying audience. Nationally-focused vendors may find the volume too low to justify a large booth."
+    },
+    cost:{
+      boothRange:"Regional booths here typically run $3K–$9K before travel and staff.",
+      roi:{ spend:12000, reps:2, days:2, convosPerRepDay:9, qualRate:55, meetingRate:50, acv:28000 }
+    },
+    logistics:{
+      cells:[
+        {h:"Getting there",body:"BNA airport is 15 minutes from Music City Center in downtown Nashville."},
+        {h:"Lead retrieval",body:"The organizer offers a basic badge scanner add-on. Confirm pricing with the sponsorship team."}
+      ],
+      passes:[]
+    },
+    sentiment:{ videos:[], reddit:[], testimonials:[] },
+    playbook:{
+      pre:{h:"Pull the 140-exhibitor and attendee list. Filter to your ICP. Land with briefings.",b:"Even at regional scale, walking in with a ranked list beats working the floor cold."},
+      floor:{h:"Voice in, CRM record out. Book the meeting before they walk away.",b:"Offline-ready capture matters in convention-center dead zones."},
+      post:{h:"Morning-after report. Pipeline tied to the booth.",b:"Sync every conversation with context so the regional show earns its budget line."}
+    },
+    similar:[],
+    faq:[
+      {q:"When and where is the SE Manufacturing Technology Show 2026?",a:"It runs October 20–21, 2026 at the Music City Center in Nashville, TN."},
+      {q:"Who attends?",a:"Roughly 6,500 regional manufacturing and automation buyers — heavily plant management, engineering, and procurement roles across the Southeast US."},
+      {q:"How much does it cost to exhibit?",a:"Regional booths typically run $3K–$9K before travel and staffing."}
+    ]
+  }
+};
+
+/* =====================================================================
+   2. HELPERS + graceful-degradation guards
+   ===================================================================== */
+var esc=function(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
+var has=function(v){ if(v==null) return false; if(Array.isArray(v)) return v.length>0; if(typeof v==="string") return v.trim().length>0; if(typeof v==="object") return Object.keys(v).length>0; return true; };
+var money=function(n){ if(n>=1e6) return "$"+(n/1e6).toFixed(n>=1e7?0:1)+"M"; if(n>=1e3) return "$"+Math.round(n/1e3)+"K"; return "$"+Math.round(n); };
+var MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtRange(s,e){ var a=new Date(s+"T00:00:00"),b=new Date(e+"T00:00:00"); if(isNaN(a)) return ""; var sameMonth=a.getMonth()===b.getMonth(); var d1=MONTHS[a.getMonth()]+" "+a.getDate(); var d2=(sameMonth?"":MONTHS[b.getMonth()]+" ")+b.getDate(); return d1+"–"+d2+", "+b.getFullYear(); }
+function countdown(s){ var now=new Date(); var start=new Date(s+"T00:00:00"); var diff=Math.ceil((start-now)/(1000*60*60*24)); if(isNaN(diff)) return ""; if(diff<0) return "Past event · recap"; if(diff===0) return "Happening today"; if(diff<14) return diff+" days to go"; return Math.round(diff/7)+" weeks to go"; }
+
+/* wrap a section only if it produced inner HTML */
+function sec(id,cls,inner){ return has(inner)? '<section id="'+id+'" class="sec '+cls+'"><div class="container">'+inner+'</div></section>' : ''; }
+function head(eyebrow,title,sub){ return '<div class="sec__head"><span class="eyebrow eyebrow--asterisk">'+esc(eyebrow)+'</span>'+(has(title)?'<h2>'+esc(title)+'</h2>':'')+(has(sub)?'<p>'+esc(sub)+'</p>':'')+'</div>'; }
+
+/* =====================================================================
+   3. MODULE RENDERERS  (each returns '' when its data is absent)
+   ===================================================================== */
+function mHero(e){
+  var i=e.identity; if(!has(i)||!has(i.name)) return '';
+  var eyebrow='<span class="chip">'+esc(i.type)+'</span>';
+  var cd=has(i.startDate)?countdown(i.startDate):'';
+  if(cd) eyebrow+='<span class="chip chip--orange"><span class="chip__dot"></span>'+esc(cd)+'</span>';
+  if(has(i.hashtag)) eyebrow+='<span class="chip chip--purple">'+esc(i.hashtag)+'</span>';
+
+  var meta='';
+  var metaPairs=[];
+  if(has(i.startDate)) metaPairs.push(["Dates",fmtRange(i.startDate,i.endDate)]);
+  if(has(i.venue)||has(i.city)) metaPairs.push(["Location",[i.venue,i.city].filter(has).join(" · ")]);
+  if(has(i.format)) metaPairs.push(["Format",i.format]);
+  if(metaPairs.length) meta='<dl class="hero__meta">'+metaPairs.map(function(p){return '<div><dt>'+esc(p[0])+'</dt><dd>'+esc(p[1])+'</dd></div>';}).join('')+'</dl>';
+
+  var ctas='<div class="hero__ctas"><a href="#cta" class="btn btn--primary">Plan your booth</a>';
+  if(has(i.registerUrl)) ctas+='<a href="'+esc(i.registerUrl)+'" class="btn btn--ghost">Register for the event</a>';
+  ctas+='</div>';
+
+  /* right column: operator visual card (only if provided) */
+  var visual='';
+  if(has(i.heroCard)){
+    var c=i.heroCard;
+    var rows=(c.rows||[]).map(function(r){ var tagCls=r[2]==='booked'?'':(r[2]==='fast'?' hero__card-tag--orange':''); var tag=r[2]?'<span class="hero__card-tag'+tagCls+'">'+esc(r[1])+'</span>':'<b class="mono-num">'+esc(r[1])+'</b>'; return '<div class="hero__card-row"><span>'+esc(r[0])+'</span>'+tag+'</div>'; }).join('');
+    visual='<div class="hero__visual"><div class="hero__card"><small>* '+esc(c.label)+'</small><div class="hero__card-big">'+esc(c.big)+'</div><div class="hero__card-rows">'+rows+'</div></div>'+(cd?'<div class="hero__count">'+ '<span class="chip chip--orange" style="border:none;padding:0;background:none"><span class="chip__dot"></span></span> <b class="mono-num">'+esc(cd.toUpperCase())+'</b> — pages are refreshed as the agenda is confirmed.</div>':'')+'</div>';
+  }
+
+  var left='<div class="hero__crumb"><a href="#">Home</a> / <a href="#">Events</a> / '+esc(i.name)+'</div>'
+    +'<div class="hero__eyebrow">'+eyebrow+'</div>'
+    +'<h1>'+esc(i.name)+'</h1>'
+    +(has(i.tagline)?'<p class="hero__sub">'+esc(i.tagline)+'</p>':'')
+    +ctas+meta;
+
+  var grid = visual? '<div class="hero__grid"><div>'+left+'</div>'+visual+'</div>' : left;
+  return '<section id="overview" class="hero"><div class="container hero__pad">'+grid+'</div></section>';
+}
+
+function mStats(e){
+  if(!has(e.stats)) return '';
+  var cells=e.stats.filter(function(s){return has(s.num);}).map(function(s){
+    return '<div class="glance__cell"><div class="glance__num">'+esc(s.num)+'</div><div class="glance__label">'+esc(s.label)+'</div>'+(has(s.meta)?'<div class="glance__meta">'+esc(s.meta)+'</div>':'')+'</div>';
+  }).join('');
+  if(!cells) return '';
+  return '<section id="stats" class="sec" style="padding-top:0;border-bottom:none"><div class="container" style="padding-top:64px"><div class="glance">'+cells+'</div></div></section>';
+}
+
+function mAnswer(e){
+  if(!has(e.tldr)) return '';
+  var t=has(e.identity)&&has(e.identity.name)?e.identity.name:"this event";
+  var inner=head("QUICK ANSWER")+'<div class="answer"><h2>What is '+esc(t)+'?</h2><p>'+esc(e.tldr)+'</p></div>';
+  return sec("answer","",inner);
+}
+
+function mGallery(e){
+  if(!has(e.gallery)) return '';
+  var slides=e.gallery.map(function(g,idx){
+    var ph= g.src? '<img src="'+esc(g.src)+'" alt="'+esc(g.caption)+'">' : '<div class="slide__ph"><span>Photo '+(idx+1)+' — drop image here</span></div>';
+    return '<div class="slide">'+ph+'<span class="slide__idx mono-num">'+String(idx+1).padStart(2,'0')+' / '+String(e.gallery.length).padStart(2,'0')+'</span>'+(has(g.caption)?'<span class="slide__cap">'+esc(g.caption)+'</span>':'')+'</div>';
+  }).join('');
+  var multi=e.gallery.length>1;
+  var nav=multi?'<div class="slider__nav"><button class="slider__btn slider__btn--prev" data-slide="prev" aria-label="Previous">&#8592;</button><button class="slider__btn slider__btn--next" data-slide="next" aria-label="Next">&#8594;</button></div>':'';
+  var dots=multi?'<div class="slider__dots">'+e.gallery.map(function(_,i){return '<button class="slider__dot'+(i===0?' is-active':'')+'" data-dot="'+i+'" aria-label="Go to slide '+(i+1)+'"></button>';}).join('')+'</div>':'';
+  var inner=head("FROM THE FLOOR","Inside the event")+'<div class="slider" id="gallerySlider"><div class="slider__track" id="galleryTrack">'+slides+'</div>'+nav+'</div>'+dots+'<div class="gallery__foot">Photos from the previous edition. Slider adapts to however many images the event has — 1, 3, or 5.</div>';
+  return sec("gallery","",inner);
+}
+
+function mWhy(e){
+  if(!has(e.why)||(!has(e.why.headline)&&!has(e.why.body))) return '';
+  var w=e.why;
+  var body=(w.body||[]).map(function(p){return '<p>'+esc(p)+'</p>';}).join('');
+  var quote= has(w.pullquote)&&has(w.pullquote.text)? '<aside class="pullquote"><p class="pullquote__text">"'+esc(w.pullquote.text)+'"</p><div class="pullquote__attr">'+esc(w.pullquote.attr)+'</div></aside>' : '';
+  var grid = quote? '<div class="why__grid"><div class="why__body">'+body+'</div>'+quote+'</div>' : '<div class="why__body" style="max-width:760px">'+body+'</div>';
+  var inner=head("WHY IT MATTERS",w.headline)+grid;
+  return sec("why","",inner);
+}
+
+function mAgenda(e){
+  if(!has(e.agenda)) return '';
+  var a=e.agenda, hasDays=has(a.days);
+  var tabs='',panels='';
+  if(hasDays){
+    tabs='<div class="tabs" role="tablist">'+a.days.map(function(d,i){return '<button class="tab'+(i===0?' is-active':'')+'" data-tab="ag'+i+'" role="tab">'+esc(d.label)+'<span class="tab__meta">'+esc(d.meta)+'</span></button>';}).join('')+'</div>';
+    panels=a.days.map(function(d,i){
+      var rows=(d.items||[]).map(function(it){return '<div class="agenda__row"><div class="agenda__time mono-num">'+esc(it.time)+'</div><div><div class="agenda__title">'+esc(it.title)+'</div>'+(has(it.loc)?'<div class="agenda__loc">'+esc(it.loc)+'</div>':'')+'</div>'+(has(it.track)?'<div class="agenda__track">'+esc(it.track)+'</div>':'')+'</div>';}).join('');
+      return '<div class="agenda__panel'+(i===0?' is-active':'')+'" id="ag'+i+'">'+rows+'</div>';
+    }).join('');
+  }
+  var tracks= has(a.tracks)? '<div class="tracks">'+a.tracks.map(function(t){return '<span>'+esc(t)+'</span>';}).join('')+'</div>' : '';
+  if(!hasDays && !tracks) return '';
+  var subhead = hasDays? '' : 'Full session-by-session schedule for this edition is being confirmed. Tracks below.';
+  var inner=head("AGENDA & SESSIONS","What's on the floor",subhead)+tabs+panels+ (tracks? (hasDays?'<div style="margin-top:6px"></div>':'')+tracks : '');
+  return sec("agenda","",inner);
+}
+
+function mSpeakers(e){
+  if(!has(e.speakers)) return '';
+  var cells=e.speakers.map(function(s){return '<div class="speaker"><div class="speaker__av">'+esc(s.initials)+'</div><div class="speaker__name">'+esc(s.name)+'</div><div class="speaker__role">'+esc(s.role)+'</div>'+(s.keynote?'<span class="speaker__key">Keynote</span>':'')+'</div>';}).join('');
+  var inner=head("SPEAKERS","Who's on stage")+'<div class="speakers">'+cells+'</div>';
+  return sec("speakers","",inner);
+}
+
+function mExhibitors(e){
+  if(!has(e.exhibitors)) return '';
+  var x=e.exhibitors;
+  var tiers= has(x.tiers)? '<div class="exh__tiers">'+x.tiers.map(function(t){var logos=(t.names||[]).map(function(n){return '<div class="exh__logo">'+esc(n)+'</div>';}).join('');return '<div class="exh__tier"><div class="exh__tier-name">'+esc(t.tier)+'</div><div class="exh__logos">'+logos+'</div></div>';}).join('')+'</div>' : '';
+  var notable= has(x.notable)? '<div class="exh__notable"><h4>Which booths to map first</h4><p>'+esc(x.notable)+'</p></div>' : '';
+  if(!tiers && !notable) return '';
+  var inner=head("EXHIBITORS & SPONSORS","Who's setting up on the floor")+tiers+notable;
+  return sec("exhibitors","",inner);
+}
+
+function mAudience(e){
+  if(!has(e.audience)) return '';
+  var a=e.audience;
+  var bars= has(a.titleMix)? a.titleMix.map(function(t){return '<div class="aud__bar"><div class="aud__bar-top"><span>'+esc(t.label)+'</span><b class="mono-num">'+esc(t.pct)+'%</b></div><div class="aud__bar-track"><div class="aud__bar-fill" style="width:'+esc(t.pct)+'%"></div></div></div>';}).join('') : '';
+  var inds= has(a.industries)? '<div class="aud__chips">'+a.industries.map(function(i){return '<span>'+esc(i)+'</span>';}).join('')+'</div>' : '';
+  var match= has(a.match)? '<div class="aud__match"><h4>Is your buyer here?</h4><p>'+esc(a.match)+'</p></div>' : '';
+  var left= bars? '<div class="aud__col"><div class="eyebrow eyebrow--asterisk" style="margin-bottom:18px">ATTENDEE TITLE MIX</div>'+bars+'</div>' : '';
+  var right= (inds||match)? '<div class="aud__col"><div class="eyebrow eyebrow--asterisk" style="margin-bottom:18px">INDUSTRIES ON THE FLOOR</div>'+inds+match+'</div>' : '';
+  var grid = (left&&right)? '<div class="aud__grid">'+left+right+'</div>' : '<div style="border:1px solid var(--black)">'+(left||'')+(right||'')+'</div>';
+  if(!left && !right) return '';
+  var inner=head("WHO ATTENDS","The audience your booth is buying access to")+grid;
+  return sec("audience","",inner);
+}
+
+function mROI(e){
+  if(!has(e.cost)||!has(e.cost.roi)) return '';
+  var r=e.cost.roi;
+  var boothLine= has(e.cost.boothRange)? '<p style="max-width:760px;margin-bottom:34px;font-size:17px;line-height:27px;color:var(--black-70)">'+esc(e.cost.boothRange)+'</p>' : '';
+  var f=function(id,label,val,suffix){return '<div class="roi__field"><label>'+label+'</label><input type="number" id="'+id+'" value="'+val+'"></div>';};
+  var inputs='<div class="roi__inputs">'
+    +f("roiSpend","Booth investment ($)",r.spend)
+    +'<div class="roi__row2">'+f("roiReps","Booth reps",r.reps)+f("roiDays","Show days",r.days)+'</div>'
+    +f("roiConvos","Conversations / rep / day",r.convosPerRepDay)
+    +'<div class="roi__row2">'+f("roiQual","Qualified rate (%)",r.qualRate)+f("roiMeet","Meeting rate (%)",r.meetingRate)+'</div>'
+    +f("roiAcv","Average ACV ($)",r.acv)
+    +'</div>';
+  var out='<div class="roi__out">'
+    +'<div class="roi__out-grid">'
+    +'<div><div class="roi__stat-num" id="roiQualOut">–</div><div class="roi__stat-label">Qualified conversations</div></div>'
+    +'<div><div class="roi__stat-num" id="roiMeetOut">–</div><div class="roi__stat-label">Meetings booked</div></div>'
+    +'</div>'
+    +'<div class="roi__pipeline"><div class="roi__stat-label" style="margin-bottom:6px">Modeled pipeline · <span id="roiMult">–</span> return</div><div class="roi__stat-num" id="roiPipeOut">–</div>'
+    +'<div class="roi__ltm">At these inputs your <b>Leads-to-Meeting (LTM) rate is <span id="roiLtm">–</span></b> — versus an <b>~8% industry average</b> for badge-scanner-only teams. LTM is the metric B2Brain is built to move.</div></div>'
+    +'</div>';
+  var inner=head("COST & ROI","Do the booth math before you commit the budget")+boothLine+'<div class="roi" id="roiCalc">'+inputs+out+'</div>';
+  return sec("cost","",inner);
+}
+
+function mLogistics(e){
+  if(!has(e.logistics)) return '';
+  var l=e.logistics;
+  var cells= has(l.cells)? '<div class="log__grid">'+l.cells.map(function(c){var b= has(c.list)? '<ul>'+c.list.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>' : '<p>'+esc(c.body)+'</p>'; return '<div class="log__cell"><h4>'+esc(c.h)+'</h4>'+b+'</div>';}).join('')+'</div>' : '';
+  var passes= has(l.passes)? '<div style="margin-top:26px"><div class="eyebrow eyebrow--asterisk" style="margin-bottom:14px">PASSES & PRICING</div><div class="passes">'+l.passes.map(function(p){return '<div class="passes__row"><div><div class="passes__name">'+esc(p.name)+'</div>'+(has(p.note)?'<div class="passes__note">'+esc(p.note)+'</div>':'')+'</div><div class="passes__price mono-num">'+esc(p.price)+'</div></div>';}).join('')+'</div></div>' : '';
+  if(!cells && !passes) return '';
+  var inner=head("LOGISTICS","Everything you need before you fly in")+cells+passes;
+  return sec("logistics","",inner);
+}
+
+function mSentiment(e){
+  if(!has(e.sentiment)) return '';
+  var s=e.sentiment, blocks='';
+  if(has(s.videos)){
+    blocks+='<div class="sent__block"><div class="sent__label">Video — previous editions</div><div class="videos">'+s.videos.map(function(v){return '<div class="video"><div class="video__thumb"><div class="video__play"></div></div><div class="video__body"><div class="video__title">'+esc(v.title)+'</div><div class="video__src">'+esc(v.src)+'</div></div></div>';}).join('')+'</div></div>';
+  }
+  if(has(s.reddit)){
+    blocks+='<div class="sent__block"><div class="sent__label">What people say on Reddit</div><div class="reddit">'+s.reddit.map(function(r){var tc=r.tone==='Mixed'?' rcard__tone--mixed':'';return '<div class="rcard"><div class="rcard__quote">"'+esc(r.quote)+'"</div><div class="rcard__meta"><span>'+esc(r.sub)+'</span><span class="rcard__tone'+tc+'">'+esc(r.tone)+'</span></div></div>';}).join('')+'</div></div>';
+  }
+  if(has(s.testimonials)){
+    blocks+='<div class="sent__block"><div class="sent__label">From past exhibitors</div><div class="tstml">'+s.testimonials.map(function(t){return '<div class="tcard"><div class="tcard__q">"'+esc(t.q)+'"</div><div class="tcard__a">'+esc(t.a)+'</div></div>';}).join('')+'</div></div>';
+  }
+  if(!blocks) return '';
+  var inner=head("WHAT PEOPLE SAY","The reviews the event site will never publish")+blocks;
+  return sec("sentiment","",inner);
+}
+
+function mPlaybook(e){
+  if(!has(e.playbook)) return '';
+  var p=e.playbook, cards=[];
+  if(has(p.pre)) cards.push(['1','Pre-event · target list',p.pre]);
+  if(has(p.floor)) cards.push(['2','On the floor · capture + book',p.floor]);
+  if(has(p.post)) cards.push(['3','Post-event · LTM + attribution',p.post]);
+  if(!cards.length) return '';
+  var t=has(e.identity)&&has(e.identity.name)?e.identity.name:"this show";
+  var html=cards.map(function(c){return '<div class="play__card play__card--'+c[0]+'"><div class="play__step">Motion 0'+c[0]+' — '+esc(c[1])+'</div><div class="play__icon"></div><h4>'+esc(c[2].h)+'</h4><p>'+esc(c[2].b)+'</p></div>';}).join('');
+  var inner=head("HOW TO WIN AT "+t.toUpperCase(),"Turn "+esc(t)+" from a cost line into a pipeline line")+'<div class="play">'+html+'</div>';
+  return sec("playbook","",inner);
+}
+
+function mSimilar(e){
+  if(!has(e.similar)) return '';
+  var cards=e.similar.map(function(s){return '<a class="scard" href="'+esc(s.url||'#')+'"><div class="scard__date">'+esc(s.date)+'</div><div class="scard__name">'+esc(s.name)+'</div><div class="scard__loc">'+esc(s.city)+'</div><div class="scard__link link-arrow">View event page</div></a>';}).join('');
+  var inner=head("SIMILAR EVENTS","Other shows your team is weighing")+'<div class="similar">'+cards+'</div>';
+  return sec("similar","",inner);
+}
+
+function mFaq(e){
+  if(!has(e.faq)) return '';
+  var items=e.faq.map(function(f){return '<div class="faq__item"><button class="faq__q" aria-expanded="false"><span>'+esc(f.q)+'</span><span class="faq__icon"></span></button><div class="faq__a"><div class="faq__a-inner">'+esc(f.a)+'</div></div></div>';}).join('');
+  var inner='<div class="faq__grid"><div>'+head("FAQ","Questions buyers actually ask")+'<p class="muted" style="max-width:340px">Answers are self-contained and structured for Google and AI-answer engines.</p></div><div class="faq__list">'+items+'</div></div>';
+  return sec("faq","",inner);
+}
+
+function mCta(e){
+  var t=has(e.identity)&&has(e.identity.name)?e.identity.name:"your next show";
+  var cd=has(e.identity)&&has(e.identity.startDate)?countdown(e.identity.startDate):'';
+  var weeks= cd? '<span class="eyebrow eyebrow--asterisk cta__weeks">'+esc(cd.toUpperCase())+'</span>' : '<span class="eyebrow eyebrow--asterisk cta__weeks">BOOK A DEMO</span>';
+  var inner='<div class="cta__inner"><span class="cta__px cta__px--tl"></span><span class="cta__px cta__px--br"></span><div>'+weeks+'<h2>Walk into '+esc(t)+' with a target list — and out with meetings booked.</h2><div class="cta__ctas"><a href="#" class="btn btn--primary">Book a Demo</a><a href="#" class="btn btn--ghost">Get the '+esc(t)+' prep guide</a></div></div></div>';
+  return '<section id="cta" class="cta"><div class="container">'+inner+'</div></section>';
+}
+
+function mFooter(e){
+  var stamp= has(e.meta)&&has(e.meta.lastUpdated)? '<div class="footer__stamp">Page last updated '+esc(e.meta.lastUpdated)+(has(e.meta.sources)?' · Sources: '+e.meta.sources.map(esc).join(', '):'')+'</div>' : '';
+  return '<footer class="footer"><div class="container"><div class="footer__grid">'
+    +'<div class="footer__brand"><a href="#" class="nav__logo"><span class="nav__logo-mark"></span>B2Brain</a><p>The Event Meeting Platform. Turn trade-show conversations into booked meetings and measurable pipeline.</p>'+stamp+'</div>'
+    +'<div class="footer__col"><h5>Platform</h5><a href="#">Overview</a><a href="#">Pre-event</a><a href="#">On the floor</a><a href="#">Post-event</a></div>'
+    +'<div class="footer__col"><h5>Events</h5><a href="#">All events</a><a href="#">Manufacturing</a><a href="#">Supply chain</a><a href="#">Technology</a></div>'
+    +'<div class="footer__col"><h5>Company</h5><a href="#">About</a><a href="#">Pricing</a><a href="#">Book a demo</a><a href="#">Contact</a></div>'
+    +'</div><div class="footer__bottom"><span>© 2026 B2Brain, Inc.</span><span>Privacy · Terms</span></div></div></footer>';
+}
+
+/* =====================================================================
+   4. BUILD PIPELINE — order + TOC labels. Empty modules drop out.
+   ===================================================================== */
+var MODULES=[
+  {id:"overview", nav:"Overview", fn:mHero},
+  {id:"stats",    nav:"",         fn:mStats},
+  {id:"answer",   nav:"",         fn:mAnswer},
+  {id:"gallery",  nav:"Photos",   fn:mGallery},
+  {id:"why",      nav:"Why it matters", fn:mWhy},
+  {id:"agenda",   nav:"Agenda",   fn:mAgenda},
+  {id:"speakers", nav:"Speakers", fn:mSpeakers},
+  {id:"exhibitors",nav:"Exhibitors",fn:mExhibitors},
+  {id:"audience", nav:"Who attends",fn:mAudience},
+  {id:"cost",     nav:"Cost & ROI",fn:mROI},
+  {id:"logistics",nav:"Logistics",fn:mLogistics},
+  {id:"sentiment",nav:"Reviews",  fn:mSentiment},
+  {id:"playbook", nav:"Win the show",fn:mPlaybook},
+  {id:"similar",  nav:"Similar events",fn:mSimilar},
+  {id:"faq",      nav:"FAQ",      fn:mFaq},
+  {id:"cta",      nav:"",         fn:mCta},
+  {id:"footer",   nav:"",         fn:mFooter}
+];
+
+function renderEvent(slug){
+  var e=window.EVENTS[slug]; if(!e) return;
+  var built=MODULES.map(function(m){ return {id:m.id, nav:m.nav, html:m.fn(e)}; }).filter(function(m){ return has(m.html); });
+  document.getElementById('root').innerHTML = built.map(function(m){return m.html;}).join('');
+  /* TOC only lists sections that actually rendered AND have a label */
+  var toc=built.filter(function(m){return m.nav;}).map(function(m){return '<a href="#'+m.id+'" data-spy="'+m.id+'">'+esc(m.nav)+'</a>';}).join('');
+  document.getElementById('tocLinks').innerHTML=toc;
+  document.title=(e.identity&&e.identity.name?e.identity.name:'Event')+' — B2Brain — The Event Meeting Platform';
+  wireInteractions();
+  revealSections();
+}
+
+/* =====================================================================
+   5. INTERACTIONS (slider, tabs, FAQ, ROI calc, scrollspy, reveal)
+   ===================================================================== */
+function wireInteractions(){
+  /* --- gallery slider --- */
+  var track=document.getElementById('galleryTrack');
+  if(track){
+    var idx=0, n=track.children.length;
+    var go=function(i){ idx=(i+n)%n; track.style.transform='translateX(-'+(idx*100)+'%)'; document.querySelectorAll('.slider__dot').forEach(function(d,k){d.classList.toggle('is-active',k===idx);}); };
+    document.querySelectorAll('[data-slide]').forEach(function(b){b.addEventListener('click',function(){go(idx+(b.dataset.slide==='next'?1:-1));});});
+    document.querySelectorAll('[data-dot]').forEach(function(d){d.addEventListener('click',function(){go(+d.dataset.dot);});});
+  }
+  /* --- agenda tabs --- */
+  document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('is-active');});
+    document.querySelectorAll('.agenda__panel').forEach(function(x){x.classList.remove('is-active');});
+    t.classList.add('is-active'); var p=document.getElementById(t.dataset.tab); if(p)p.classList.add('is-active');
+  });});
+  /* --- FAQ accordion --- */
+  document.querySelectorAll('.faq__q').forEach(function(q){q.addEventListener('click',function(){
+    var item=q.closest('.faq__item'), a=item.querySelector('.faq__a'), open=item.classList.toggle('is-open');
+    q.setAttribute('aria-expanded',open); a.style.maxHeight=open?a.scrollHeight+'px':0;
+  });});
+  /* --- ROI calculator --- */
+  var calc=document.getElementById('roiCalc');
+  if(calc){
+    var ids=['roiSpend','roiReps','roiDays','roiConvos','roiQual','roiMeet','roiAcv'];
+    var val=function(id){return parseFloat(document.getElementById(id).value)||0;};
+    var run=function(){
+      var spend=val('roiSpend'),reps=val('roiReps'),days=val('roiDays'),cpr=val('roiConvos'),qr=val('roiQual')/100,mr=val('roiMeet')/100,acv=val('roiAcv');
+      var convos=reps*days*cpr, qualified=convos*qr, meetings=qualified*mr, pipeline=meetings*acv, mult=spend>0?pipeline/spend:0;
+      document.getElementById('roiQualOut').textContent=Math.round(qualified);
+      document.getElementById('roiMeetOut').textContent=Math.round(meetings);
+      document.getElementById('roiPipeOut').textContent=money(pipeline);
+      document.getElementById('roiMult').textContent=(mult).toFixed(1)+'x';
+      document.getElementById('roiLtm').textContent=Math.round(mr*100)+'%';
+    };
+    ids.forEach(function(id){document.getElementById(id).addEventListener('input',run);}); run();
+  }
+}
+
+/* --- scroll-reveal + TOC scrollspy via IntersectionObserver --- */
+var _spy;
+/* Content is ALWAYS visible — no scroll-dependent hiding, so no blank frames can
+   ever occur (a fragile scroll-reveal was removed). The only observer is the TOC
+   scrollspy, which highlights the active section but never hides content. */
+function revealSections(){
+  if(_spy)_spy.disconnect();
+  _spy=new IntersectionObserver(function(en){en.forEach(function(x){ if(x.isIntersecting){ var id=x.target.id; document.querySelectorAll('.toc__links a').forEach(function(a){a.classList.toggle('is-active',a.dataset.spy===id);}); } });},{rootMargin:'-20% 0px -70% 0px'});
+  document.querySelectorAll('main section[id]').forEach(function(s){_spy.observe(s);});
+}
+
+/* =====================================================================
+   6. DEV PREVIEW SWITCHER
+   ===================================================================== */
+document.querySelectorAll('.demobar__opt').forEach(function(b){b.addEventListener('click',function(){
+  document.querySelectorAll('.demobar__opt').forEach(function(x){x.classList.remove('is-active');});
+  b.classList.add('is-active'); window.scrollTo(0,0); renderEvent(b.dataset.slug);
+});});
+document.getElementById('demoMin').addEventListener('click',function(){document.getElementById('demobar').classList.toggle('min');this.textContent=document.getElementById('demobar').classList.contains('min')?'+':'–';});
+
+/* smooth-scroll offset for sticky nav+toc */
+document.addEventListener('click',function(ev){var a=ev.target.closest('a[href^="#"]');if(!a)return;var id=a.getAttribute('href').slice(1);var el=document.getElementById(id);if(el){ev.preventDefault();var y=el.getBoundingClientRect().top+window.pageYOffset-(64+56+12);window.scrollTo({top:y,behavior:'smooth'});}});
+
+/* boot */
+renderEvent('dreamforce-2026');
+</script>
+</body>
+</html>

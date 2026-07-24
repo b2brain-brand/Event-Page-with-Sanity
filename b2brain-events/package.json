@@ -1,0 +1,35 @@
+{
+  "name": "b2brain-events",
+  "version": "1.0.0",
+  "private": true,
+  "description": "B2Brain programmatic event landing pages — Next.js frontend + embedded Sanity Studio.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "seed": "node scripts/seed.mjs",
+    "typegen": "sanity schema extract --path=./sanity/extract.json && sanity typegen generate"
+  },
+  "dependencies": {
+    "@sanity/client": "^7.24.0",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^6.6.0",
+    "next": "^16.2.11",
+    "next-sanity": "^13.2.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sanity": "^6.6.0",
+    "styled-components": "^6.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=20.19"
+  }
+}

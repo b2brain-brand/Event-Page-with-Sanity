@@ -1,0 +1,19 @@
+node_modules
+.next
+out
+build
+.DS_Store
+*.pem
+
+# env — NEVER commit. The write token lives here.
+.env
+.env.local
+.env*.local
+
+.vercel
+next-env.d.ts
+*.tsbuildinfo
+
+# sanity typegen artefacts
+sanity/extract.json
+sanity.types.ts
