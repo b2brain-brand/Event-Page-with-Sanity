@@ -329,9 +329,8 @@ const dreamforce = {
 
   heroVideo: {
     _type: 'heroVideo',
+    // The thumbnail is derived from this URL — there is nothing else to set.
     youtubeUrl: 'https://www.youtube.com/watch?v=qJLAzhDomGg',
-    // No custom thumbnail -> YouTube's own still is used automatically.
-    alt: 'Dreamforce 2025 — Agents, Data and Apps in action',
     label: 'FROM DREAMFORCE 2025',
     caption: 'Agents, Data and Apps in action — Salesforce',
     openOnYouTube: false,

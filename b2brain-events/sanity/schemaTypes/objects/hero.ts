@@ -1,37 +1,41 @@
+import React from 'react'
 import { defineType, defineField } from 'sanity'
+import { YouTubeThumb } from '../../components/YouTubeThumb'
 
 /**
  * HERO VIDEO  ->  the right-hand column of the hero
  *
  * Replaces the old "operator card" (the stat panel). Every event page now leads
- * with footage of the actual show, which does two things the stat card could
- * not: it proves the event is real to someone who has never been, and it gives
- * the page a media asset worth linking to.
+ * with footage of the actual show: it proves the event is real to someone who
+ * has never been, and gives the page a media asset worth linking to.
  *
- * Optional. Leave the whole object empty and the hero collapses to a single
- * full-width column — same graceful degradation as everything else here.
+ * PASTE A URL, THAT IS THE WHOLE JOB. The thumbnail is pulled from YouTube
+ * automatically — there is deliberately no image to upload. One field can go
+ * stale or mismatch the video; a derived one cannot.
  *
- * Playback has two modes, controlled by "Open on YouTube instead of playing
- * inline":
- *   OFF (default) — click loads the embedded player in place. Nothing from
- *                   YouTube is requested until the click, so the page stays
- *                   fast and sets no third-party cookies on load.
- *   ON            — click opens YouTube in a new tab. Use when the video is
- *                   age-gated or embedding is disabled by the uploader.
+ * Optional overall. Leave the object empty and the hero collapses to a single
+ * full-width column, like every other module here.
+ *
+ * Playback, via "Open on YouTube instead of playing inline":
+ *   OFF (default) — click loads the embedded player in place. Nothing is
+ *                   requested from YouTube until that click, so the hero costs
+ *                   nothing on first paint and sets no third-party cookies.
+ *   ON            — click opens YouTube in a new tab. Use when the uploader has
+ *                   disabled embedding.
  */
 export const heroVideo = defineType({
   name: 'heroVideo',
   title: 'Hero video',
   type: 'object',
   description:
-    'Footage from a previous edition, shown beside the H1. Leave empty for a full-width hero.',
+    'Paste a YouTube link. The thumbnail appears automatically — nothing to upload.',
   fields: [
     defineField({
       name: 'youtubeUrl',
       title: 'YouTube URL',
       type: 'url',
       description:
-        'Paste any YouTube link — watch?v=…, youtu.be/…, /embed/… or /shorts/… all work.',
+        'Any YouTube link works — watch?v=…, youtu.be/…, /embed/…, /shorts/…. The thumbnail is fetched from YouTube automatically once you save.',
       validation: (r) =>
         r
           .required()
@@ -46,21 +50,6 @@ export const heroVideo = defineType({
           }),
     }),
     defineField({
-      name: 'thumbnail',
-      title: 'Custom thumbnail',
-      type: 'image',
-      options: { hotspot: true },
-      description:
-        'Optional. 16:9, min 1280px wide. Leave empty and YouTube\'s own thumbnail is used automatically.',
-    }),
-    defineField({
-      name: 'alt',
-      title: 'Thumbnail alt text',
-      type: 'string',
-      description: 'Describes the still for screen readers. Falls back to the caption.',
-      validation: (r) => r.max(125),
-    }),
-    defineField({
       name: 'label',
       title: 'Card eyebrow',
       type: 'string',
@@ -73,7 +62,7 @@ export const heroVideo = defineType({
       title: 'Caption',
       type: 'string',
       description:
-        'One line under the video. e.g. "Opening keynote — the Agentforce era". Keep it under ~70 chars.',
+        'One line under the video — the only text describing it to a crawler, so make it count. e.g. "Opening keynote — the Agentforce era".',
       validation: (r) => r.max(90),
     }),
     defineField({
@@ -86,11 +75,12 @@ export const heroVideo = defineType({
     }),
   ],
   preview: {
-    select: { title: 'caption', subtitle: 'youtubeUrl', media: 'thumbnail' },
-    prepare: ({ title, subtitle, media }) => ({
-      title: title || 'Hero video',
-      subtitle,
-      media,
+    select: { url: 'youtubeUrl', caption: 'caption', label: 'label' },
+    prepare: ({ url, caption, label }) => ({
+      title: caption || label || 'Hero video',
+      subtitle: url,
+      // Live thumbnail from the pasted URL — confirms it resolved.
+      media: React.createElement(YouTubeThumb, { url }),
     }),
   },
 })

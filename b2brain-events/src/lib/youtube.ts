@@ -2,7 +2,9 @@
  * YouTube helpers.
  *
  * Editors paste whatever URL they copied from the browser, so every common
- * shape has to resolve to the same 11-character video id.
+ * shape has to resolve to the same 11-character video id. Everything else —
+ * thumbnail, embed, watch link — is derived from that id. Nothing about the
+ * video is entered by hand.
  */
 
 const PATTERNS = [
@@ -23,11 +25,20 @@ export function youTubeId(url?: string | null): string | null {
 }
 
 /**
- * YouTube's own still, used when the editor has not uploaded a custom one.
- * `hqdefault` rather than `maxresdefault` because maxres does not exist for
- * every video and 404s produce a grey box; hq is guaranteed.
+ * Best-quality still, with a fallback.
+ *
+ * `maxresdefault` is a true 1280×720 but YouTube only generates it for some
+ * uploads — for the rest it 404s. `hqdefault` always exists but is 480×360 (4:3),
+ * which the card crops to 16:9 with object-fit, removing the letterbox bars.
+ *
+ * So: request maxres, and swap to hq on error. The player component wires the
+ * fallback up; both URLs are produced here.
  */
 export function youTubeThumb(id: string): string {
+  return `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`
+}
+
+export function youTubeThumbFallback(id: string): string {
   return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
 }
 

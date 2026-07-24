@@ -22,10 +22,9 @@ export type EventCard = {
   categories?: { _id: string; title: string; slug: string }[]
 }
 
+/** Everything except the URL is optional; the thumbnail is derived, never stored. */
 export type HeroVideo = {
   youtubeUrl?: string
-  thumbnail?: SanityImage
-  alt?: string
   label?: string
   caption?: string
   openOnYouTube?: boolean

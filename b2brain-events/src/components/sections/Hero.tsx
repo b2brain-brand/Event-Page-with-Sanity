@@ -1,16 +1,15 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { countdown, fmtRange, has } from '@/lib/format'
 import { B, L, S } from '@/lib/defaults'
-import { youTubeId, youTubeThumb, youTubeWatch } from '@/lib/youtube'
+import { youTubeId } from '@/lib/youtube'
 import { HeroVideoPlayer } from './HeroVideo'
 import type { EventDoc, SiteSettings } from '@/lib/types'
 
 /**
- * HERO  ->  mHero()
+ * HERO
  *
  * Two layouts from one component, decided by the data:
- *   heroVideo present -> 1.35fr / 1fr grid with the video beside the H1
+ *   heroVideo present -> 1.35fr / 1fr grid, video beside the H1
  *   heroVideo absent  -> single full-width column
  * That is the whole graceful-degradation idea in miniature.
  *
@@ -42,6 +41,7 @@ export function Hero({
   const primaryLabel =
     event.heroPrimaryCtaLabel || S(settings, 'heroPrimaryCtaLabel') || 'Plan your booth'
 
+  /* ---------------------------------------------------------------- LEFT */
   const left = (
     <>
       <div className="hero__crumb">
@@ -92,51 +92,24 @@ export function Hero({
     </>
   )
 
-  /* ------------------------------------------------------------------ VIDEO
-     The right column is footage from a previous edition. Two modes:
-     - inline (default): a click-to-load facade, so no YouTube request is made
-       until someone actually plays it
-     - link-out: an anchor to YouTube, for videos where the uploader has
-       disabled embedding
-     No video at all -> the hero renders as a single full-width column.        */
+  /* --------------------------------------------------------------- RIGHT
+     Footage from a previous edition. The editor pastes a YouTube URL and
+     nothing else — thumbnail, embed and watch link are all derived from it.
+     No URL -> no right column, and the hero renders full-width.            */
   const v = event.heroVideo
   const videoId = youTubeId(v?.youtubeUrl)
-  const customThumb = v?.thumbnail?.asset?.url
-  const thumbUrl = customThumb || (videoId ? youTubeThumb(videoId) : '')
-  const thumbAlt = v?.alt || v?.caption || `${event.name} video`
 
-  const visual = videoId && (
+  const visual = videoId ? (
     <div className="hero__visual">
       <div className="herovid">
         {has(v?.label) && <small className="herovid__eyebrow">* {v!.label}</small>}
 
-        {v?.openOnYouTube ? (
-          <a
-            className="herovid__btn"
-            href={youTubeWatch(videoId)}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={v?.caption ? `Watch on YouTube: ${v.caption}` : 'Watch on YouTube'}
-          >
-            <span className="herovid__thumb">
-              {customThumb ? (
-                <Image src={thumbUrl} alt={thumbAlt} fill sizes="(max-width: 991px) 100vw, 520px" />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={thumbUrl} alt={thumbAlt} loading="lazy" />
-              )}
-              <span className="video__play" aria-hidden="true" />
-            </span>
-          </a>
-        ) : (
-          <HeroVideoPlayer
-            videoId={videoId}
-            thumbUrl={thumbUrl}
-            alt={thumbAlt}
-            caption={v?.caption}
-            isSanityImage={Boolean(customThumb)}
-          />
-        )}
+        <HeroVideoPlayer
+          videoId={videoId}
+          caption={v?.caption}
+          eventName={event.name}
+          openOnYouTube={Boolean(v?.openOnYouTube)}
+        />
 
         {has(v?.caption) && (
           <div className="herovid__cap">
@@ -158,7 +131,7 @@ export function Hero({
         </div>
       )}
     </div>
-  )
+  ) : null
 
   return (
     <section id="overview" className="hero">
