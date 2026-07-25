@@ -114,11 +114,19 @@ export const eventsIndexPage = defineType({
     }),
     defineField({
       name: 'cardCtaLabel',
-      title: 'Card link label',
+      title: 'Featured card button label',
       type: 'string',
       group: 'sections',
-      description: 'The link on each event card. The main site uses "Open Event Playbook".',
+      description: 'The filled button on featured cards. The main site uses "Open Event Playbook".',
       initialValue: 'Open Event Playbook',
+    }),
+    defineField({
+      name: 'allCardCtaLabel',
+      title: 'All-events card button label',
+      type: 'string',
+      group: 'sections',
+      description: 'The ghost button on the grid cards. The main site uses "See The Event Playbook".',
+      initialValue: 'See The Event Playbook',
     }),
     defineField({
       name: 'industryFilterLabel',

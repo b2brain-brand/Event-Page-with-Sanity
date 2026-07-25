@@ -1,0 +1,89 @@
+name: Deploy to Vercel
+
+# Builds and deploys the b2brain-events app to Vercel: production on push to
+# main, a preview deployment on pull requests.
+#
+# App env vars (Sanity tokens, site URL, etc.) are NOT stored here — `vercel
+# pull` fetches them from the Vercel project at build time, so there is only one
+# place to manage them. GitHub only needs the three Vercel-CLI secrets below.
+#
+# Secrets required (Repo → Settings → Secrets and variables → Actions):
+#   VERCEL_TOKEN        a Vercel access token
+#   VERCEL_ORG_ID       Vercel team/org id
+#   VERCEL_PROJECT_ID   Vercel project id
+# Until VERCEL_TOKEN is set, every deploy step skips cleanly (green, no-op).
+#
+# NOTE: if the Vercel–GitHub native integration is still connected, it ALSO
+# deploys on push, giving two deployments per commit. Pick one — see docs/CICD.md.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  # Always runs: catches type errors before anything deploys.
+  typecheck:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: b2brain-events
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: b2brain-events/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+
+  deploy:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: b2brain-events
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI
+        if: env.VERCEL_TOKEN != ''
+        run: npm install --global vercel@latest
+
+      # ---- Preview (pull requests) --------------------------------------
+      - name: Deploy preview
+        if: env.VERCEL_TOKEN != '' && github.event_name == 'pull_request'
+        run: |
+          vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+          vercel build --token="$VERCEL_TOKEN"
+          url=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN")
+          echo "Preview deployed: $url"
+          echo "### Preview: $url" >> "$GITHUB_STEP_SUMMARY"
+
+      # ---- Production (push to main) ------------------------------------
+      - name: Deploy production
+        if: env.VERCEL_TOKEN != '' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --prod --token="$VERCEL_TOKEN"
+          url=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "Production deployed: $url"
+          echo "### Production: $url" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: No token — skipped
+        if: env.VERCEL_TOKEN == ''
+        run: echo "VERCEL_TOKEN not set — skipping deploy. Add the three Vercel secrets to enable."

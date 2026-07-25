@@ -44,7 +44,8 @@ const FALLBACK: EventsIndexPage = {
   allEyebrow: 'ALL EVENTS',
   allHeading: 'Browse the 2026 event calendar.',
   cardCtaLabel: 'Open Event Playbook',
-  industryFilterLabel: 'Filter by industry',
+  allCardCtaLabel: 'See The Event Playbook',
+  industryFilterLabel: 'Filter By Industry',
   searchPlaceholder: 'Search events…',
   faqHeading: 'Frequently asked questions',
   // Kept in code as well as the schema so /events is complete before anyone
@@ -176,7 +177,12 @@ export default async function EventsIndex() {
             />
             <div className="ecards">
               {featured.map((e) => (
-                <EventCard key={e._id} event={e} ctaLabel={v(page, 'cardCtaLabel')} />
+                <EventCard
+                  key={e._id}
+                  event={e}
+                  ctaLabel={v(page, 'cardCtaLabel')}
+                  featured
+                />
               ))}
             </div>
           </Section>
@@ -190,7 +196,7 @@ export default async function EventsIndex() {
               events={events}
               industryLabel={v(page, 'industryFilterLabel')}
               searchPlaceholder={v(page, 'searchPlaceholder')}
-              cardCtaLabel={v(page, 'cardCtaLabel')}
+              cardCtaLabel={v(page, 'allCardCtaLabel')}
             />
           ) : (
             <p className="muted">No event pages published yet.</p>

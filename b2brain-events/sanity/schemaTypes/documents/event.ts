@@ -211,6 +211,23 @@ export const event = defineType({
         'Footage from a previous edition, shown to the right of the H1. Present = two-column hero. Absent = full-width hero.',
     }),
     defineField({
+      name: 'cardImage',
+      title: 'Collection card image',
+      type: 'image',
+      group: 'identity',
+      options: { hotspot: true },
+      description:
+        'OPTIONAL. Shown at the top of this event\'s card on the /events collection page (16:9). Leave empty to match b2brain.com, whose cards are text-only. Does not affect the landing page.',
+    }),
+    defineField({
+      name: 'cardImageAlt',
+      title: 'Collection card image — alt text',
+      type: 'string',
+      group: 'identity',
+      description: 'Describes the card image for screen readers. Falls back to the event name.',
+      validation: (r) => r.max(125),
+    }),
+    defineField({
       name: 'heroPrimaryCtaLabel',
       title: 'Hero primary CTA — label override',
       type: 'string',

@@ -28,6 +28,8 @@ export type IndexEventCard = EventCard & {
   isFeatured?: boolean
   attendees?: string
   exhibitors?: string
+  cardImage?: SanityImage
+  cardImageAlt?: string
 }
 
 export type EventsIndexPage = {
@@ -41,6 +43,7 @@ export type EventsIndexPage = {
   allEyebrow?: string
   allHeading?: string
   cardCtaLabel?: string
+  allCardCtaLabel?: string
   industryFilterLabel?: string
   searchPlaceholder?: string
   faqHeading?: string

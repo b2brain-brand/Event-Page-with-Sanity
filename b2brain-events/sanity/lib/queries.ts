@@ -176,7 +176,9 @@ const INDEX_CARD_FIELDS = /* groq */ `
   "description": coalesce(tldr, tagline),
   isFeatured,
   "attendees": stats[label match "Attendee*"][0].num,
-  "exhibitors": stats[label match "Exhibitor*"][0].num
+  "exhibitors": stats[label match "Exhibitor*"][0].num,
+  cardImageAlt,
+  "cardImage": cardImage{ ..., asset-> }
 `
 
 /** The /events collection page: its own copy + every event as a card. */
@@ -187,7 +189,7 @@ export const EVENTS_INDEX_QUERY = defineQuery(`
       stats[]{ num, label },
       featuredEyebrow, featuredHeading,
       "featured": featuredEvents[]->{ ${INDEX_CARD_FIELDS} },
-      allEyebrow, allHeading, cardCtaLabel, industryFilterLabel, searchPlaceholder,
+      allEyebrow, allHeading, cardCtaLabel, allCardCtaLabel, industryFilterLabel, searchPlaceholder,
       faqHeading, faq[]{ q, a },
       ctaEyebrow, ctaHeading,
       metaTitle, metaDescription
