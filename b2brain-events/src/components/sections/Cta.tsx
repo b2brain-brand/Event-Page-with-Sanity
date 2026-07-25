@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { countdown, has, tpl } from '@/lib/format'
 import { S } from '@/lib/defaults'
+import { BRAND } from '@/lib/brand'
 import type { EventDoc, SiteSettings } from '@/lib/types'
 
 /**
@@ -41,13 +41,22 @@ export function Cta({
           <div>
             <span className="eyebrow eyebrow--asterisk cta__weeks">{eyebrow}</span>
             <h2>{headline}</h2>
+            {/* Both buttons resolve to the real b2brain.com pages (code-owned,
+                like the nav and footer) so they can never drift to a dead path.
+                Book a Demo -> b2brain.com/demo; the prep-guide/secondary CTA ->
+                Start Free Trial on the App Store. */}
             <div className="cta__ctas">
-              <Link href={S(settings, 'ctaPrimaryHref') || '#'} className="btn btn--primary">
+              <a href={BRAND.cta.href} className="btn btn--primary">
                 {S(settings, 'ctaPrimaryLabel')}
-              </Link>
-              <Link href={S(settings, 'ctaSecondaryHref') || '#'} className="btn btn--ghost">
+              </a>
+              <a
+                href={BRAND.login.href}
+                className="btn btn--ghost"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {secondary}
-              </Link>
+              </a>
             </div>
           </div>
         </div>
