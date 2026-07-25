@@ -1,24 +1,19 @@
 import { BRAND } from '@/lib/brand'
+import { UseCaseIcon } from './BrandIcons'
 
 /**
- * Sticky nav — the real b2brain.com nav, so an event page reads as part of the
- * site, not a detached microsite.
+ * Sticky nav — the real b2brain.com nav. Links come from `@/lib/brand`, not the
+ * CMS, so the parent-site chrome always matches and cannot drift.
  *
- * Links come from `@/lib/brand` (code constants), not the CMS: the parent-site
- * nav must match b2brain.com exactly and can't be allowed to drift with stale
- * Site-settings data. See the note in lib/brand.ts.
- *
- * A link with children renders a dropdown (Platform → New Pipeline Generation /
- * Event Attendees / Event Exhibitors), opening on hover AND keyboard focus.
- * Links hide below 991px, per the design.
+ * The dropdown sits under "Use Cases" (verified against the live site) and its
+ * items carry a coloured icon square, matching b2brain.com. Opens on hover AND
+ * keyboard focus. Links hide below 991px, per the design.
  */
 export function Nav() {
   return (
     <header className="nav">
       <div className="nav__inner">
         <a href={BRAND.logoHref} className="nav__logo" aria-label={BRAND.logoText}>
-          {/* Fixed brand asset from /public — no CDN round-trip, can't be cleared.
-              eslint-disable-next-line @next/next/no-img-element */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={BRAND.logoSrc} alt={BRAND.logoText} width={602} height={103} />
         </a>
@@ -39,19 +34,16 @@ export function Nav() {
               )
             }
             return (
-              <div className="nav__item" key={`${l.href}-${i}`}>
-                <a
-                  href={l.href}
-                  style={l.isCurrent ? { color: 'var(--black)' } : undefined}
-                  aria-current={l.isCurrent ? 'page' : undefined}
-                >
+              <div className="nav__item" key={`${l.label}-${i}`}>
+                <button type="button" className="nav__trigger">
                   {l.label}
                   <span className="nav__caret" aria-hidden="true" />
-                </a>
-                <div className="nav__menu">
+                </button>
+                <div className="nav__menu nav__menu--rich">
                   {children.map((c, j) => (
-                    <a key={`${c.href}-${j}`} href={c.href}>
-                      {c.label}
+                    <a key={`${c.href}-${j}`} href={c.href} className="nav__menu-item">
+                      <UseCaseIcon icon={c.icon} />
+                      <span>{c.label}</span>
                     </a>
                   ))}
                 </div>

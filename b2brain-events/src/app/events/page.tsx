@@ -29,7 +29,7 @@ export const revalidate = 3600
 type IndexData = { page: EventsIndexPage | null; events: IndexEventCard[] }
 
 const FALLBACK: EventsIndexPage = {
-  heroEyebrow: 'THE 2026 EVENT CALENDAR',
+  heroEyebrow: 'THE B2B EVENTS CALENDAR',
   heroHeading: 'From offline conversations to attributable pipeline.',
   heroIntro:
     'Browse the events, conferences, and industry shows revenue teams are planning pipeline around in 2026.',
@@ -46,7 +46,7 @@ const FALLBACK: EventsIndexPage = {
   cardCtaLabel: 'Open Event Playbook',
   allCardCtaLabel: 'See The Event Playbook',
   industryFilterLabel: 'Filter By Industry',
-  searchPlaceholder: 'Search events…',
+  searchPlaceholder: 'Search by name & industry',
   faqHeading: 'Frequently asked questions',
   // Kept in code as well as the schema so /events is complete before anyone
   // creates the Events-page document in the Studio. Editing it there overrides.
@@ -138,7 +138,7 @@ export default async function EventsIndex() {
         {/* ---------------------------------------------------------- HERO */}
         <section className="ehero">
           <div className="container">
-            <span className="eyebrow eyebrow--asterisk">{v(page, 'heroEyebrow')}</span>
+            <span className="eyebrow eyebrow--dash">{v(page, 'heroEyebrow')}</span>
             <h1 className="ehero__h1">{v(page, 'heroHeading')}</h1>
             {has(v(page, 'heroIntro')) && <p className="ehero__intro">{v(page, 'heroIntro')}</p>}
             <div className="ehero__ctas">
@@ -174,6 +174,7 @@ export default async function EventsIndex() {
             <SectionHead
               eyebrow={v(page, 'featuredEyebrow')}
               title={v(page, 'featuredHeading')}
+              variant="dash"
             />
             <div className="ecards">
               {featured.map((e) => (
@@ -190,7 +191,7 @@ export default async function EventsIndex() {
 
         {/* --------------------------------------------------- ALL EVENTS */}
         <Section id="all">
-          <SectionHead eyebrow={v(page, 'allEyebrow')} title={v(page, 'allHeading')} />
+          <SectionHead eyebrow={v(page, 'allEyebrow')} title={v(page, 'allHeading')} variant="dash" />
           {events.length > 0 ? (
             <EventsBrowser
               events={events}
@@ -208,7 +209,7 @@ export default async function EventsIndex() {
           <Section id="faq">
             <div className="faq__grid">
               <div>
-                <SectionHead eyebrow="FAQ" title={v(page, 'faqHeading')} />
+                <SectionHead eyebrow="FAQ" title={v(page, 'faqHeading')} variant="dash" />
               </div>
               <FaqList items={faqs} />
             </div>

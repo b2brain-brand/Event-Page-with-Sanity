@@ -41,6 +41,8 @@ ul{margin:0;padding:0;list-style:none}
 .container--lg{max-width:var(--container-lg)}
 .eyebrow{font-family:var(--font-body);font-size:14px;font-weight:600;line-height:20px;letter-spacing:.56px;text-transform:uppercase;color:var(--black);display:inline-block}
 .eyebrow--asterisk::before{content:'*';margin-right:3px}
+.eyebrow--dash{color:var(--orange);font-weight:600}
+.eyebrow--dash::before{content:'-';margin-right:6px}
 .muted{color:var(--black-70)}
 .mono-num{font-family:var(--font-heading);font-weight:500}
 
@@ -460,15 +462,60 @@ ul{margin:0;padding:0;list-style:none}
 .ecard__row b{color:var(--black);margin-right:2px}
 .ecard__btn{margin-top:24px;align-self:flex-start}
 
-/* --- browse controls (industry filter + search) --- */
-.ebrowse__controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:32px}
-.ebrowse__search{flex:1 1 260px}
-.ebrowse__search input{width:100%;border:1px solid var(--black);border-radius:0;padding:12px 14px;font-family:var(--font-body);font-size:15px;background:var(--white)}
-.ebrowse__search input:focus{outline:2px solid var(--purple);outline-offset:-2px}
-.ebrowse__filter select{border:1px solid var(--black);border-radius:0;padding:12px 38px 12px 14px;font-family:var(--font-body);font-size:15px;background:var(--white);cursor:pointer;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--black) 50%),linear-gradient(135deg,var(--black) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
-.ebrowse__filter select:focus{outline:2px solid var(--purple);outline-offset:-2px}
-.ebrowse__clear{border:1px solid var(--black);background:var(--white);border-radius:0;padding:12px 18px;font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;transition:background .18s ease,color .18s ease}
-.ebrowse__clear:hover{background:var(--black);color:var(--white)}
-.ebrowse__count{margin-left:auto;font-size:13px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--black-70)}
+/* --- browse controls (see .filter below) --- */
 .ebrowse__empty{border:1px solid var(--black);padding:44px 30px;text-align:center;font-size:16px;color:var(--black-70)}
 @media(max-width:640px){.ebrowse__count{margin-left:0;width:100%}}
+
+
+/* ============================================================ NAV — USE CASES DROPDOWN ICONS */
+.nav__trigger{display:inline-flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font:inherit;font-size:14px;font-weight:500;color:var(--black-70);padding:0}
+.nav__item:hover .nav__trigger,.nav__item:focus-within .nav__trigger{color:var(--black)}
+.nav__menu--rich{min-width:290px;padding:8px}
+.nav__menu-item{display:flex;align-items:center;gap:12px;padding:12px 12px;font-size:15px;font-weight:500;color:var(--black)}
+.nav__menu-item:hover{background:var(--whitesmoke)}
+.uc-icon{flex:0 0 auto;width:38px;height:38px;border:1px solid var(--black);display:flex;align-items:center;justify-content:center;color:var(--black)}
+
+/* ============================================================ FOOTER (b2brain layout) */
+.footer__top{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr 1.6fr;gap:40px;align-items:start}
+.footer__social a{border-radius:50%}                 /* circular social marks, per b2brain */
+.footer__promo h5{display:flex;align-items:center;gap:4px}
+.footer__star{color:var(--orange)}
+.footer__ai{margin-top:28px}
+.footer__ai-head{font-size:13px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--black-70)}
+.footer__ai-head b{color:var(--orange)}
+.footer__ai-icons{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px}
+.footer__ai-icons a{color:var(--black);transition:color .2s ease}
+.footer__ai-icons a:hover{color:var(--orange)}
+.footer__legal a:hover{color:var(--black)}
+@media(max-width:991px){.footer__top{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.footer__top{grid-template-columns:1fr}}
+
+/* --- newsletter form --- */
+.nl{display:flex;align-items:center;border:1px solid var(--black);margin-top:12px;max-width:320px}
+.nl__icon{display:flex;align-items:center;justify-content:center;padding:0 10px;color:var(--black-50)}
+.nl input{flex:1;border:none;padding:12px 8px;font-family:var(--font-body);font-size:14px;background:none}
+.nl input:focus{outline:none}
+.nl button{width:44px;align-self:stretch;background:var(--black);color:var(--white);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s ease}
+.nl button:hover{background:var(--purple)}
+.nl__done{margin-top:12px;font-size:14px;font-weight:500;border:1px solid var(--black);padding:12px 14px;max-width:320px}
+
+/* ============================================================ EVENTS FILTER (b2brain) */
+.filter{border-top:1px solid var(--black);border-bottom:1px solid var(--black);padding:28px 0;display:grid;grid-template-columns:1fr auto;grid-template-areas:'industries search' 'industries meta';gap:16px 40px;align-items:start;margin-bottom:36px}
+.filter__industries{grid-area:industries}
+.filter__search{grid-area:search;min-width:260px}
+.filter__meta{grid-area:meta;display:flex;align-items:center;gap:18px;justify-self:end}
+.filter__label{font-size:15px;font-weight:600;margin-bottom:14px}
+.filter__radios{display:flex;flex-wrap:wrap;gap:10px 22px}
+.filter__radio{display:inline-flex;align-items:center;gap:8px;font-size:15px;cursor:pointer;color:var(--black-70)}
+.filter__radio input{appearance:none;width:16px;height:16px;border:1px solid var(--black);border-radius:50%;margin:0;cursor:pointer;position:relative;flex:0 0 auto}
+.filter__radio input:checked{border-color:var(--orange)}
+.filter__radio input:checked::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--orange)}
+.filter__radio input:checked + span{color:var(--black);font-weight:500}
+.filter__radio input:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.filter__search input{width:100%;border:1px solid var(--black);border-radius:0;padding:11px 13px;font-family:var(--font-body);font-size:15px;background:var(--white)}
+.filter__search input:focus{outline:2px solid var(--purple);outline-offset:-2px}
+.filter__count{font-size:14px;color:var(--black-70)}
+.filter__count b{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:24px;padding:0 6px;margin:0 2px;background:var(--black);color:var(--white);font-family:var(--font-heading);font-weight:500}
+.filter__clear{background:none;border:none;text-decoration:underline;cursor:pointer;font:inherit;font-size:14px;color:var(--black-70);padding:0}
+.filter__clear:hover{color:var(--black)}
+@media(max-width:760px){.filter{grid-template-columns:1fr;grid-template-areas:'industries' 'search' 'meta';gap:22px}.filter__meta{justify-self:start}}

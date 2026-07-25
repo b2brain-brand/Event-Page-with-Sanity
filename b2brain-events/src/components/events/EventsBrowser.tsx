@@ -6,15 +6,16 @@ import { has } from '@/lib/format'
 import type { IndexEventCard } from '@/lib/types'
 
 /**
- * The "Browse the 2026 event calendar" grid — the interactive half of /events.
+ * "Browse the 2026 event calendar" — the interactive grid, matching
+ * b2brain.com/events exactly (verified against the live DOM):
  *
- * Two controls, exactly like b2brain.com/events: an industry dropdown built from
- * the categories actually present, and a free-text search over name, city and
- * industry. Both are client-side over the already-loaded list, so filtering is
- * instant and needs no round-trip. A "Clear all" appears once anything is set.
+ *   - "Filter By Industry": a row of RADIO buttons, one per industry present in
+ *     the events, plus "All" to reset — single-select, like the main site.
+ *   - "Search": a "Search by name & industry" text box.
+ *   - a "Showing N Out of N" counter and a "Clear All" reset.
  *
- * The empty state matters: filter down to nothing and you get a message, not a
- * blank grid.
+ * Both controls are client-side over the loaded list, so filtering is instant.
+ * Empty result set shows a message, never a blank grid.
  */
 export function EventsBrowser({
   events,
@@ -48,12 +49,7 @@ export function EventsBrowser({
         if (!inIndustry) return false
       }
       if (q) {
-        const hay = [
-          e.name,
-          e.city,
-          e.venueName,
-          ...(e.categories || []).map((c) => c.title),
-        ]
+        const hay = [e.name, e.city, e.venueName, ...(e.categories || []).map((c) => c.title)]
           .filter(Boolean)
           .join(' ')
           .toLowerCase()
@@ -64,11 +60,44 @@ export function EventsBrowser({
   }, [events, industry, query])
 
   const dirty = Boolean(industry || query)
+  const clear = () => {
+    setIndustry('')
+    setQuery('')
+  }
 
   return (
     <div>
-      <div className="ebrowse__controls">
-        <div className="ebrowse__search">
+      <div className="filter">
+        {/* Industry radios */}
+        <div className="filter__industries">
+          <div className="filter__label">{industryLabel}</div>
+          <div className="filter__radios">
+            <label className="filter__radio">
+              <input
+                type="radio"
+                name="industry"
+                checked={industry === ''}
+                onChange={() => setIndustry('')}
+              />
+              <span>All</span>
+            </label>
+            {industries.map(([slug, title]) => (
+              <label className="filter__radio" key={slug}>
+                <input
+                  type="radio"
+                  name="industry"
+                  checked={industry === slug}
+                  onChange={() => setIndustry(slug)}
+                />
+                <span>{title}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Search + counter */}
+        <div className="filter__search">
+          <div className="filter__label">Search</div>
           <input
             type="search"
             value={query}
@@ -78,41 +107,16 @@ export function EventsBrowser({
           />
         </div>
 
-        <div className="ebrowse__filter">
-          <label htmlFor="industry" className="sr-only">
-            {industryLabel}
-          </label>
-          <select
-            id="industry"
-            value={industry}
-            onChange={(e) => setIndustry(e.target.value)}
-            aria-label={industryLabel}
-          >
-            <option value="">{industryLabel}</option>
-            {industries.map(([slug, title]) => (
-              <option key={slug} value={slug}>
-                {title}
-              </option>
-            ))}
-          </select>
+        <div className="filter__meta">
+          <span className="filter__count">
+            Showing <b>{filtered.length}</b> Out of <b>{events.length}</b>
+          </span>
+          {dirty && (
+            <button type="button" className="filter__clear" onClick={clear}>
+              Clear All
+            </button>
+          )}
         </div>
-
-        {dirty && (
-          <button
-            type="button"
-            className="ebrowse__clear"
-            onClick={() => {
-              setIndustry('')
-              setQuery('')
-            }}
-          >
-            Clear all
-          </button>
-        )}
-
-        <span className="ebrowse__count">
-          {filtered.length} {filtered.length === 1 ? 'event' : 'events'}
-        </span>
       </div>
 
       {filtered.length > 0 ? (

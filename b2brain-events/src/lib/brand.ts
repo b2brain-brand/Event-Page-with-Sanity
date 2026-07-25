@@ -3,23 +3,11 @@
  * BRAND CHROME — the parent-site nav and footer, as code constants.
  * =============================================================================
  *
- * These are the real b2brain.com links. They live in code, NOT in Sanity, on
- * purpose:
- *
- *   The nav and footer of an event page must match b2brain.com exactly. When
- *   they were CMS-driven, the seeded Site settings document held placeholder
- *   paths (/platform, /login, /blog) and — because a stored Sanity value always
- *   beats a code fallback — those placeholders kept rendering no matter what the
- *   defaults said. The links silently drifted from the real site.
- *
- *   Making them code-owned removes that whole class of bug: a deploy guarantees
- *   the links are correct, nothing can override them, and there is no token to
- *   run or document to keep in sync. Editing the parent-brand nav is a code
- *   change — which is right, because it has to track the real site, not an
- *   event editor's whim.
- *
- * The event CONTENT stays in Sanity. Only this structural chrome is fixed.
- * When b2brain.com changes its nav, update this file.
+ * The real b2brain.com nav and footer, verified against the live site's DOM.
+ * Code-owned (not CMS) so an event page's chrome always matches b2brain.com and
+ * can never drift with stale Site-settings data. Editing the parent nav is a
+ * code change — correct, because it must track the real site. When b2brain.com
+ * changes its nav, update this file.
  */
 
 const SITE = 'https://www.b2brain.com'
@@ -29,15 +17,19 @@ export const BRAND = {
   logoSrc: '/b2brain-logo.webp',
   logoHref: `${SITE}/`,
 
-  /** Nav. A link with `children` renders a dropdown. */
+  /**
+   * Nav. The dropdown is under "Use Cases" (verified on the live site), and its
+   * items carry a coloured icon, matching b2brain.com.
+   */
   nav: [
+    { label: 'Platform', href: `${SITE}/platform` },
     {
-      label: 'Platform',
+      label: 'Use Cases',
       href: `${SITE}/platform`,
       children: [
-        { label: 'New Pipeline Generation', href: `${SITE}/new-pipeline-generation` },
-        { label: 'Event Attendees', href: `${SITE}/event-attendees` },
-        { label: 'Event Exhibitors', href: `${SITE}/event-exhibitors` },
+        { label: 'New Pipeline Generation', href: `${SITE}/new-pipeline-generation`, icon: 'pipeline' },
+        { label: 'Event Attendees', href: `${SITE}/event-attendees`, icon: 'attendees' },
+        { label: 'Event Exhibitors', href: `${SITE}/event-exhibitors`, icon: 'exhibitors' },
       ],
     },
     { label: 'Pricing', href: `${SITE}/pricing` },
@@ -48,41 +40,58 @@ export const BRAND = {
   login: { label: 'Start Free Trial', href: 'https://apps.apple.com/us/app/b2brain-event-lead-capture/id6757783820' },
   cta: { label: 'Book a Demo', href: `${SITE}/demo` },
 
-  /** Breadcrumb roots on the event landing pages. */
   breadcrumb: {
     home: { label: 'Home', href: `${SITE}/` },
     events: { label: 'Events', href: `${SITE}/events` },
   },
 
   footerBlurb:
-    'The Event Meeting Platform. Turn trade-show conversations into booked meetings and measurable pipeline.',
+    'The Event Intelligence Platform. Turn trade show conversations into booked meetings and measurable pipeline. From Offline to Pipeline.',
 
+  /** Footer columns — OVERVIEW / USE CASES / COMPANY, matching b2brain.com. */
   footerColumns: [
     {
-      heading: 'Platform',
+      heading: 'Overview',
       links: [
         { label: 'Platform', href: `${SITE}/platform` },
+        { label: 'Events', href: `${SITE}/events` },
+        { label: 'Blogs', href: `${SITE}/blogs` },
+      ],
+    },
+    {
+      heading: 'Use Cases',
+      links: [
         { label: 'New Pipeline Generation', href: `${SITE}/new-pipeline-generation` },
         { label: 'Event Attendees', href: `${SITE}/event-attendees` },
         { label: 'Event Exhibitors', href: `${SITE}/event-exhibitors` },
       ],
     },
     {
-      heading: 'Resources',
-      links: [
-        { label: 'Events', href: `${SITE}/events` },
-        { label: 'Blogs', href: `${SITE}/blogs` },
-        { label: 'Pricing', href: `${SITE}/pricing` },
-      ],
-    },
-    {
       heading: 'Company',
       links: [
-        { label: 'About us', href: `${SITE}/about` },
         { label: 'Book a Demo', href: `${SITE}/demo` },
-        { label: 'Contact', href: 'mailto:support@b2brain.com' },
+        { label: 'Pricing', href: `${SITE}/pricing` },
+        { label: 'About us', href: `${SITE}/about` },
       ],
     },
+  ],
+
+  newsletter: {
+    heading: 'Subscribe Newsletter',
+    placeholder: 'Enter your e-mail',
+    // The live site posts to its own list. Point this at a real endpoint when you
+    // have one; until then the form validates and shows a thank-you state only.
+    action: '',
+  },
+
+  /** "Learn about B2Brain with AI" — links to answer engines that cite the site. */
+  aiHeading: 'Learn about B2Brain with AI',
+  aiLinks: [
+    { label: 'ChatGPT', url: 'https://chatgpt.com/?q=What%20is%20B2Brain', glyph: 'openai' },
+    { label: 'Claude', url: 'https://claude.ai/new?q=What%20is%20B2Brain', glyph: 'claude' },
+    { label: 'Perplexity', url: 'https://www.perplexity.ai/search?q=What%20is%20B2Brain', glyph: 'perplexity' },
+    { label: 'Gemini', url: 'https://gemini.google.com/app', glyph: 'gemini' },
+    { label: 'Grok', url: 'https://grok.com', glyph: 'grok' },
   ],
 
   social: [
@@ -107,5 +116,5 @@ export type NavLink = {
   label: string
   href: string
   isCurrent?: boolean
-  children?: { label: string; href: string }[]
+  children?: { label: string; href: string; icon?: string }[]
 }
