@@ -22,6 +22,35 @@ export type EventCard = {
   categories?: { _id: string; title: string; slug: string }[]
 }
 
+/** The event card shown on the /events collection page. */
+export type IndexEventCard = EventCard & {
+  description?: string
+  isFeatured?: boolean
+  attendees?: string
+  exhibitors?: string
+}
+
+export type EventsIndexPage = {
+  heroEyebrow?: string
+  heroHeading?: string
+  heroIntro?: string
+  stats?: { num?: string; label?: string }[]
+  featuredEyebrow?: string
+  featuredHeading?: string
+  featured?: IndexEventCard[]
+  allEyebrow?: string
+  allHeading?: string
+  cardCtaLabel?: string
+  industryFilterLabel?: string
+  searchPlaceholder?: string
+  faqHeading?: string
+  faq?: { q?: string; a?: string }[]
+  ctaEyebrow?: string
+  ctaHeading?: string
+  metaTitle?: string
+  metaDescription?: string
+}
+
 /** Everything except the URL is optional; the thumbnail is derived, never stored. */
 export type HeroVideo = {
   youtubeUrl?: string

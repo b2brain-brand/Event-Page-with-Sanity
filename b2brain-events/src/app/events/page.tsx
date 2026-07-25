@@ -1,116 +1,220 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 
 import { fetchSanity } from '@/sanity/lib/fetch'
-import { EVENTS_INDEX_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/lib/queries'
+import { EVENTS_INDEX_QUERY } from '@/sanity/lib/queries'
 import { siteUrl } from '@/sanity/env'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { Section, SectionHead } from '@/components/SectionHead'
-import { gridFor } from '@/components/sections/Similar'
-import { fmtRange, has } from '@/lib/format'
-import { L } from '@/lib/defaults'
-import type { EventCard, SiteSettings } from '@/lib/types'
+import { EventCard } from '@/components/events/EventCard'
+import { EventsBrowser } from '@/components/events/EventsBrowser'
+import { FaqList } from '@/components/sections/Faq'
+import { has } from '@/lib/format'
+import { BRAND } from '@/lib/brand'
+import type { EventsIndexPage, IndexEventCard } from '@/lib/types'
 
 /**
- * /events — the hub the individual event pages hang off.
+ * =============================================================================
+ * /events — the collection page, modelled on b2brain.com/events.
+ * =============================================================================
  *
- * Kept deliberately plain: it reuses the same card component the "Similar
- * events" section uses, so there is nothing new to design or maintain. Its job
- * is crawl paths — every event page must be reachable in one click from here.
+ * Distinct from the per-event landing pages, which this build does not change.
+ * The page's own copy lives in the `eventsIndexPage` singleton; the cards are
+ * the Event documents. Everything degrades to the b2brain.com defaults baked
+ * into the schema, so it renders correctly before anyone opens the Studio.
  */
 
 export const revalidate = 3600
 
-type IndexEvent = EventCard & { tldr?: string; isFeatured?: boolean; attendees?: string }
+type IndexData = { page: EventsIndexPage | null; events: IndexEventCard[] }
 
-export const metadata: Metadata = {
-  title: 'Trade shows & conferences for B2B revenue teams — B2Brain',
-  description:
-    'Dates, venue, who attends, exhibitor costs and the booth math for every major B2B trade show and conference.',
-  alternates: { canonical: `${siteUrl}/events` },
+const FALLBACK: EventsIndexPage = {
+  heroEyebrow: 'THE 2026 EVENT CALENDAR',
+  heroHeading: 'From offline conversations to attributable pipeline.',
+  heroIntro:
+    'Browse the events, conferences, and industry shows revenue teams are planning pipeline around in 2026.',
+  stats: [
+    { num: '180+', label: 'Tracked shows' },
+    { num: '3', label: 'Event motions' },
+    { num: '2.8M', label: 'Leads captured' },
+    { num: '$2.1B', label: 'Pipeline influenced' },
+  ],
+  featuredEyebrow: 'FEATURED',
+  featuredHeading: 'The buying committees worth planning around.',
+  allEyebrow: 'ALL EVENTS',
+  allHeading: 'Browse the 2026 event calendar.',
+  cardCtaLabel: 'Open Event Playbook',
+  industryFilterLabel: 'Filter by industry',
+  searchPlaceholder: 'Search events…',
+  faqHeading: 'Frequently asked questions',
+  ctaEyebrow: 'FROM OFFLINE TO PIPELINE',
+  ctaHeading: 'Every event conversation should end in attributable revenue.',
+}
+
+function v<K extends keyof EventsIndexPage>(
+  page: EventsIndexPage | null,
+  key: K,
+): NonNullable<EventsIndexPage[K]> {
+  const val = page?.[key]
+  if (val === undefined || val === null || (typeof val === 'string' && !val.trim())) {
+    return FALLBACK[key] as NonNullable<EventsIndexPage[K]>
+  }
+  return val as NonNullable<EventsIndexPage[K]>
+}
+
+async function getData() {
+  return fetchSanity<IndexData>({
+    query: EVENTS_INDEX_QUERY,
+    tags: ['event', 'eventsIndexPage'],
+  })
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { page } = await getData()
+  const title = v(page, 'metaTitle')
+  const description = v(page, 'metaDescription')
+  return {
+    title,
+    description,
+    alternates: { canonical: `${siteUrl}/events` },
+    openGraph: { type: 'website', title, description, url: `${siteUrl}/events` },
+  }
 }
 
 export default async function EventsIndex() {
-  const [events, settings] = await Promise.all([
-    fetchSanity<IndexEvent[]>({ query: EVENTS_INDEX_QUERY, tags: ['event'] }),
-    fetchSanity<SiteSettings | null>({ query: SITE_SETTINGS_QUERY, tags: ['siteSettings'] }),
-  ])
-
+  const { page, events } = await getData()
   const today = new Date().toISOString().slice(0, 10)
+
+  // Featured: hand-picked in the CMS, else the next few upcoming shows.
   const upcoming = (events || []).filter((e) => (e.startDate || '') >= today)
-  const past = (events || []).filter((e) => (e.startDate || '') < today).reverse()
+  const featured = (page?.featured?.length ?? 0) > 0 ? page!.featured! : upcoming.slice(0, 3)
+
+  const faqs = (page?.faq || []).filter((f) => has(f?.q) && has(f?.a))
 
   return (
     <>
-      <Nav settings={settings} />
+      {faqs.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: faqs.map((f) => ({
+                '@type': 'Question',
+                name: f.q,
+                acceptedAnswer: { '@type': 'Answer', text: f.a },
+              })),
+            }).replace(/</g, '\\u003c'),
+          }}
+        />
+      )}
+
+      <Nav />
       <main>
-        <section className="hero">
-          <div className="container hero__pad">
-            <div className="hero__crumb">
-              <Link href="/">Home</Link> / Events
+        {/* ---------------------------------------------------------- HERO */}
+        <section className="ehero">
+          <div className="container">
+            <span className="eyebrow eyebrow--asterisk">{v(page, 'heroEyebrow')}</span>
+            <h1 className="ehero__h1">{v(page, 'heroHeading')}</h1>
+            {has(v(page, 'heroIntro')) && <p className="ehero__intro">{v(page, 'heroIntro')}</p>}
+            <div className="ehero__ctas">
+              <a href={BRAND.cta.href} className="btn btn--primary">
+                {BRAND.cta.label}
+              </a>
+              <a
+                href={BRAND.login.href}
+                className="btn btn--ghost"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {BRAND.login.label}
+              </a>
             </div>
-            <div className="hero__eyebrow">
-              <span className="chip">Event guides</span>
-            </div>
-            <h1>Every show your team is weighing, with the booth math.</h1>
-            <p className="hero__sub">
-              Dates, venue, who is actually on the floor, what a booth costs, and what the pipeline
-              has to look like to justify it. One page per show.
-            </p>
+
+            {(v(page, 'stats') as { num?: string; label?: string }[]).length > 0 && (
+              <div className="estat">
+                {(v(page, 'stats') as { num?: string; label?: string }[]).map((s, i) => (
+                  <div className="estat__cell" key={i}>
+                    <div className="estat__num">{s.num}</div>
+                    <div className="estat__label">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
-        {upcoming.length > 0 && (
-          <Section id="upcoming">
-            <SectionHead eyebrow="UPCOMING" title="Shows still ahead" />
-            <div className="similar" style={gridFor(upcoming.length)}>
-              {upcoming.map((e) => (
-                <EventCardLink key={e._id} event={e} settings={settings} />
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {past.length > 0 && (
-          <Section id="past">
-            <SectionHead eyebrow="PAST EDITIONS" title="Recaps and next-year prep" />
-            <div className="similar" style={gridFor(past.length)}>
-              {past.map((e) => (
-                <EventCardLink key={e._id} event={e} settings={settings} />
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {!upcoming.length && !past.length && (
-          <Section id="empty">
+        {/* ------------------------------------------------------ FEATURED */}
+        {featured.length > 0 && (
+          <Section id="featured">
             <SectionHead
-              eyebrow="EVENTS"
-              title="No event pages published yet"
-              sub="Create your first Event document in the Studio at /studio and it will appear here."
+              eyebrow={v(page, 'featuredEyebrow')}
+              title={v(page, 'featuredHeading')}
             />
+            <div className="ecards">
+              {featured.map((e) => (
+                <EventCard key={e._id} event={e} ctaLabel={v(page, 'cardCtaLabel')} />
+              ))}
+            </div>
           </Section>
         )}
-      </main>
-      <Footer settings={settings} />
-    </>
-  )
-}
 
-function EventCardLink({
-  event,
-  settings,
-}: {
-  event: IndexEvent
-  settings: SiteSettings | null
-}) {
-  return (
-    <Link className="scard" href={`/events/${event.slug}`}>
-      <div className="scard__date">{fmtRange(event.startDate, event.endDate)}</div>
-      <div className="scard__name">{event.name}</div>
-      {has(event.city) && <div className="scard__loc">{event.city}</div>}
-      <div className="scard__link link-arrow">{L(settings, 'similarLinkLabel')}</div>
-    </Link>
+        {/* --------------------------------------------------- ALL EVENTS */}
+        <Section id="all">
+          <SectionHead eyebrow={v(page, 'allEyebrow')} title={v(page, 'allHeading')} />
+          {events.length > 0 ? (
+            <EventsBrowser
+              events={events}
+              industryLabel={v(page, 'industryFilterLabel')}
+              searchPlaceholder={v(page, 'searchPlaceholder')}
+              cardCtaLabel={v(page, 'cardCtaLabel')}
+            />
+          ) : (
+            <p className="muted">No event pages published yet.</p>
+          )}
+        </Section>
+
+        {/* --------------------------------------------------------- FAQ */}
+        {faqs.length > 0 && (
+          <Section id="faq">
+            <div className="faq__grid">
+              <div>
+                <SectionHead eyebrow="FAQ" title={v(page, 'faqHeading')} />
+              </div>
+              <FaqList items={faqs} />
+            </div>
+          </Section>
+        )}
+
+        {/* --------------------------------------------------------- CTA */}
+        <section id="cta" className="cta">
+          <div className="container">
+            <div className="cta__inner">
+              <span className="cta__px cta__px--tl" aria-hidden="true" />
+              <span className="cta__px cta__px--br" aria-hidden="true" />
+              <div>
+                <span className="eyebrow eyebrow--asterisk cta__weeks">{v(page, 'ctaEyebrow')}</span>
+                <h2>{v(page, 'ctaHeading')}</h2>
+                <div className="cta__ctas">
+                  <a href={BRAND.cta.href} className="btn btn--primary">
+                    {BRAND.cta.label}
+                  </a>
+                  <a
+                    href={BRAND.login.href}
+                    className="btn btn--ghost"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {BRAND.login.label}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
   )
 }

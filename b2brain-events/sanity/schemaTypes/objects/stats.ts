@@ -41,3 +41,33 @@ export const statCell = defineType({
     prepare: ({ title, subtitle }) => ({ title: `${title} — ${subtitle}` }),
   },
 })
+
+/**
+ * A stat cell on the /events collection page (Tracked shows 180+, etc.).
+ * Simpler than statCell — no qualifier line.
+ */
+export const indexStat = defineType({
+  name: 'indexStat',
+  title: 'Stat',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'num',
+      title: 'Number',
+      type: 'string',
+      description: 'e.g. "180+", "2.8M", "$2.1B".',
+      validation: (r) => r.required().max(12),
+    }),
+    defineField({
+      name: 'label',
+      title: 'Label',
+      type: 'string',
+      description: 'e.g. "Tracked shows".',
+      validation: (r) => r.required().max(28),
+    }),
+  ],
+  preview: {
+    select: { title: 'num', subtitle: 'label' },
+    prepare: ({ title, subtitle }) => ({ title: `${title} — ${subtitle}` }),
+  },
+})

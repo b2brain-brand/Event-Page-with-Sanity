@@ -170,14 +170,30 @@ export const EVENT_SLUGS_QUERY = defineQuery(`
   *[_type == "event" && defined(slug.current)]{ "slug": slug.current }
 `)
 
-/** The /events index. Upcoming first, then past. */
+/** Richer card fields for the /events collection page — matches b2brain.com. */
+const INDEX_CARD_FIELDS = /* groq */ `
+  ${EVENT_CARD_FIELDS},
+  "description": coalesce(tldr, tagline),
+  isFeatured,
+  "attendees": stats[label match "Attendee*"][0].num,
+  "exhibitors": stats[label match "Exhibitor*"][0].num
+`
+
+/** The /events collection page: its own copy + every event as a card. */
 export const EVENTS_INDEX_QUERY = defineQuery(`
-  *[_type == "event" && defined(slug.current) && seo.noIndex != true]
-  | order(startDate asc){
-    ${EVENT_CARD_FIELDS},
-    tldr,
-    isFeatured,
-    "attendees": stats[label match "Attendee*"][0].num
+  {
+    "page": *[_type == "eventsIndexPage"][0]{
+      heroEyebrow, heroHeading, heroIntro,
+      stats[]{ num, label },
+      featuredEyebrow, featuredHeading,
+      "featured": featuredEvents[]->{ ${INDEX_CARD_FIELDS} },
+      allEyebrow, allHeading, cardCtaLabel, industryFilterLabel, searchPlaceholder,
+      faqHeading, faq[]{ q, a },
+      ctaEyebrow, ctaHeading,
+      metaTitle, metaDescription
+    },
+    "events": *[_type == "event" && defined(slug.current) && seo.noIndex != true]
+      | order(startDate asc){ ${INDEX_CARD_FIELDS} }
   }
 `)
 

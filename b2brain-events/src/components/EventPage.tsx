@@ -89,7 +89,7 @@ export function EventPage({
 
   return (
     <>
-      <Nav settings={settings} />
+      <Nav />
       <Toc
         entries={tocEntries}
         label={S(settings, 'tocLabel') || 'On this page'}
@@ -100,7 +100,7 @@ export function EventPage({
           <Fragment key={m.id}>{m.node}</Fragment>
         ))}
       </main>
-      <Footer settings={settings} lastUpdated={event.lastUpdated} sources={event.sources} />
+      <Footer lastUpdated={event.lastUpdated} sources={event.sources} />
     </>
   )
 }

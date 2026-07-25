@@ -68,6 +68,16 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
 
       S.listItem()
+        .title('Events page (/events)')
+        .id('eventsIndexPage')
+        .child(
+          S.document()
+            .schemaType('eventsIndexPage')
+            .documentId('eventsIndexPage')
+            .title('Events page (/events)'),
+        ),
+
+      S.listItem()
         .title('Site settings')
         .id('siteSettings')
         .child(

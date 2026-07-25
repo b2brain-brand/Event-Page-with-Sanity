@@ -1,29 +1,23 @@
-import { L, S } from '@/lib/defaults'
+import { BRAND } from '@/lib/brand'
 import { has } from '@/lib/format'
 import { SocialIcon, socialLabel, type SocialPlatform } from './SocialIcons'
-import type { SiteSettings } from '@/lib/types'
 
 /**
- * Footer — mirrors b2brain.com so an event page closes the same way the rest of
- * the site does: brand, social squares, contact, the same link columns, legal.
+ * Footer — the real b2brain.com footer, so an event page closes the same way
+ * the rest of the site does. Links come from `@/lib/brand` (code constants),
+ * not the CMS — same reasoning as the nav.
  *
- * The "stamp" line under the blurb is specific to these pages: last-updated plus
- * the sources the numbers came from. Small, and the cheapest trust signal a
- * programmatic page set has.
+ * The "stamp" line is the one event-specific thing here: last-updated plus the
+ * sources the page's numbers came from. Small, and the cheapest trust signal a
+ * programmatic page set has. It is passed in, not read from brand chrome.
  */
 export function Footer({
-  settings,
   lastUpdated,
   sources,
 }: {
-  settings: SiteSettings | null
   lastUpdated?: string | null
   sources?: { label?: string }[] | null
 }) {
-  const columns = S(settings, 'footerColumns') ?? []
-  const socials = (S(settings, 'socialLinks') ?? []).filter((s) => s?.url && s?.platform)
-  const email = S(settings, 'contactEmail')
-  const legal = S(settings, 'legalLinks') ?? []
   const sourceLabels = (sources || []).map((s) => s?.label).filter(Boolean) as string[]
 
   return (
@@ -31,61 +25,43 @@ export function Footer({
       <div className="container">
         <div className="footer__grid">
           <div className="footer__brand">
-            <a
-              href={S(settings, 'logoHref') || '/'}
-              className="footer__logo"
-              aria-label={S(settings, 'logoText') || 'B2Brain'}
-            >
+            <a href={BRAND.logoHref} className="footer__logo" aria-label={BRAND.logoText}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/b2brain-logo.webp"
-                alt={S(settings, 'logoText') || 'B2Brain'}
-                width={602}
-                height={103}
-              />
+              <img src={BRAND.logoSrc} alt={BRAND.logoText} width={602} height={103} />
             </a>
-            <p>{S(settings, 'footerBlurb')}</p>
+            <p>{BRAND.footerBlurb}</p>
 
-            {socials.length > 0 && (
-              <div className="footer__social">
-                {socials.map((s, i) => (
-                  <a
-                    key={`${s.platform}-${i}`}
-                    href={s.url!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={socialLabel(s.platform as SocialPlatform)}
-                  >
-                    <SocialIcon platform={s.platform as SocialPlatform} />
-                  </a>
-                ))}
-              </div>
-            )}
+            <div className="footer__social">
+              {BRAND.social.map((s, i) => (
+                <a
+                  key={`${s.platform}-${i}`}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={socialLabel(s.platform as SocialPlatform)}
+                >
+                  <SocialIcon platform={s.platform as SocialPlatform} />
+                </a>
+              ))}
+            </div>
 
-            {has(email) && (
-              <div className="footer__contact">
-                <a href={`mailto:${email}`}>{email}</a>
-              </div>
-            )}
+            <div className="footer__contact">
+              <a href={`mailto:${BRAND.contactEmail}`}>{BRAND.contactEmail}</a>
+            </div>
 
             {has(lastUpdated) && (
               <div className="footer__stamp">
-                {L(settings, 'footerStampPrefix')} {lastUpdated}
-                {sourceLabels.length > 0 && (
-                  <>
-                    {' '}
-                    · {L(settings, 'footerSourcesPrefix')} {sourceLabels.join(', ')}
-                  </>
-                )}
+                Page last updated {lastUpdated}
+                {sourceLabels.length > 0 && <> · Sources: {sourceLabels.join(', ')}</>}
               </div>
             )}
           </div>
 
-          {columns.map((col, i) => (
+          {BRAND.footerColumns.map((col, i) => (
             <div className="footer__col" key={`${col.heading}-${i}`}>
               <h5>{col.heading}</h5>
-              {(col.links || []).map((l, j) => (
-                <a key={`${l.href}-${j}`} href={l.href || '#'}>
+              {col.links.map((l, j) => (
+                <a key={`${l.href}-${j}`} href={l.href}>
                   {l.label}
                 </a>
               ))}
@@ -94,16 +70,14 @@ export function Footer({
         </div>
 
         <div className="footer__bottom">
-          <span>{S(settings, 'footerCopyright')}</span>
+          <span>{BRAND.copyright}</span>
           <span className="footer__legal">
-            {legal.length > 0
-              ? legal.map((l, i) => (
-                  <span key={`${l.href}-${i}`}>
-                    {i > 0 && ' · '}
-                    <a href={l.href || '#'}>{l.label}</a>
-                  </span>
-                ))
-              : S(settings, 'footerLegal')}
+            {BRAND.legal.map((l, i) => (
+              <span key={`${l.href}-${i}`}>
+                {i > 0 && ' · '}
+                <a href={l.href}>{l.label}</a>
+              </span>
+            ))}
           </span>
         </div>
       </div>

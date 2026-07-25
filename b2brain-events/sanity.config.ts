@@ -24,14 +24,17 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
-    // Site settings is a singleton: hide it from the global "create new" menu.
-    templates: (prev) => prev.filter((t) => t.schemaType !== 'siteSettings'),
+    // Singletons: hide them from the global "create new" menu.
+    templates: (prev) =>
+      prev.filter((t) => !['siteSettings', 'eventsIndexPage'].includes(t.schemaType)),
   },
 
   document: {
     // Same guard on the "+" in the document lists.
     newDocumentOptions: (prev) =>
-      prev.filter((item) => item.templateId !== 'siteSettings'),
+      prev.filter(
+        (item) => !['siteSettings', 'eventsIndexPage'].includes(item.templateId),
+      ),
   },
 
   plugins: [

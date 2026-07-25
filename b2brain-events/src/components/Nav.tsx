@@ -1,45 +1,36 @@
-import Link from 'next/link'
-import { S } from '@/lib/defaults'
-import type { SiteSettings } from '@/lib/types'
+import { BRAND } from '@/lib/brand'
 
 /**
- * Sticky nav — the same structure as b2brain.com so an event page reads as part
- * of the site rather than a detached microsite.
+ * Sticky nav — the real b2brain.com nav, so an event page reads as part of the
+ * site, not a detached microsite.
  *
- * A nav link with children renders a dropdown (Platform → New Pipeline
- * Generation / Event Attendees / Event Exhibitors). Opens on hover and on
- * keyboard focus, so it is not mouse-only.
+ * Links come from `@/lib/brand` (code constants), not the CMS: the parent-site
+ * nav must match b2brain.com exactly and can't be allowed to drift with stale
+ * Site-settings data. See the note in lib/brand.ts.
  *
- * Links are hidden below 991px, per the original design.
+ * A link with children renders a dropdown (Platform → New Pipeline Generation /
+ * Event Attendees / Event Exhibitors), opening on hover AND keyboard focus.
+ * Links hide below 991px, per the design.
  */
-export function Nav({ settings }: { settings: SiteSettings | null }) {
-  const links = S(settings, 'navLinks') ?? []
-  const logoHref = S(settings, 'logoHref') || '/'
-
+export function Nav() {
   return (
     <header className="nav">
       <div className="nav__inner">
-        <a href={logoHref} className="nav__logo" aria-label={S(settings, 'logoText') || 'B2Brain'}>
-          {/* Fixed brand asset — served from /public, not the CMS, so it cannot
-              be accidentally cleared and costs no CDN round-trip.
+        <a href={BRAND.logoHref} className="nav__logo" aria-label={BRAND.logoText}>
+          {/* Fixed brand asset from /public — no CDN round-trip, can't be cleared.
               eslint-disable-next-line @next/next/no-img-element */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/b2brain-logo.webp"
-            alt={S(settings, 'logoText') || 'B2Brain'}
-            width={602}
-            height={103}
-          />
+          <img src={BRAND.logoSrc} alt={BRAND.logoText} width={602} height={103} />
         </a>
 
         <nav className="nav__links">
-          {links.map((l, i) => {
-            const children = l.children?.filter((c) => c?.label && c?.href) ?? []
+          {BRAND.nav.map((l, i) => {
+            const children = l.children ?? []
             if (!children.length) {
               return (
                 <a
                   key={`${l.href}-${i}`}
-                  href={l.href || '#'}
+                  href={l.href}
                   style={l.isCurrent ? { color: 'var(--black)' } : undefined}
                   aria-current={l.isCurrent ? 'page' : undefined}
                 >
@@ -50,7 +41,7 @@ export function Nav({ settings }: { settings: SiteSettings | null }) {
             return (
               <div className="nav__item" key={`${l.href}-${i}`}>
                 <a
-                  href={l.href || '#'}
+                  href={l.href}
                   style={l.isCurrent ? { color: 'var(--black)' } : undefined}
                   aria-current={l.isCurrent ? 'page' : undefined}
                 >
@@ -59,7 +50,7 @@ export function Nav({ settings }: { settings: SiteSettings | null }) {
                 </a>
                 <div className="nav__menu">
                   {children.map((c, j) => (
-                    <a key={`${c.href}-${j}`} href={c.href!}>
+                    <a key={`${c.href}-${j}`} href={c.href}>
                       {c.label}
                     </a>
                   ))}
@@ -70,12 +61,17 @@ export function Nav({ settings }: { settings: SiteSettings | null }) {
         </nav>
 
         <div className="nav__cta">
-          <a href={S(settings, 'navLoginHref') || '#'} className="nav__login">
-            {S(settings, 'navLoginLabel')}
+          <a
+            href={BRAND.login.href}
+            className="nav__login"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {BRAND.login.label}
           </a>
-          <Link href={S(settings, 'navCtaHref') || '#cta'} className="btn btn--primary btn--sm">
-            {S(settings, 'navCtaLabel')}
-          </Link>
+          <a href={BRAND.cta.href} className="btn btn--primary btn--sm">
+            {BRAND.cta.label}
+          </a>
         </div>
       </div>
     </header>

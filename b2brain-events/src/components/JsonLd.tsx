@@ -1,5 +1,6 @@
 import { has } from '@/lib/format'
-import { B, S } from '@/lib/defaults'
+import { S } from '@/lib/defaults'
+import { BRAND } from '@/lib/brand'
 import type { EventDoc, SiteSettings } from '@/lib/types'
 
 /**
@@ -100,15 +101,10 @@ export function EventJsonLd({
       '@id': `${origin}/#organization`,
       name: orgName,
       url: origin,
-      // Entity signal: the real profiles this site belongs to. Prefer the
-      // footer's social links so there is one list to maintain, not two.
-      sameAs:
-        (S(settings, 'socialLinks') || [])
-          .map((s2) => s2?.url)
-          .filter(Boolean).length > 0
-          ? (S(settings, 'socialLinks') || []).map((s2) => s2?.url).filter(Boolean)
-          : S(settings, 'organizationSameAs') || undefined,
-      logo: `${origin}/b2brain-logo.webp`,
+      // Entity signal: the real profiles this site belongs to — the same list
+      // the footer renders, from the code-owned brand chrome.
+      sameAs: BRAND.social.map((s2) => s2.url),
+      logo: `${origin}${BRAND.logoSrc}`,
     },
     {
       '@type': 'WebPage',
@@ -131,14 +127,14 @@ export function EventJsonLd({
         {
           '@type': 'ListItem',
           position: 1,
-          name: B(settings, 'homeLabel'),
-          item: absolute(B(settings, 'homeHref'), origin),
+          name: BRAND.breadcrumb.home.label,
+          item: absolute(BRAND.breadcrumb.home.href, origin),
         },
         {
           '@type': 'ListItem',
           position: 2,
-          name: B(settings, 'eventsLabel'),
-          item: absolute(B(settings, 'eventsHref'), origin),
+          name: BRAND.breadcrumb.events.label,
+          item: absolute(BRAND.breadcrumb.events.href, origin),
         },
         { '@type': 'ListItem', position: 3, name: event.name, item: pageUrl },
       ],

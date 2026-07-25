@@ -6,10 +6,11 @@ import { venue } from './documents/venue'
 import { eventSeries } from './documents/eventSeries'
 import { eventCategory } from './documents/eventCategory'
 import { siteSettings } from './documents/siteSettings'
+import { eventsIndexPage } from './documents/eventsIndexPage'
 
 // Objects
 import { heroVideo } from './objects/hero'
-import { statCell } from './objects/stats'
+import { statCell, indexStat } from './objects/stats'
 import { galleryItem } from './objects/gallery'
 import { whyBlock, pullquote } from './objects/why'
 import { agendaBlock, agendaDay, agendaSession } from './objects/agenda'
@@ -35,10 +36,12 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   eventSeries,
   eventCategory,
   siteSettings,
+  eventsIndexPage,
 
   // objects — page modules, in page order
   heroVideo,
   statCell,
+  indexStat,
   galleryItem,
   whyBlock,
   pullquote,

@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { countdown, fmtRange, has } from '@/lib/format'
-import { B, L, S } from '@/lib/defaults'
+import { L, S } from '@/lib/defaults'
+import { BRAND } from '@/lib/brand'
 import { youTubeId } from '@/lib/youtube'
 import { YouTubeFacade } from '../YouTubeFacade'
 import type { EventDoc, SiteSettings } from '@/lib/types'
@@ -48,8 +48,8 @@ export function Hero({
   const left = (
     <>
       <div className="hero__crumb">
-        <Link href={B(settings, 'homeHref')}>{B(settings, 'homeLabel')}</Link> /{' '}
-        <Link href={B(settings, 'eventsHref')}>{B(settings, 'eventsLabel')}</Link> / {event.name}
+        <a href={BRAND.breadcrumb.home.href}>{BRAND.breadcrumb.home.label}</a> /{' '}
+        <a href={BRAND.breadcrumb.events.href}>{BRAND.breadcrumb.events.label}</a> / {event.name}
       </div>
 
       <div className="hero__eyebrow">
