@@ -47,6 +47,26 @@ const FALLBACK: EventsIndexPage = {
   industryFilterLabel: 'Filter by industry',
   searchPlaceholder: 'Search events…',
   faqHeading: 'Frequently asked questions',
+  // Kept in code as well as the schema so /events is complete before anyone
+  // creates the Events-page document in the Studio. Editing it there overrides.
+  faq: [
+    {
+      q: 'What is the B2Brain event calendar?',
+      a: 'A curated calendar of the B2B trade shows and conferences revenue teams plan pipeline around, with an event playbook for each — who attends, what a booth costs, and how to turn floor conversations into booked meetings.',
+    },
+    {
+      q: 'How much does B2Brain cost?',
+      a: 'Show Pass is $200 per user per event. Annual plans start at $1,500. See the pricing page for current details.',
+    },
+    {
+      q: 'Does B2Brain integrate with my CRM?',
+      a: 'Yes. Booth conversations sync to Salesforce and other CRMs with the use case, blockers and next step captured — not just a scanned badge.',
+    },
+    {
+      q: 'Does it work offline on the show floor?',
+      a: 'Yes. Capture is offline-ready for the convention-centre dead zones, and syncs when you are back on signal.',
+    },
+  ],
   ctaEyebrow: 'FROM OFFLINE TO PIPELINE',
   ctaHeading: 'Every event conversation should end in attributable revenue.',
 }
@@ -89,7 +109,9 @@ export default async function EventsIndex() {
   const upcoming = (events || []).filter((e) => (e.startDate || '') >= today)
   const featured = (page?.featured?.length ?? 0) > 0 ? page!.featured! : upcoming.slice(0, 3)
 
-  const faqs = (page?.faq || []).filter((f) => has(f?.q) && has(f?.a))
+  const faqs = ((page?.faq?.length ? page.faq : FALLBACK.faq) || []).filter(
+    (f) => has(f?.q) && has(f?.a),
+  )
 
   return (
     <>
