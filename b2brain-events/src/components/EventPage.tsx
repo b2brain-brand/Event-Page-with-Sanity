@@ -21,6 +21,7 @@ import { Logistics } from './sections/Logistics'
 import { Sentiment } from './sections/Sentiment'
 import { Playbook } from './sections/Playbook'
 import { Similar } from './sections/Similar'
+import { Article } from './sections/Article'
 import { FaqSection } from './sections/FaqSection'
 import { Cta } from './sections/Cta'
 
@@ -75,6 +76,7 @@ export function EventPage({
     { id: 'logistics', navKey: 'logistics', node: Logistics({ event, settings }) },
     { id: 'sentiment', navKey: 'sentiment', node: Sentiment({ event, settings, thumbs }) },
     { id: 'playbook', navKey: 'playbook', node: Playbook({ event, settings }) },
+    { id: 'article', navKey: 'article', node: Article({ event, settings }) },
     { id: 'similar', navKey: 'similar', node: Similar({ events: related, settings }) },
     { id: 'faq', navKey: 'faq', node: FaqSection({ event, settings }) },
     { id: 'cta', node: Cta({ event, settings, now }) },

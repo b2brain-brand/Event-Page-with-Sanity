@@ -20,6 +20,9 @@ export type EventCard = {
   venueName?: string
   city?: string
   categories?: { _id: string; title: string; slug: string }[]
+  attendees?: string
+  attendeesMeta?: string
+  exhibitors?: string
 }
 
 /** The event card shown on the /events collection page. */
@@ -164,6 +167,9 @@ export type EventDoc = {
   autoFillRelated?: boolean
   relatedEvents?: EventCard[]
 
+  // Portable Text blocks + custom members (keyTakeaways, image).
+  article?: ArticleBlock[]
+
   faq?: { q?: string; a?: string }[]
   ctaHeadline?: string
   ctaEyebrowOverride?: string
@@ -178,6 +184,23 @@ export type EventDoc = {
   lastUpdated?: string
   sources?: { label?: string }[]
   publishedAt?: string
+}
+
+/** A Portable Text block or one of the custom article members. */
+export type ArticleBlock = {
+  _type: string
+  _key: string
+  style?: string
+  children?: { text?: string; _key?: string; marks?: string[] }[]
+  // keyTakeaways
+  eyebrow?: string
+  heading?: string
+  points?: string[]
+  // image
+  asset?: { url?: string }
+  alt?: string
+  caption?: string
+  [k: string]: unknown
 }
 
 export type SectionLabels = Record<string, string | undefined>

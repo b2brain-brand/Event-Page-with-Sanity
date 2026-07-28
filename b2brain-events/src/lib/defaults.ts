@@ -68,9 +68,13 @@ export const LABEL_DEFAULTS: Record<string, string> = {
   playbookStep2: 'On the floor · capture + book',
   playbookStep3: 'Post-event · LTM + attribution',
 
-  similarEyebrow: 'SIMILAR EVENTS',
-  similarHeading: 'Other shows your team is weighing',
-  similarLinkLabel: 'View event page',
+  similarEyebrow: 'OTHER SHOWS WORTH PREPPING FOR',
+  similarHeading: 'More events on the calendar.',
+  similarLinkLabel: 'See The Event Playbook',
+
+  articleEyebrow: 'THE FULL BRIEFING',
+  articleHeading: 'Everything you need before you go',
+  articleTocLabel: 'On this page',
 
   faqEyebrow: 'FAQ',
   faqHeading: 'Questions buyers actually ask',
@@ -114,6 +118,7 @@ export const TOC_DEFAULTS: Record<string, string> = {
   sentiment: 'Reviews',
   playbook: 'Win the show',
   similar: 'Similar events',
+  article: 'Full briefing',
   faq: 'FAQ',
 }
 

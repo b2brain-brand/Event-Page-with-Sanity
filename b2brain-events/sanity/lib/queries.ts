@@ -21,7 +21,10 @@ const EVENT_CARD_FIELDS = /* groq */ `
   endDate,
   "venueName": venue->name,
   "city": venue->city,
-  "categories": categories[]->{ _id, title, "slug": slug.current }
+  "categories": categories[]->{ _id, title, "slug": slug.current },
+  "attendees": stats[label match "Attendee*"][0].num,
+  "attendeesMeta": stats[label match "Attendee*"][0].meta,
+  "exhibitors": stats[label match "Exhibitor*"][0].num
 `
 
 export const SITE_SETTINGS_QUERY = defineQuery(`
@@ -139,6 +142,11 @@ export const EVENT_QUERY = defineQuery(`
     autoFillRelated,
     "relatedEvents": relatedEvents[]->{ ${EVENT_CARD_FIELDS} },
 
+    article[]{
+      ...,
+      _type == "image" => { ..., asset-> }
+    },
+
     faq[]{ q, a },
     ctaHeadline,
     ctaEyebrowOverride,
@@ -179,9 +187,6 @@ const INDEX_CARD_FIELDS = /* groq */ `
   cardStat, cardAudience, cardHeadline,
   "description": coalesce(tldr, tagline),
   isFeatured,
-  "attendees": stats[label match "Attendee*"][0].num,
-  "attendeesMeta": stats[label match "Attendee*"][0].meta,
-  "exhibitors": stats[label match "Exhibitor*"][0].num,
   cardImageAlt,
   "cardImage": cardImage{ ..., asset-> }
 `

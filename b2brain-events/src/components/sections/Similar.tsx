@@ -2,16 +2,17 @@ import Link from 'next/link'
 import { fmtRange, has } from '@/lib/format'
 import { L } from '@/lib/defaults'
 import { Section, SectionHead } from '../SectionHead'
+import { BRAND } from '@/lib/brand'
 import type { EventCard, SiteSettings } from '@/lib/types'
 
 /**
- * SIMILAR EVENTS  ->  mSimilar()
+ * SIMILAR EVENTS — matches b2brain.com's "More events on the calendar" cards.
  *
- * Each card is a real reference to another Event document, so the name, dates
- * and city are never retyped and never drift. Internal links between event
- * pages are also the cheapest topical-authority signal available on a
- * programmatic page set — a show page that links to three sibling shows tells a
- * crawler what this cluster is about.
+ * 3-up bordered cards: a "TYPE - INDUSTRY" line, the event name, a meta list
+ * where each row has a red dash marker and a hairline divider (date, venue -
+ * location, attendees, exhibitors), and a full-width "See The Event Playbook"
+ * button. A "See All Events" ghost button sits beside the heading. Every card
+ * links to that event's landing page.
  */
 export function Similar({
   events,
@@ -25,25 +26,50 @@ export function Similar({
 
   return (
     <Section id="similar">
-      <SectionHead eyebrow={L(settings, 'similarEyebrow')} title={L(settings, 'similarHeading')} />
-      {/* The grid is 3-up by design. With one or two cards we narrow the track
-          count instead of leaving dead space inside the bordered frame — same
-          rule as everywhere else on this page: never render an empty box. */}
-      <div className="similar" style={gridFor(cards.length)}>
-        {cards.map((e) => (
-          <Link className="scard" href={`/events/${e.slug}`} key={e._id}>
-            <div className="scard__date">{fmtRange(e.startDate, e.endDate)}</div>
-            <div className="scard__name">{e.name}</div>
-            {has(e.city) && <div className="scard__loc">{e.city}</div>}
-            <div className="scard__link link-arrow">{L(settings, 'similarLinkLabel')}</div>
-          </Link>
-        ))}
+      <div className="fhead">
+        <SectionHead
+          eyebrow={L(settings, 'similarEyebrow')}
+          title={L(settings, 'similarHeading')}
+          variant="dash"
+        />
+        <a href={BRAND.breadcrumb.events.href} className="btn btn--ghost">
+          See All Events
+        </a>
+      </div>
+
+      <div className="simcards" style={gridFor(cards.length)}>
+        {cards.map((e) => {
+          const industry = e.categories?.[0]?.title
+          const topline = [e.type, industry].filter((x) => has(x)).join('  -  ')
+          const rows = [
+            fmtRange(e.startDate, e.endDate),
+            [e.venueName, e.city].filter((x) => has(x)).join('  -  '),
+            has(e.attendees) ? `${e.attendees}  Attendees` : '',
+            has(e.exhibitors) ? `${e.exhibitors}  Exhibitors` : '',
+          ].filter((x) => has(x))
+
+          return (
+            <Link className="simcard" href={`/events/${e.slug}`} key={e._id}>
+              {has(topline) && <div className="simcard__top">{topline}</div>}
+              <h3 className="simcard__name">{e.name}</h3>
+              <div className="simcard__rows">
+                {rows.map((r, i) => (
+                  <div className="simcard__row" key={i}>
+                    <span className="simcard__dash" aria-hidden="true" />
+                    <span>{r}</span>
+                  </div>
+                ))}
+              </div>
+              <span className="btn btn--ghost simcard__btn">{L(settings, 'similarLinkLabel')}</span>
+            </Link>
+          )
+        })}
       </div>
     </Section>
   )
 }
 
-/** Cards fill the row: 3 -> the design default, 1 or 2 -> that many tracks. */
+/** Cards fill the row: 3 -> default, 1 or 2 -> that many tracks. */
 export function gridFor(count: number): React.CSSProperties | undefined {
   if (count >= 3) return undefined
   return { gridTemplateColumns: `repeat(${Math.max(count, 1)}, 1fr)` }

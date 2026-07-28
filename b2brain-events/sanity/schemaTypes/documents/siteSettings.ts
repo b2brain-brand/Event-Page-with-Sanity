@@ -404,10 +404,13 @@ export const siteSettings = defineType({
         defineField({ name: 'playbookStep2', title: 'Playbook — motion 02 label', type: 'string', initialValue: 'On the floor · capture + book' }),
         defineField({ name: 'playbookStep3', title: 'Playbook — motion 03 label', type: 'string', initialValue: 'Post-event · LTM + attribution' }),
 
-        defineField({ name: 'similarEyebrow', title: 'Similar events — eyebrow', type: 'string', initialValue: 'SIMILAR EVENTS' }),
-        defineField({ name: 'similarHeading', title: 'Similar events — heading', type: 'string', initialValue: 'Other shows your team is weighing' }),
-        defineField({ name: 'similarLinkLabel', title: 'Similar events — card link', type: 'string', initialValue: 'View event page' }),
+        defineField({ name: 'similarEyebrow', title: 'Similar events — eyebrow', type: 'string', initialValue: 'OTHER SHOWS WORTH PREPPING FOR' }),
+        defineField({ name: 'similarHeading', title: 'Similar events — heading', type: 'string', initialValue: 'More events on the calendar.' }),
+        defineField({ name: 'similarLinkLabel', title: 'Similar events — card link', type: 'string', initialValue: 'See The Event Playbook' }),
 
+        defineField({ name: 'articleEyebrow', title: 'Article — eyebrow', type: 'string', initialValue: 'THE FULL BRIEFING' }),
+        defineField({ name: 'articleHeading', title: 'Article — heading', type: 'string', initialValue: 'Everything you need before you go' }),
+        defineField({ name: 'articleTocLabel', title: 'Article — TOC label', type: 'string', initialValue: 'On this page' }),
         defineField({ name: 'faqEyebrow', title: 'FAQ — eyebrow', type: 'string', initialValue: 'FAQ' }),
         defineField({ name: 'faqHeading', title: 'FAQ — heading', type: 'string', initialValue: 'Questions buyers actually ask' }),
         defineField({
@@ -485,6 +488,7 @@ export const siteSettings = defineType({
         defineField({ name: 'sentiment', type: 'string', title: 'Reviews', initialValue: 'Reviews' }),
         defineField({ name: 'playbook', type: 'string', title: 'Playbook', initialValue: 'Win the show' }),
         defineField({ name: 'similar', type: 'string', title: 'Similar events', initialValue: 'Similar events' }),
+        defineField({ name: 'article', type: 'string', title: 'Full briefing', initialValue: 'Full briefing' }),
         defineField({ name: 'faq', type: 'string', title: 'FAQ', initialValue: 'FAQ' }),
       ],
     }),

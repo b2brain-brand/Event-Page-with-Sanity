@@ -560,3 +560,56 @@ ul{margin:0;padding:0;list-style:none}
 .fhead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:44px}
 .fhead .sec__head{margin-bottom:0}
 @media(max-width:640px){.fhead .btn{width:100%}}
+
+/* ============================================================ SIMILAR EVENTS CARDS (b2brain "More events")
+   3-up bordered cards: TYPE - INDUSTRY, name, a red-dash meta list with hairline
+   dividers, and a full-width See The Event Playbook button. */
+.simcards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:991px){.simcards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.simcards{grid-template-columns:1fr}}
+.simcard{display:flex;flex-direction:column;border:1px solid var(--black);background:var(--white);padding:30px 28px;transition:background .18s ease}
+.simcard:hover{background:var(--whitesmoke)}
+.simcard__top{font-size:13px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--black-70)}
+.simcard__name{font-family:var(--font-heading);font-weight:500;font-size:28px;line-height:34px;letter-spacing:-.6px;margin-top:20px}
+.simcard__rows{margin-top:26px}
+.simcard__row{display:flex;align-items:baseline;gap:14px;padding:14px 0;border-bottom:1px solid var(--border-light);font-size:15px;line-height:22px;color:var(--black-70)}
+.simcard__row:first-child{border-top:1px solid var(--border-light)}
+.simcard__dash{flex:0 0 auto;width:16px;height:2px;background:var(--orange);transform:translateY(-4px)}
+.simcard__btn{margin-top:28px;width:100%}
+
+/* ============================================================ EVENT ARTICLE (blog body + TOC)
+   Two columns: a sticky "On this page" TOC on the left, the editorial body on
+   the right — the live-site layout. Purple key-takeaways box, section anchors. */
+.article{display:grid;grid-template-columns:240px 1fr;gap:56px;align-items:start}
+@media(max-width:991px){.article{grid-template-columns:1fr;gap:32px}}
+.article__toc{position:sticky;top:calc(var(--nav-h) + var(--toc-h) + 20px);align-self:start}
+@media(max-width:991px){.article__toc{position:static;border:1px solid var(--black);padding:20px}}
+.article__toc-label{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-50);margin-bottom:16px}
+.article__toc nav{display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--border-light)}
+.article__toc-link{padding:7px 0 7px 16px;margin-left:-1px;border-left:2px solid transparent;font-size:14px;line-height:19px;color:var(--black-70)}
+.article__toc-link:hover{color:var(--black)}
+.article__toc-link--sub{padding-left:28px;font-size:13px}
+
+.article__body{max-width:760px}
+.article__body > *:first-child{margin-top:0}
+.article__h2{font-size:32px;line-height:40px;letter-spacing:-.6px;margin:48px 0 0;scroll-margin-top:140px}
+.article__h3{font-size:24px;line-height:32px;letter-spacing:-.3px;margin:36px 0 0;scroll-margin-top:140px}
+.article__h4{font-family:var(--font-heading);font-weight:500;font-size:19px;line-height:27px;margin:28px 0 0}
+.article__p{font-size:17px;line-height:28px;color:var(--black-70);margin-top:18px}
+.article__p strong{color:var(--black)}
+.article__ul,.article__ol{margin:18px 0 0;padding-left:22px;font-size:17px;line-height:28px;color:var(--black-70)}
+.article__ul li,.article__ol li{margin-top:8px}
+.article__ul{list-style:disc}.article__ol{list-style:decimal}
+.article__quote{border-left:4px solid var(--purple);padding:6px 0 6px 24px;margin:28px 0 0;font-family:var(--font-heading);font-weight:500;font-size:22px;line-height:31px;letter-spacing:-.3px}
+.article__figure{margin:32px 0 0;border:1px solid var(--black)}
+.article__img{width:100%;height:auto;display:block}
+.article__cap{padding:12px 16px;border-top:1px solid var(--black);font-size:13px;color:var(--black-70)}
+
+/* key-takeaways / TL;DR box */
+.article__tldr{background:var(--purple-light);border:1px solid var(--black);padding:36px 40px;margin:0 0 8px}
+.article__tldr-eyebrow{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-70)}
+.article__tldr-heading{font-size:28px;line-height:34px;letter-spacing:-.5px;margin-top:12px}
+.article__tldr-list{margin-top:20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.article__tldr-list li{font-size:17px;line-height:26px;padding-left:22px;position:relative}
+.article__tldr-list li::before{content:'';position:absolute;left:0;top:10px;width:10px;height:2px;background:var(--orange)}
+@media(max-width:640px){.article__tldr{padding:26px 22px}.article__h2{font-size:26px;line-height:32px}}

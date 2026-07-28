@@ -405,6 +405,14 @@ export const event = defineType({
       initialValue: true,
     }),
     defineField({
+      name: 'article',
+      title: 'Event article (blog body)',
+      type: 'article',
+      group: 'proof',
+      description:
+        'Long-form editorial content shown before the FAQ, with an auto-generated "On this page" table of contents built from the H2/H3 headings. Write it like a blog: sections, paragraphs, lists, a key-takeaways box. Optional — the section is hidden when empty.',
+    }),
+    defineField({
       name: 'faq',
       title: 'FAQ',
       type: 'array',
