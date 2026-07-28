@@ -10,7 +10,7 @@ export function UseCaseIcon({ icon }: { icon?: string }) {
     icon === 'pipeline' ? 'var(--green)' : icon === 'attendees' ? 'var(--purple-light)' : 'var(--orange-light)'
   return (
     <span className="uc-icon" style={{ background: tint }} aria-hidden="true">
-      <svg viewBox="0 0 20 20" width="18" height="18">
+      <svg viewBox="0 0 20 20" width="24" height="24">
         {icon === 'pipeline' && (
           // bar chart / pipeline growth
           <g fill="currentColor">

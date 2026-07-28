@@ -6,7 +6,7 @@ import { siteUrl } from '@/sanity/env'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { Section, SectionHead } from '@/components/SectionHead'
-import { EventCard } from '@/components/events/EventCard'
+import { FeaturedList } from '@/components/events/FeaturedList'
 import { EventsBrowser } from '@/components/events/EventsBrowser'
 import { FaqList } from '@/components/sections/Faq'
 import { has } from '@/lib/format'
@@ -180,16 +180,7 @@ export default async function EventsIndex() {
               title={v(page, 'featuredHeading')}
               variant="dash"
             />
-            <div className="ecards">
-              {featured.map((e) => (
-                <EventCard
-                  key={e._id}
-                  event={e}
-                  ctaLabel={v(page, 'cardCtaLabel')}
-                  featured
-                />
-              ))}
-            </div>
+            <FeaturedList events={featured} ctaLabel={v(page, 'cardCtaLabel')} />
           </Section>
         )}
 
