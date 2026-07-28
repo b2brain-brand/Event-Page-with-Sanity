@@ -580,7 +580,8 @@ ul{margin:0;padding:0;list-style:none}
 /* ============================================================ EVENT ARTICLE (blog body + TOC)
    Two columns: a sticky "On this page" TOC on the left, the editorial body on
    the right — the live-site layout. Purple key-takeaways box, section anchors. */
-.article{display:grid;grid-template-columns:240px 1fr;gap:56px;align-items:start}
+.article{display:grid;grid-template-columns:230px minmax(0,1fr) 300px;gap:48px;align-items:start}
+@media(max-width:1180px){.article{grid-template-columns:210px minmax(0,1fr)}.artside{display:none}}
 @media(max-width:991px){.article{grid-template-columns:1fr;gap:32px}}
 .article__toc{position:sticky;top:calc(var(--nav-h) + var(--toc-h) + 20px);align-self:start}
 @media(max-width:991px){.article__toc{position:static;border:1px solid var(--black);padding:20px}}
@@ -588,6 +589,7 @@ ul{margin:0;padding:0;list-style:none}
 .article__toc nav{display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--border-light)}
 .article__toc-link{padding:7px 0 7px 16px;margin-left:-1px;border-left:2px solid transparent;font-size:14px;line-height:19px;color:var(--black-70)}
 .article__toc-link:hover{color:var(--black)}
+.article__toc-link.is-active{color:var(--orange);border-left-color:var(--orange);font-weight:500}
 .article__toc-link--sub{padding-left:28px;font-size:13px}
 
 .article__body{max-width:760px}
@@ -613,3 +615,23 @@ ul{margin:0;padding:0;list-style:none}
 .article__tldr-list li{font-size:17px;line-height:26px;padding-left:22px;position:relative}
 .article__tldr-list li::before{content:'';position:absolute;left:0;top:10px;width:10px;height:2px;background:var(--orange)}
 @media(max-width:640px){.article__tldr{padding:26px 22px}.article__h2{font-size:26px;line-height:32px}}
+
+
+/* ============================================================ ARTICLE SIDEBAR (sticky promo cards)
+   Two black cards in the article's right rail — a "drive pipeline" CTA with a
+   checklist + Book a 30m chat, and a "Get Event Insights with AI" card. Sticky,
+   so they stay put while the blog body scrolls. */
+.artside{position:sticky;top:calc(var(--nav-h) + var(--toc-h) + 20px);align-self:start;display:flex;flex-direction:column;gap:20px}
+.artside__cta{background:var(--black);color:var(--white);padding:28px 26px}
+.artside__cta-head{font-family:var(--font-heading);font-weight:500;font-size:22px;line-height:28px;letter-spacing:-.3px;color:var(--white)}
+.artside__cta-sub{margin-top:18px;font-size:13px;color:rgba(255,255,255,.6)}
+.artside__list{margin-top:12px;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px}
+.artside__list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:21px;color:rgba(255,255,255,.9)}
+.artside__check{flex:0 0 auto;color:var(--white);margin-top:2px}
+.artside__btn{margin-top:24px;width:100%;background:var(--white);color:var(--black)}
+.artside__btn:hover{background:var(--green);color:var(--ceramic)}
+.artside__ai{background:var(--black);color:var(--white);padding:24px 26px}
+.artside__ai-head{font-size:15px;font-weight:600;color:var(--white)}
+.artside__ai-icons{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px}
+.artside__ai-icons a{color:var(--white);transition:color .2s ease}
+.artside__ai-icons a:hover{color:var(--orange)}

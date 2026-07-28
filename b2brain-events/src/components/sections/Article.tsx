@@ -3,6 +3,8 @@ import { PortableText, type PortableTextComponents } from '@portabletext/react'
 import { has } from '@/lib/format'
 import { L } from '@/lib/defaults'
 import { Section, SectionHead } from '../SectionHead'
+import { ArticleToc, type ArticleTocEntry } from './ArticleToc'
+import { ArticleSidebar } from './ArticleSidebar'
 import type { ArticleBlock, EventDoc, SiteSettings } from '@/lib/types'
 
 /**
@@ -29,7 +31,7 @@ function blockText(block: ArticleBlock): string {
   return (block.children || []).map((c) => c.text || '').join('')
 }
 
-type TocEntry = { id: string; text: string; level: 2 | 3 }
+type TocEntry = ArticleTocEntry
 
 export function Article({
   event,
@@ -131,25 +133,15 @@ export function Article({
         title={L(settings, 'articleHeading')}
       />
       <div className="article">
-        {toc.length > 0 && (
-          <aside className="article__toc" aria-label="On this page">
-            <div className="article__toc-label">{L(settings, 'articleTocLabel')}</div>
-            <nav>
-              {toc.map((t) => (
-                <a
-                  key={t.id}
-                  href={`#${t.id}`}
-                  className={t.level === 3 ? 'article__toc-link article__toc-link--sub' : 'article__toc-link'}
-                >
-                  {t.text}
-                </a>
-              ))}
-            </nav>
-          </aside>
+        {toc.length > 0 ? (
+          <ArticleToc entries={toc} label={L(settings, 'articleTocLabel')} />
+        ) : (
+          <div />
         )}
         <div className="article__body">
           <PortableText value={blocks as never} components={components} />
         </div>
+        <ArticleSidebar />
       </div>
     </Section>
   )

@@ -94,6 +94,20 @@ export const BRAND = {
     { label: 'Grok', url: 'https://grok.com', glyph: 'grok' },
   ],
 
+  /** The two sticky promo cards in the event article's right rail. */
+  articleSidebar: {
+    heading: "Events & Trade Show can drive pipeline — don't miss out",
+    subheading: "Here's why:",
+    points: [
+      'Digital CPA is skyrocketing',
+      'Your buyers are discovering vendors at shows',
+      'You can jumpstart discovery and qualification',
+    ],
+    buttonLabel: 'Book a 30m chat',
+    buttonHref: `${SITE}/demo`,
+    aiHeading: 'Get Event Insights with AI',
+  },
+
   social: [
     { platform: 'instagram', url: 'https://www.instagram.com/getb2brain/' },
     { platform: 'x', url: 'https://x.com/getb2brain' },
