@@ -8,20 +8,38 @@ There are two ways to do this. **Read §1 first and pick one** — the rest of t
 
 ---
 
+## 0. How b2brain.com is hosted today (verified)
+
+Confirmed by inspecting the live site and DNS:
+
+| Fact | Value |
+|---|---|
+| **DNS / nameservers** | AWS **Route 53** (`awsdns-*`) — the client controls DNS |
+| **`www.b2brain.com`** | CNAME → `cdn.webflow.com` → the site is hosted on **Webflow** |
+| **Edge in front of the site** | **Cloudflare** (`CF-Ray`, `Server: cloudflare`) — but this is **Webflow's own Cloudflare**, NOT a Cloudflare account the client controls |
+
+**Consequences:**
+- **Route 53 alone cannot do path routing.** DNS resolves hostnames, not paths — there is no record that sends `/events/*` to Vercel and the rest to Webflow.
+- **A Cloudflare Worker is NOT available** to the client here: the Cloudflare edge belongs to Webflow, and you can only deploy Workers to a Cloudflare zone you own. (DNS is on Route 53, so the client has no Cloudflare zone.)
+- To get `b2brain.com/events/*`, the client must insert **their own reverse proxy in front of the whole domain**. Given DNS is at AWS, that proxy is **AWS CloudFront** (Option B below), with **Webflow as the default origin** and **Vercel for the event paths**.
+- *Alternative:* move the domain's DNS into the client's **own** Cloudflare account (change nameservers away from Route 53), then a Worker becomes possible. Out of scope here since the client wants to stay on AWS.
+
+---
+
 ## 1. Choose the approach
 
 | | **Option A — Subdomain** `events.b2brain.com` | **Option B — Path** `b2brain.com/events/*` |
 |---|---|---|
 | URL users see | `events.b2brain.com/…` | `b2brain.com/events/…` |
 | SEO | First-party subdomain (very good) | First-party path (best; same authority as root) |
-| AWS work | One DNS record in Route 53 | CloudFront distribution in front of the **whole** site + routing rules |
-| Prerequisite | None | The main b2brain.com must sit **behind AWS CloudFront** |
-| Risk | Very low | Higher — you're proxying production traffic |
-| Time | ~15 min + DNS/SSL propagation | Half a day + testing |
+| AWS work | One DNS record in Route 53 | New CloudFront distribution in front of the **whole** site (Webflow + Vercel origins) + routing rules |
+| Prerequisite | None | You must build CloudFront in front of the live Webflow site (it is **not** behind CloudFront today) |
+| Risk | Very low | Higher — you're re-fronting all production traffic |
+| Time | ~15 min + DNS/SSL propagation | Half a day + careful testing |
 
-**Recommendation:** start with **Option A (subdomain)**. It is fully first-party, works with zero changes to the existing b2brain.com site, and is what `NEXT_PUBLIC_SITE_URL` already defaults to (`https://events.b2brain.com`). Move to Option B later only if SEO specifically requires the `/events` path on the apex domain.
+**Recommendation:** start with **Option A (subdomain)** — it is already live and working, fully first-party, changes nothing about the existing Webflow site, and matches `NEXT_PUBLIC_SITE_URL` (`https://events.b2brain.com`). Move to Option B only if SEO specifically requires the `/events` path on the apex.
 
-> **Important reality check for Option B:** you can only reverse-proxy a sub-path (`/events/*`) onto b2brain.com if **all** of b2brain.com's traffic already flows through a proxy you control (CloudFront). If the main site is hosted on Webflow/another host with its own DNS record and is *not* behind CloudFront, Option B means first putting the entire site behind CloudFront — a bigger project. If in doubt, use Option A.
+> **Reality check for Option B (see §0):** b2brain.com is on **Webflow** behind **Webflow's Cloudflare** — there is no AWS CloudFront in front of it today, and no client-controlled Cloudflare to add a Worker to. So Option B means **building a new CloudFront distribution in front of the entire domain**, with Webflow as the default origin. That is real infra work on live production traffic — do it deliberately, test on the `*.cloudfront.net` URL first, and keep the Route 53 record ready to roll back.
 
 ---
 
@@ -65,18 +83,27 @@ Vercel auto-provisions an HTTPS certificate once DNS resolves (usually minutes, 
 
 ## 3. Option B — Path `b2brain.com/events/*` via CloudFront
 
-Use this only if the whole site is (or will be) behind **AWS CloudFront**. You add the Vercel app as a **second origin** and route a few path prefixes to it. The main site keeps serving everything else.
+The site is on **Webflow** and is **not** behind CloudFront today (see §0), so this option means **creating a brand-new CloudFront distribution in front of the whole domain**: Webflow becomes the *default* origin, Vercel becomes the origin for the event paths, and Route 53 repoints from Webflow to CloudFront.
 
 ### 3.1 Prerequisites
-- b2brain.com served through a **CloudFront distribution** (the apex/`www` Route 53 record is an ALIAS to the CloudFront domain).
-- Access to edit that distribution.
-- ACM certificate covering b2brain.com already attached to the distribution (it is, if the site runs on CloudFront today).
+- Access to the AWS account (CloudFront, ACM, Route 53).
+- An **ACM certificate in `us-east-1`** covering `b2brain.com` and `www.b2brain.com` (CloudFront only reads certs from us-east-1).
+- The Webflow custom domain (`www.b2brain.com`) must remain configured in Webflow.
+- A maintenance window + rollback plan (you're re-fronting live traffic).
 
-### 3.2 Add the Vercel origin
-1. CloudFront → your b2brain.com distribution → **Origins → Create origin**.
+### 3.2 Create the distribution with the Webflow (default) origin
+1. CloudFront → **Create distribution**.
+2. **Default origin = Webflow:**
+   - **Origin domain:** `proxy-ssl.webflow.com`
+   - **Protocol:** HTTPS only.
+   - **Add custom origin header:** `Host: www.b2brain.com` — **mandatory**. Webflow decides which site to serve from the Host header; without this you get a Webflow 404.
+   - Name it e.g. `webflow-main`.
+
+### 3.2b Add the Vercel origin
+1. Same distribution → **Origins → Create origin**.
 2. **Origin domain:** `project-pcxmd.vercel.app`
 3. **Protocol:** HTTPS only.
-4. **Origin request policy / Host header:** send the origin's own host (`project-pcxmd.vercel.app`) so Vercel serves this project. *(Do not forward the viewer `Host: b2brain.com` unless you have also added `b2brain.com` as a domain on the Vercel project and configured it — the simple, reliable setup is: origin host = the vercel.app host.)*
+4. **Host header:** send the origin's own host (`project-pcxmd.vercel.app`) so Vercel serves this project. *(Do not forward the viewer `Host: b2brain.com` unless you also add `b2brain.com` as a domain on the Vercel project — the simple, reliable setup is: origin host = the vercel.app host.)*
 5. Name it e.g. `vercel-events`.
 
 ### 3.3 Route the right paths to Vercel
@@ -96,7 +123,13 @@ For each behavior:
 - **Cache policy:** `CachingOptimized` for `/_next/*` (immutable hashed assets); for `/events/*` use a policy that respects origin cache headers (e.g. `CachingDisabled` or a short TTL) so publishes show quickly — Vercel already sets correct caching, so **forward the origin cache headers** rather than overriding.
 - **Origin request policy:** forward all viewer headers/query strings the app needs; `AllViewerExceptHostHeader` is a safe default here (Host stays the vercel.app host per §3.2).
 
-Ordering: CloudFront matches the **most specific** behavior first, so these `/events/*`, `/_next/*` etc. behaviors sit **above** the default behavior that serves the main site. The default (`*`) behavior stays pointed at the existing main-site origin.
+Ordering: CloudFront matches the **most specific** behavior first, so these `/events/*`, `/_next/*` etc. behaviors sit **above** the default behavior. The default (`*`) behavior points at the **`webflow-main`** origin so the rest of the site is unaffected.
+
+### 3.3b Attach domain + certificate, then cut over DNS
+1. Distribution **Settings** → **Alternate domain names (CNAMEs):** add `www.b2brain.com` and `b2brain.com`.
+2. Attach the **ACM certificate (us-east-1)** covering both.
+3. **Test first on the CloudFront URL** (`https://dxxxx.cloudfront.net/...`) before touching DNS — verify Webflow pages *and* the `/events/*` pages both work.
+4. **Route 53:** change the `www.b2brain.com` record from the Webflow CNAME to an **ALIAS → the CloudFront distribution** (and the apex `b2brain.com` too if it should flow through CloudFront). Keep the old value noted for rollback.
 
 ### 3.4 App config changes
 1. Vercel env: `NEXT_PUBLIC_SITE_URL = https://www.b2brain.com` → **Redeploy** (so canonicals/sitemap are on the apex).
@@ -111,7 +144,7 @@ Ordering: CloudFront matches the **most specific** behavior first, so these `/ev
    - View source → CSS/JS URLs are `/_next/...` and resolve 200.
    - `https://www.b2brain.com/studio` → Studio loads.
    - Publish an edit → page refreshes within ~60s (proves `/api/*` webhook is reachable).
-3. Confirm the **rest of the site** (`/`, `/pricing`, `/blogs`, …) still serves from the main origin unchanged.
+3. Confirm the **rest of the site** (`/`, `/pricing`, `/blogs`, …) still serves from Webflow unchanged (the `webflow-main` default origin).
 
 ### 3.6 If pages load but look broken
 Almost always a **missing `/_next/*` behavior** (assets 404 against the main origin). Add/verify that behavior and invalidate again.
@@ -122,7 +155,8 @@ Almost always a **missing `/_next/*` behavior** (assets 404 against the main ori
 
 - **Do not** move the Sanity project or its `projectId` (`gwr013fi`) — the app reads content from it.
 - **Do not** delete the `project-pcxmd.vercel.app` URL; CloudFront (Option B) uses it as the origin, and it's a useful fallback.
-- **Do not** point Route 53 for the **apex** directly at Vercel in Option B — only CloudFront behaviors route the sub-paths; the apex ALIAS stays on CloudFront.
+- **Do not** point Route 53 directly at Vercel in Option B — the domain records point at **CloudFront**, and CloudFront's path behaviors route `/events/*` to Vercel while the default origin stays on **Webflow**.
+- **Do not** remove the Webflow custom-domain config — CloudFront's default origin depends on Webflow still accepting `Host: www.b2brain.com`.
 
 ---
 
