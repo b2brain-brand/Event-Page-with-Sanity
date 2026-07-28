@@ -529,19 +529,34 @@ ul{margin:0;padding:0;list-style:none}
 .exh__cta:hover{color:var(--black)}
 
 
-/* ============================================================ FEATURED LIST (b2brain vertical list)
-   Full-width 2-column rows with a 1px black rule between them: left = the
-   headline attendee stat, right = meta + 40px title + description + button. */
-.flist{border-top:1px solid var(--black)}
-.flist__row{display:grid;grid-template-columns:340px 1fr;gap:40px;padding:40px 0;border-bottom:1px solid var(--black);align-items:start;transition:background .18s ease}
-.flist__row:hover{background:var(--whitesmoke)}
-.flist__left{display:flex;flex-direction:column;gap:8px}
-.flist__stat{font-family:var(--font-heading);font-weight:500;font-size:40px;line-height:1.02;letter-spacing:-1px;color:var(--black)}
-.flist__stat-label{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-70)}
-.flist__right{display:flex;flex-direction:column}
-.flist__tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}
-.flist__meta{font-size:14px;letter-spacing:.3px;text-transform:uppercase;color:var(--black-70);margin-bottom:14px}
-.flist__title{font-family:var(--font-heading);font-weight:500;font-size:40px;line-height:46px;letter-spacing:-1px;color:var(--black)}
-.flist__desc{margin-top:16px;font-size:16px;line-height:25px;color:var(--black-70);max-width:640px}
-.flist__btn{margin-top:26px;align-self:flex-start}
-@media(max-width:860px){.flist__row{grid-template-columns:1fr;gap:20px;padding:32px 0}.flist__title{font-size:30px;line-height:36px}.flist__stat{font-size:32px}}
+
+
+/* ============================================================ FEATURED CARDS (exact b2brain match)
+   Full-width bordered cards, stacked. Left = tinted stat panel (alternating
+   orange-light / purple-light); right = meta + name—tagline title + description
+   + tag row + button. */
+.fcards{display:flex;flex-direction:column;gap:40px}
+.fcard{display:grid;grid-template-columns:340px 1fr;gap:40px;border:1px solid var(--black);padding:40px;background:var(--white);align-items:stretch;transition:background .18s ease}
+.fcard:hover{background:var(--offwhite)}
+.fcard__side{display:flex;flex-direction:column;padding:24px}
+.fcard__side--orange{background:var(--orange-light)}
+.fcard__side--purple{background:var(--purple-light)}
+.fcard__stat{font-family:var(--font-heading);font-weight:500;font-size:40px;line-height:44px;letter-spacing:-1px;color:var(--black)}
+.fcard__stat-meta{margin-top:14px;font-size:16px;line-height:23px;color:var(--black-70)}
+.fcard__name{margin-top:auto;padding-top:20px;font-size:16px;font-weight:600;color:var(--black)}
+.fcard__main{display:flex;flex-direction:column}
+.fcard__meta{font-size:14px;font-weight:500;letter-spacing:.3px;text-transform:uppercase;color:var(--black-70);margin-bottom:16px}
+.fcard__title{font-family:var(--font-heading);font-weight:500;font-size:34px;line-height:40px;letter-spacing:-.9px;color:var(--black)}
+.fcard__desc{margin-top:18px;font-size:16px;line-height:25px;color:var(--black-70);max-width:680px}
+.fcard__foot{margin-top:auto;padding-top:28px;border-top:1px solid var(--black-05);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.fcard__tags{display:flex;flex-wrap:wrap;gap:10px}
+.fcard__tag{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:6px 12px;border:1px solid var(--black)}
+.fcard__tag--solid{background:var(--black);color:var(--white)}
+.fcard__tag--outline{background:transparent;color:var(--black)}
+.fcard__btn{white-space:nowrap}
+@media(max-width:860px){.fcard{grid-template-columns:1fr;gap:24px;padding:24px}.fcard__title{font-size:26px;line-height:32px}.fcard__stat{font-size:32px;line-height:36px}}
+
+/* featured section header: heading + "View All Events" button on the right */
+.fhead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:44px}
+.fhead .sec__head{margin-bottom:0}
+@media(max-width:640px){.fhead .btn{width:100%}}

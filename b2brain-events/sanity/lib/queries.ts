@@ -175,9 +175,11 @@ export const EVENT_SLUGS_QUERY = defineQuery(`
 /** Richer card fields for the /events collection page — matches b2brain.com. */
 const INDEX_CARD_FIELDS = /* groq */ `
   ${EVENT_CARD_FIELDS},
+  tagline,
   "description": coalesce(tldr, tagline),
   isFeatured,
   "attendees": stats[label match "Attendee*"][0].num,
+  "attendeesMeta": stats[label match "Attendee*"][0].meta,
   "exhibitors": stats[label match "Exhibitor*"][0].num,
   cardImageAlt,
   "cardImage": cardImage{ ..., asset-> }

@@ -1,6 +1,7 @@
 import { countdown, has, tpl } from '@/lib/format'
 import { S } from '@/lib/defaults'
 import { BRAND } from '@/lib/brand'
+import { CountdownText } from '../CountdownText'
 import type { EventDoc, SiteSettings } from '@/lib/types'
 
 /**
@@ -24,6 +25,7 @@ export function Cta({
 }) {
   const name = has(event.name) ? event.name! : 'your next show'
   const cd = event.startDate ? countdown(event.startDate, now) : ''
+  const liveCountdown = !event.ctaEyebrowOverride && has(cd)
   const eyebrow =
     event.ctaEyebrowOverride ||
     (has(cd) ? cd.toUpperCase() : S(settings, 'ctaFallbackEyebrow') || 'BOOK A DEMO')
@@ -39,7 +41,13 @@ export function Cta({
           <span className="cta__px cta__px--tl" aria-hidden="true" />
           <span className="cta__px cta__px--br" aria-hidden="true" />
           <div>
-            <span className="eyebrow eyebrow--asterisk cta__weeks">{eyebrow}</span>
+            <span className="eyebrow eyebrow--asterisk cta__weeks">
+              {liveCountdown ? (
+                <CountdownText startDate={event.startDate!} initial={eyebrow} upper />
+              ) : (
+                eyebrow
+              )}
+            </span>
             <h2>{headline}</h2>
             {/* Both buttons resolve to the real b2brain.com pages (code-owned,
                 like the nav and footer) so they can never drift to a dead path.

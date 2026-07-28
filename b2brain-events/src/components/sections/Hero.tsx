@@ -1,6 +1,7 @@
 import { countdown, fmtRange, has } from '@/lib/format'
 import { L, S } from '@/lib/defaults'
 import { BRAND } from '@/lib/brand'
+import { CountdownText } from '../CountdownText'
 import { youTubeId } from '@/lib/youtube'
 import { YouTubeFacade } from '../YouTubeFacade'
 import type { EventDoc, SiteSettings } from '@/lib/types'
@@ -57,7 +58,7 @@ export function Hero({
         {has(cd) && (
           <span className="chip chip--orange">
             <span className="chip__dot" />
-            {cd}
+            <CountdownText startDate={event.startDate!} initial={cd} />
           </span>
         )}
         {has(event.hashtag) && <span className="chip chip--purple">{event.hashtag}</span>}
@@ -131,7 +132,10 @@ export function Hero({
           >
             <span className="chip__dot" />
           </span>{' '}
-          <b className="mono-num">{cd.toUpperCase()}</b> — {L(settings, 'heroRefreshNote')}
+          <b className="mono-num">
+            <CountdownText startDate={event.startDate!} initial={cd.toUpperCase()} upper />
+          </b>{' '}
+          — {L(settings, 'heroRefreshNote')}
         </div>
       )}
     </div>

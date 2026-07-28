@@ -175,11 +175,16 @@ export default async function EventsIndex() {
         {/* ------------------------------------------------------ FEATURED */}
         {featured.length > 0 && (
           <Section id="featured">
-            <SectionHead
-              eyebrow={v(page, 'featuredEyebrow')}
-              title={v(page, 'featuredHeading')}
-              variant="dash"
-            />
+            <div className="fhead">
+              <SectionHead
+                eyebrow={v(page, 'featuredEyebrow')}
+                title={v(page, 'featuredHeading')}
+                variant="dash"
+              />
+              <a href="#all" className="btn btn--ghost">
+                View All Events
+              </a>
+            </div>
             <FeaturedList events={featured} ctaLabel={v(page, 'cardCtaLabel')} />
           </Section>
         )}
