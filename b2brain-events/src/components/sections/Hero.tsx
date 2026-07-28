@@ -31,7 +31,7 @@ export function Hero({
 }) {
   if (!has(event?.name)) return null
 
-  const cd = event.startDate ? countdown(event.startDate, now) : ''
+  const cd = event.startDate ? countdown(event.startDate, now, event.endDate) : ''
 
   const metaPairs: [string, string][] = []
   if (has(event.startDate)) {
@@ -58,7 +58,7 @@ export function Hero({
         {has(cd) && (
           <span className="chip chip--orange">
             <span className="chip__dot" />
-            <CountdownText startDate={event.startDate!} initial={cd} />
+            <CountdownText startDate={event.startDate!} endDate={event.endDate} initial={cd} />
           </span>
         )}
         {has(event.hashtag) && <span className="chip chip--purple">{event.hashtag}</span>}
@@ -133,7 +133,12 @@ export function Hero({
             <span className="chip__dot" />
           </span>{' '}
           <b className="mono-num">
-            <CountdownText startDate={event.startDate!} initial={cd.toUpperCase()} upper />
+            <CountdownText
+              startDate={event.startDate!}
+              endDate={event.endDate}
+              initial={cd.toUpperCase()}
+              upper
+            />
           </b>{' '}
           — {L(settings, 'heroRefreshNote')}
         </div>

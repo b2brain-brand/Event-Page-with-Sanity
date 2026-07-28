@@ -34,16 +34,27 @@ export function fmtRange(start?: string | null, end?: string | null): string {
   return `${d1}–${d2}, ${b.getFullYear()}`
 }
 
-/** "12 days to go" · "8 weeks to go" · "Happening today" · "Past event · recap". */
-export function countdown(start?: string | null, now: Date = new Date()): string {
+/**
+ * "12 days to go" · "8 weeks to go" · "Happening today" · "Happening now" ·
+ * "Past event · recap".
+ *
+ * `end` (the event's last day) matters for multi-day events: without it, a
+ * 3-day event reads as "Past event · recap" the moment day 1 ends, even
+ * though it's still running on day 2. Passing `end` keeps the event "live"
+ * through its last day, and only "Past" once that day is over.
+ */
+export function countdown(start?: string | null, now: Date = new Date(), end?: string | null): string {
   if (!start) return ''
   const startDate = new Date(`${start}T00:00:00`)
   if (Number.isNaN(startDate.getTime())) return ''
+  const endDate = new Date(`${end || start}T23:59:59`)
   const diff = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-  if (diff < 0) return 'Past event · recap'
-  if (diff === 0) return 'Happening today'
-  if (diff < 14) return `${diff} days to go`
-  return `${Math.round(diff / 7)} weeks to go`
+  if (diff > 0) {
+    if (diff < 14) return `${diff} days to go`
+    return `${Math.round(diff / 7)} weeks to go`
+  }
+  if (now.getTime() <= endDate.getTime()) return diff === 0 ? 'Happening today' : 'Happening now'
+  return 'Past event · recap'
 }
 
 /** "$1.2M" · "$480K" · "$940". */

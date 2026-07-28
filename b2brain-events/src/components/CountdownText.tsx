@@ -17,10 +17,12 @@ import { countdown } from '@/lib/format'
  */
 export function CountdownText({
   startDate,
+  endDate,
   initial,
   upper = false,
 }: {
   startDate: string
+  endDate?: string
   initial: string
   upper?: boolean
 }) {
@@ -28,14 +30,14 @@ export function CountdownText({
 
   useEffect(() => {
     const compute = () => {
-      const t = countdown(startDate, new Date())
+      const t = countdown(startDate, new Date(), endDate)
       setText(upper ? t.toUpperCase() : t)
     }
     compute()
     // Re-check daily in case the tab stays open across a day boundary.
     const id = setInterval(compute, 60 * 60 * 1000)
     return () => clearInterval(id)
-  }, [startDate, upper])
+  }, [startDate, endDate, upper])
 
   return <>{text}</>
 }

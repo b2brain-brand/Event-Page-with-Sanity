@@ -3,12 +3,22 @@ import type { StructureResolver } from 'sanity/structure'
 /**
  * Studio desk structure.
  *
- * Two things worth keeping:
+ * Three things worth keeping:
  *  1. Site settings is a true singleton — one fixed document id, no "create"
  *     button, so nobody can end up with two competing settings docs.
- *  2. Events are split Upcoming / Past / Needs sourcing. That third list is the
- *     production queue: anything still flagged noindex or missing its quick
- *     answer is not finished, and this makes that visible without opening docs.
+ *  2. Events are split Upcoming / Live / Past / Needs sourcing. There is no
+ *     stored "status" field — each list is a live GROQ filter against
+ *     startDate/endDate, evaluated against today every time the list opens.
+ *     So an event moves itself between buckets automatically as the calendar
+ *     turns, with nothing to edit. The boundaries are mutually exclusive and
+ *     cover every event (endDate is always >= startDate, enforced by the
+ *     schema's validation):
+ *       Upcoming: startDate > today            (hasn't started yet)
+ *       Live:     startDate <= today <= endDate (in progress right now)
+ *       Past:     endDate < today               (already finished)
+ *  3. "Needs sourcing" is the production queue: anything still flagged
+ *     noindex or missing its quick answer is not finished, and this makes
+ *     that visible without opening docs.
  */
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -25,7 +35,16 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentList()
                     .title('Upcoming events')
-                    .filter('_type == "event" && startDate >= $today')
+                    .filter('_type == "event" && startDate > $today')
+                    .params({ today: new Date().toISOString().slice(0, 10) })
+                    .defaultOrdering([{ field: 'startDate', direction: 'asc' }]),
+                ),
+              S.listItem()
+                .title('Live')
+                .child(
+                  S.documentList()
+                    .title('Live events')
+                    .filter('_type == "event" && startDate <= $today && endDate >= $today')
                     .params({ today: new Date().toISOString().slice(0, 10) })
                     .defaultOrdering([{ field: 'startDate', direction: 'asc' }]),
                 ),
@@ -34,7 +53,7 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentList()
                     .title('Past events')
-                    .filter('_type == "event" && startDate < $today')
+                    .filter('_type == "event" && endDate < $today')
                     .params({ today: new Date().toISOString().slice(0, 10) })
                     .defaultOrdering([{ field: 'startDate', direction: 'desc' }]),
                 ),

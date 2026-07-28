@@ -24,7 +24,7 @@ export function Cta({
   now: Date
 }) {
   const name = has(event.name) ? event.name! : 'your next show'
-  const cd = event.startDate ? countdown(event.startDate, now) : ''
+  const cd = event.startDate ? countdown(event.startDate, now, event.endDate) : ''
   const liveCountdown = !event.ctaEyebrowOverride && has(cd)
   const eyebrow =
     event.ctaEyebrowOverride ||
@@ -43,7 +43,12 @@ export function Cta({
           <div>
             <span className="eyebrow eyebrow--asterisk cta__weeks">
               {liveCountdown ? (
-                <CountdownText startDate={event.startDate!} initial={eyebrow} upper />
+                <CountdownText
+                  startDate={event.startDate!}
+                  endDate={event.endDate}
+                  initial={eyebrow}
+                  upper
+                />
               ) : (
                 eyebrow
               )}
