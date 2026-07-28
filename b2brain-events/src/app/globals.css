@@ -580,6 +580,9 @@ ul{margin:0;padding:0;list-style:none}
 /* ============================================================ EVENT ARTICLE (blog body + TOC)
    Two columns: a sticky "On this page" TOC on the left, the editorial body on
    the right — the live-site layout. Purple key-takeaways box, section anchors. */
+/* The blog section runs a touch wider than the rest of the page (matching the
+   live site's ~1185px blog container) so the reading column fills out. */
+#article > .container{max-width:1240px}
 .article{display:grid;grid-template-columns:165px minmax(0,1fr) 240px;gap:48px;align-items:start}
 @media(max-width:1180px){.article{grid-template-columns:165px minmax(0,1fr);gap:40px}.artside{display:none}}
 @media(max-width:991px){.article{grid-template-columns:1fr;gap:32px}}
