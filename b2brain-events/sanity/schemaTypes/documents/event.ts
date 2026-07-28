@@ -211,6 +211,34 @@ export const event = defineType({
         'Footage from a previous edition, shown to the right of the H1. Present = two-column hero. Absent = full-width hero.',
     }),
     defineField({
+      name: 'cardStat',
+      title: 'Featured card — left headline',
+      type: 'string',
+      group: 'identity',
+      description:
+        'The big line in the tinted left panel of the FEATURED card on /events. An audience descriptor, like the main site: "Salesforce Ecosystem", "Southeast Manufacturers". Falls back to the attendee number ("170K+").',
+      validation: (r) => r.max(40),
+    }),
+    defineField({
+      name: 'cardAudience',
+      title: 'Featured card — who attends',
+      type: 'string',
+      group: 'identity',
+      description:
+        'The line under the left headline. e.g. "Customers, partners, admins, developers and executives". Falls back to the attendee stat qualifier.',
+      validation: (r) => r.max(90),
+    }),
+    defineField({
+      name: 'cardHeadline',
+      title: 'Featured card — headline',
+      type: 'text',
+      rows: 2,
+      group: 'identity',
+      description:
+        'The big title on the right of the FEATURED card. A purpose-written line, like the main site: "Dreamforce 2026 — the Salesforce ecosystem gathers in San Francisco for the Agentic Enterprise." Falls back to the event name. Do NOT reuse the hero sub-headline here.',
+      validation: (r) => r.max(160),
+    }),
+    defineField({
       name: 'cardImage',
       title: 'Collection card image',
       type: 'image',

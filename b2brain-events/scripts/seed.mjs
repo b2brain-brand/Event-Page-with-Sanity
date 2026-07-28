@@ -336,6 +336,12 @@ const dreamforce = {
     openOnYouTube: false,
   },
 
+  // Featured-card content for /events — authored, concise, like the main site.
+  cardStat: 'Salesforce Ecosystem',
+  cardAudience: 'Customers, partners, admins, developers and executives',
+  cardHeadline:
+    'Dreamforce 2026 — the Salesforce ecosystem gathers in San Francisco for the Agentic Enterprise.',
+
   stats: [
     { _type: 'statCell', _key: 's1', num: '170K+', label: 'Attendees', meta: 'customers, partners, admins' },
     { _type: 'statCell', _key: 's2', num: '110+', label: 'Exhibitors', meta: 'across the campus' },
@@ -586,6 +592,11 @@ const smts = {
   ],
 
   // No heroVideo on purpose — this is the full-width hero variant.
+
+  cardStat: 'Southeast Manufacturers',
+  cardAudience: 'Plant, operations and engineering leaders',
+  cardHeadline:
+    "SE Manufacturing Technology Show 2026 — the Southeast's regional manufacturing and automation gathering.",
 
   stats: [
     { _type: 'statCell', _key: 's1', num: '6,500+', label: 'Attendees', meta: 'regional operators' },

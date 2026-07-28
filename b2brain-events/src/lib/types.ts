@@ -25,6 +25,9 @@ export type EventCard = {
 /** The event card shown on the /events collection page. */
 export type IndexEventCard = EventCard & {
   tagline?: string
+  cardStat?: string
+  cardAudience?: string
+  cardHeadline?: string
   description?: string
   isFeatured?: boolean
   attendees?: string

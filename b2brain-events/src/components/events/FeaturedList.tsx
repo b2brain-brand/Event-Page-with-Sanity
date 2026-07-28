@@ -34,14 +34,20 @@ export function FeaturedList({
         ]
           .filter((x) => has(x))
           .join('  -  ')
-        const title = has(e.tagline) ? `${e.name} — ${e.tagline}` : e.name
+
+        // Dedicated card fields, like the main site — with graceful fallbacks so
+        // an event that has not authored them still reads cleanly (name only,
+        // never the hero sub-headline crammed in).
+        const leftStat = has(e.cardStat) ? e.cardStat : e.attendees || e.type
+        const leftAudience = has(e.cardAudience) ? e.cardAudience : e.attendeesMeta
+        const title = has(e.cardHeadline) ? e.cardHeadline : e.name
         const tint = i % 2 === 0 ? 'fcard__side--orange' : 'fcard__side--purple'
 
         return (
           <Link className="fcard" href={`/events/${e.slug}`} key={e._id}>
             <div className={`fcard__side ${tint}`}>
-              <div className="fcard__stat">{has(e.attendees) ? e.attendees : e.type}</div>
-              {has(e.attendeesMeta) && <div className="fcard__stat-meta">{e.attendeesMeta}</div>}
+              <div className="fcard__stat">{leftStat}</div>
+              {has(leftAudience) && <div className="fcard__stat-meta">{leftAudience}</div>}
               <div className="fcard__name">{e.name}</div>
             </div>
 
