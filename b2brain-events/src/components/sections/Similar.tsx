@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { fmtRange, has } from '@/lib/format'
 import { L } from '@/lib/defaults'
 import { Section, SectionHead } from '../SectionHead'
-import { BRAND } from '@/lib/brand'
 import type { EventCard, SiteSettings } from '@/lib/types'
 
 /**
@@ -32,9 +31,9 @@ export function Similar({
           title={L(settings, 'similarHeading')}
           variant="dash"
         />
-        <a href={BRAND.breadcrumb.events.href} className="btn btn--ghost">
+        <Link href="/events" className="btn btn--ghost">
           See All Events
-        </a>
+        </Link>
       </div>
 
       <div className="simcards" style={gridFor(cards.length)}>

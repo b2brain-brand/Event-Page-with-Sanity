@@ -585,22 +585,22 @@ ul{margin:0;padding:0;list-style:none}
 @media(max-width:991px){.article{grid-template-columns:1fr;gap:32px}}
 .article__toc{position:sticky;top:calc(var(--nav-h) + var(--toc-h) + 20px);align-self:start}
 @media(max-width:991px){.article__toc{position:static;border:1px solid var(--black);padding:20px}}
-.article__toc-label{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-50);margin-bottom:16px}
-.article__toc nav{display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--border-light)}
-.article__toc-link{padding:7px 0 7px 16px;margin-left:-1px;border-left:2px solid transparent;font-size:14px;line-height:19px;color:var(--black-70)}
+.article__toc-label{font-size:18px;font-weight:500;letter-spacing:normal;text-transform:none;color:var(--black);margin-bottom:18px;font-family:var(--font-heading)}
+.article__toc nav{display:flex;flex-direction:column;gap:1px;border-left:1px solid var(--border-light)}
+.article__toc-link{padding:5px 0 5px 14px;margin-left:-1px;border-left:2px solid transparent;font-size:14px;font-weight:500;line-height:19px;color:var(--black-70)}
 .article__toc-link:hover{color:var(--black)}
 .article__toc-link.is-active{color:var(--orange);border-left-color:var(--orange);font-weight:500}
-.article__toc-link--sub{padding-left:28px;font-size:13px}
+.article__toc-link--sub{padding-left:26px;font-size:13px}
 
 .article__body{max-width:760px}
 .article__body > *:first-child{margin-top:0}
-.article__h2{font-size:32px;line-height:40px;letter-spacing:-.6px;margin:48px 0 0;scroll-margin-top:140px}
-.article__h3{font-size:24px;line-height:32px;letter-spacing:-.3px;margin:36px 0 0;scroll-margin-top:140px}
-.article__h4{font-family:var(--font-heading);font-weight:500;font-size:19px;line-height:27px;margin:28px 0 0}
-.article__p{font-size:17px;line-height:28px;color:var(--black-70);margin-top:18px}
+.article__h2{font-size:34px;line-height:42px;letter-spacing:-.8px;margin:56px 0 0;scroll-margin-top:140px}
+.article__h3{font-size:24px;line-height:32px;letter-spacing:-.3px;margin:40px 0 0;scroll-margin-top:140px}
+.article__h4{font-family:var(--font-heading);font-weight:500;font-size:19px;line-height:27px;margin:30px 0 0}
+.article__p{font-size:18px;line-height:29px;color:var(--black-70);margin-top:20px}
 .article__p strong{color:var(--black)}
-.article__ul,.article__ol{margin:18px 0 0;padding-left:22px;font-size:17px;line-height:28px;color:var(--black-70)}
-.article__ul li,.article__ol li{margin-top:8px}
+.article__ul,.article__ol{margin:20px 0 0;padding-left:22px;font-size:18px;line-height:29px;color:var(--black-70)}
+.article__ul li,.article__ol li{margin-top:10px}
 .article__ul{list-style:disc}.article__ol{list-style:decimal}
 .article__quote{border-left:4px solid var(--purple);padding:6px 0 6px 24px;margin:28px 0 0;font-family:var(--font-heading);font-weight:500;font-size:22px;line-height:31px;letter-spacing:-.3px}
 .article__figure{margin:32px 0 0;border:1px solid var(--black)}
@@ -608,13 +608,12 @@ ul{margin:0;padding:0;list-style:none}
 .article__cap{padding:12px 16px;border-top:1px solid var(--black);font-size:13px;color:var(--black-70)}
 
 /* key-takeaways / TL;DR box */
-.article__tldr{background:var(--purple-light);border:1px solid var(--black);padding:36px 40px;margin:0 0 8px}
-.article__tldr-eyebrow{font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--black-70)}
-.article__tldr-heading{font-size:28px;line-height:34px;letter-spacing:-.5px;margin-top:12px}
-.article__tldr-list{margin-top:20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
-.article__tldr-list li{font-size:17px;line-height:26px;padding-left:22px;position:relative}
-.article__tldr-list li::before{content:'';position:absolute;left:0;top:10px;width:10px;height:2px;background:var(--orange)}
-@media(max-width:640px){.article__tldr{padding:26px 22px}.article__h2{font-size:26px;line-height:32px}}
+.article__tldr{background:var(--purple-light);border-radius:16px;padding:28px 40px 32px;margin:0 0 32px}
+.article__tldr-eyebrow{font-size:15px;font-weight:400;letter-spacing:normal;text-transform:none;color:var(--black);font-family:var(--font-body)}
+.article__tldr-heading{font-size:30px;line-height:38px;letter-spacing:-.6px;margin-top:14px}
+.article__tldr-list{margin-top:20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px}
+.article__tldr-list li{font-size:16px;font-weight:500;line-height:24px;color:var(--black)}
+@media(max-width:640px){.article__tldr{padding:24px 22px}.article__tldr-heading{font-size:24px;line-height:30px}.article__h2{font-size:28px;line-height:34px}}
 
 
 /* ============================================================ ARTICLE SIDEBAR (sticky promo cards)
@@ -622,8 +621,8 @@ ul{margin:0;padding:0;list-style:none}
    checklist + Book a 30m chat, and a "Get Event Insights with AI" card. Sticky,
    so they stay put while the blog body scrolls. */
 .artside{position:sticky;top:calc(var(--nav-h) + var(--toc-h) + 20px);align-self:start;display:flex;flex-direction:column;gap:20px}
-.artside__cta{background:var(--black);color:var(--white);padding:28px 26px}
-.artside__cta-head{font-family:var(--font-heading);font-weight:500;font-size:22px;line-height:28px;letter-spacing:-.3px;color:var(--white)}
+.artside__cta{background:var(--black);color:var(--white);padding:24px 24px 28px}
+.artside__cta-head{font-family:var(--font-heading);font-weight:500;font-size:20px;line-height:27px;letter-spacing:-.2px;color:var(--white)}
 .artside__cta-sub{margin-top:18px;font-size:13px;color:rgba(255,255,255,.6)}
 .artside__list{margin-top:12px;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px}
 .artside__list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:21px;color:rgba(255,255,255,.9)}
