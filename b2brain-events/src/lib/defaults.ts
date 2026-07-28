@@ -58,7 +58,11 @@ export const LABEL_DEFAULTS: Record<string, string> = {
   sentimentTestimonialLabel: 'From past exhibitors',
 
   playbookEyebrowTemplate: 'HOW TO WIN AT {event}',
-  playbookHeadingTemplate: 'Turn {event} from a cost line into a pipeline line',
+  playbookHeadingTemplate: 'Turn {event} from "event spend" to Pipeline Channel',
+  // Motion 01 CTA line (links to the closing CTA banner). Per the request sheet.
+  playbookMotion1Cta: 'Take a demo, learn how, and go back with the list for free.',
+  // Exhibitors "which booths" CTA line (links to the closing CTA banner).
+  exhibitorsCta: 'Want to discuss booth strategies? Book a demo and take back the updated exhibitor list.',
   playbookMotionPrefix: 'Motion 0{n} — ',
   playbookStep1: 'Pre-event · target list',
   playbookStep2: 'On the floor · capture + book',
@@ -195,7 +199,7 @@ export const SETTINGS_DEFAULTS: SiteSettings = {
   ctaFallbackEyebrow: 'BOOK A DEMO',
   roiIndustryAverage: 8,
   roiLtmCopy:
-    'At these inputs your **Leads-to-Meeting (LTM) rate is {ltm}** — versus an **~{avg} industry average** for badge-scanner-only teams. LTM is the metric B2Brain is built to move.',
+    'Your **Leads-to-Meeting (LTM) rate is {ltm}** versus an **{avg} industry average** for badge-scanner-only teams. LTM metric moves your Pipeline. B2Brain moves your LTM.',
   organizationName: 'B2Brain',
   organizationSameAs: [
     'https://www.instagram.com/getb2brain/',

@@ -1,25 +1,31 @@
-import { BRAND } from '@/lib/brand'
+import { resolveChrome } from '@/lib/chrome'
 import { UseCaseIcon } from './BrandIcons'
+import type { SiteSettings } from '@/lib/types'
 
 /**
- * Sticky nav — the real b2brain.com nav. Links come from `@/lib/brand`, not the
- * CMS, so the parent-site chrome always matches and cannot drift.
+ * Sticky nav — the real b2brain.com nav.
  *
- * The dropdown sits under "Use Cases" (verified against the live site) and its
- * items carry a coloured icon square, matching b2brain.com. Opens on hover AND
- * keyboard focus. Links hide below 991px, per the design.
+ * Now CMS-editable: it renders whatever is in Site settings, falling back
+ * field-by-field to the verified b2brain.com chrome in `@/lib/brand`. So the
+ * default is an exact copy, editors can add or change links in the Studio, and
+ * clearing a field degrades to the real value rather than breaking.
+ *
+ * Dropdown items (Use Cases) carry a coloured icon, open on hover AND keyboard
+ * focus. Links hide below 991px, per the design.
  */
-export function Nav() {
+export function Nav({ settings }: { settings?: SiteSettings | null }) {
+  const c = resolveChrome(settings ?? null)
+
   return (
     <header className="nav">
       <div className="nav__inner">
-        <a href={BRAND.logoHref} className="nav__logo" aria-label={BRAND.logoText}>
+        <a href={c.logoHref} className="nav__logo" aria-label={c.logoText}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={BRAND.logoSrc} alt={BRAND.logoText} width={602} height={103} />
+          <img src={c.logoSrc} alt={c.logoText} width={602} height={103} />
         </a>
 
         <nav className="nav__links">
-          {BRAND.nav.map((l, i) => {
+          {c.nav.map((l, i) => {
             const children = l.children ?? []
             if (!children.length) {
               return (
@@ -40,10 +46,10 @@ export function Nav() {
                   <span className="nav__caret" aria-hidden="true" />
                 </button>
                 <div className="nav__menu nav__menu--rich">
-                  {children.map((c, j) => (
-                    <a key={`${c.href}-${j}`} href={c.href} className="nav__menu-item">
-                      <UseCaseIcon icon={c.icon} />
-                      <span>{c.label}</span>
+                  {children.map((ch, j) => (
+                    <a key={`${ch.href}-${j}`} href={ch.href} className="nav__menu-item">
+                      <UseCaseIcon icon={ch.icon} />
+                      <span>{ch.label}</span>
                     </a>
                   ))}
                 </div>
@@ -53,16 +59,11 @@ export function Nav() {
         </nav>
 
         <div className="nav__cta">
-          <a
-            href={BRAND.login.href}
-            className="nav__login"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {BRAND.login.label}
+          <a href={c.login.href} className="nav__login" target="_blank" rel="noopener noreferrer">
+            {c.login.label}
           </a>
-          <a href={BRAND.cta.href} className="btn btn--primary btn--sm">
-            {BRAND.cta.label}
+          <a href={c.cta.href} className="btn btn--primary btn--sm">
+            {c.cta.label}
           </a>
         </div>
       </div>

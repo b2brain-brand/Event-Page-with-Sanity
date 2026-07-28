@@ -184,8 +184,13 @@ export type SiteSettings = {
     label?: string
     href?: string
     isCurrent?: boolean
-    children?: { label?: string; href?: string }[]
+    children?: { label?: string; href?: string; icon?: string }[]
   }[]
+  newsletterHeading?: string
+  newsletterPlaceholder?: string
+  newsletterAction?: string
+  aiHeading?: string
+  aiLinks?: { label?: string; url?: string; glyph?: string }[]
   navLoginLabel?: string
   navLoginHref?: string
   navCtaLabel?: string

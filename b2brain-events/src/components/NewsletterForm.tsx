@@ -1,18 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { BRAND } from '@/lib/brand'
 
 /**
  * Footer newsletter signup — the email field + arrow button from b2brain.com.
  *
- * The live site posts to its own mailing list. This has no backend, so on submit
- * it shows an inline thank-you rather than pretending to store the address. Set
- * BRAND.newsletter.action to a real endpoint to make it POST for real.
+ * With no `action` it shows an inline thank-you rather than pretending to store
+ * the address. Set the action (in Site settings) to a real endpoint to POST.
  */
-export function NewsletterForm() {
+export function NewsletterForm({
+  placeholder,
+  action,
+  heading,
+}: {
+  placeholder: string
+  action: string
+  heading: string
+}) {
   const [done, setDone] = useState(false)
-  const action = BRAND.newsletter.action
 
   if (done) {
     return <div className="nl__done">Thanks — we&rsquo;ll be in touch.</div>
@@ -44,8 +49,8 @@ export function NewsletterForm() {
         type="email"
         name="email"
         required
-        placeholder={BRAND.newsletter.placeholder}
-        aria-label={BRAND.newsletter.heading}
+        placeholder={placeholder}
+        aria-label={heading}
       />
       <button type="submit" aria-label="Subscribe">
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">

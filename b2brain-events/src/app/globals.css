@@ -519,3 +519,11 @@ ul{margin:0;padding:0;list-style:none}
 .filter__clear{background:none;border:none;text-decoration:underline;cursor:pointer;font:inherit;font-size:14px;color:var(--black-70);padding:0}
 .filter__clear:hover{color:var(--black)}
 @media(max-width:760px){.filter{grid-template-columns:1fr;grid-template-areas:'industries' 'search' 'meta';gap:22px}.filter__meta{justify-self:start}}
+
+/* ============================================================ INLINE DEMO CTAs (request sheet)
+   Motion 01 playbook card + exhibitors "which booths" box each get a link to the
+   closing demo banner. Purple, weight 500, arrow — the site's link-arrow style. */
+.play__cta{display:inline-block;margin-top:16px;font-size:14px;font-weight:500;color:var(--purple)}
+.play__cta:hover{color:var(--black)}
+.exh__cta{display:inline-block;margin-top:22px;font-size:15px;font-weight:500;color:var(--purple)}
+.exh__cta:hover{color:var(--black)}

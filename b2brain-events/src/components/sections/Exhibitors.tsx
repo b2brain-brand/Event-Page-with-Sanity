@@ -52,6 +52,13 @@ export function Exhibitors({
           <p>{notable}</p>
         </div>
       )}
+
+      {/* CTA line just after the "which booths" box, per the request sheet. */}
+      {has(L(settings, 'exhibitorsCta')) && (
+        <a href="#cta" className="exh__cta link-arrow">
+          {L(settings, 'exhibitorsCta')}
+        </a>
+      )}
     </Section>
   )
 }

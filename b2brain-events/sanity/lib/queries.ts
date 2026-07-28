@@ -27,12 +27,14 @@ const EVENT_CARD_FIELDS = /* groq */ `
 export const SITE_SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings"][0]{
     logoText,
-    logoHref,
-    navLinks[]{ label, href, isCurrent, children[]{ label, href } },
+    logoText, logoHref,
+    navLinks[]{ label, href, isCurrent, children[]{ label, href, icon } },
+    navLoginLabel, navLoginHref, navCtaLabel, navCtaHref,
     socialLinks[]{ platform, url },
     contactEmail,
     legalLinks[]{ label, href },
-    navLoginLabel, navLoginHref, navCtaLabel, navCtaHref,
+    newsletterHeading, newsletterPlaceholder, newsletterAction,
+    aiHeading, aiLinks[]{ label, url, glyph },
     breadcrumb{ homeLabel, homeHref, eventsLabel, eventsHref },
     tocLabel, tocCtaLabel,
     footerBlurb,

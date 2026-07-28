@@ -45,13 +45,22 @@ export const siteSettings = defineType({
       type: 'array',
       of: [defineArrayMember({ type: 'navLink' })],
       group: 'chrome',
-      description: 'Hidden below 991px, per the design. Mark "Events" as the current section.',
+      description:
+        'The nav. Add children to a link to make it a dropdown (Use Cases). Empty falls back to the exact b2brain.com nav. Hidden below 991px.',
       initialValue: [
-        { label: 'Platform', href: '/platform' },
-        { label: 'Use Cases', href: '/use-cases' },
-        { label: 'Pricing', href: '/pricing' },
-        { label: 'Events', href: '/events', isCurrent: true },
-        { label: 'Blog', href: '/blog' },
+        { label: 'Platform', href: 'https://www.b2brain.com/platform' },
+        {
+          label: 'Use Cases',
+          href: 'https://www.b2brain.com/platform',
+          children: [
+            { label: 'New Pipeline Generation', href: 'https://www.b2brain.com/new-pipeline-generation', icon: 'pipeline' },
+            { label: 'Event Attendees', href: 'https://www.b2brain.com/event-attendees', icon: 'attendees' },
+            { label: 'Event Exhibitors', href: 'https://www.b2brain.com/event-exhibitors', icon: 'exhibitors' },
+          ],
+        },
+        { label: 'Pricing', href: 'https://www.b2brain.com/pricing' },
+        { label: 'Events', href: 'https://www.b2brain.com/events', isCurrent: true },
+        { label: 'Blogs', href: 'https://www.b2brain.com/blogs' },
       ],
     }),
     defineField({
@@ -64,17 +73,17 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'navLoginLabel',
-      title: 'Nav log-in label',
+      title: 'Nav log-in / trial label',
       type: 'string',
       group: 'chrome',
-      initialValue: 'Log In',
+      initialValue: 'Start Free Trial',
     }),
     defineField({
       name: 'navLoginHref',
-      title: 'Nav log-in URL',
+      title: 'Nav log-in / trial URL',
       type: 'string',
       group: 'chrome',
-      initialValue: '/login',
+      initialValue: 'https://apps.apple.com/us/app/b2brain-event-lead-capture/id6757783820',
     }),
     defineField({
       name: 'navCtaLabel',
@@ -88,8 +97,8 @@ export const siteSettings = defineType({
       title: 'Nav button URL',
       type: 'string',
       group: 'chrome',
-      description: 'Default "#cta" scrolls to the closing banner rather than leaving the page.',
-      initialValue: '#cta',
+      description: 'The nav CTA button.',
+      initialValue: 'https://www.b2brain.com/demo',
     }),
     defineField({
       name: 'socialLinks',
@@ -164,8 +173,8 @@ export const siteSettings = defineType({
       rows: 3,
       group: 'chrome',
       initialValue:
-        'The Event Meeting Platform. Turn trade-show conversations into booked meetings and measurable pipeline.',
-      validation: (r) => r.max(200),
+        'The Event Intelligence Platform. Turn trade show conversations into booked meetings and measurable pipeline. From Offline to Pipeline.',
+      validation: (r) => r.max(240),
     }),
     defineField({
       name: 'footerColumns',
@@ -175,6 +184,67 @@ export const siteSettings = defineType({
       group: 'chrome',
       description: 'Three columns in the reference build: Platform, Events, Company.',
       validation: (r) => r.max(3),
+    }),
+    defineField({
+      name: 'newsletterHeading',
+      title: 'Newsletter — heading',
+      type: 'string',
+      group: 'chrome',
+      description: 'Footer newsletter block.',
+      initialValue: 'Subscribe Newsletter',
+    }),
+    defineField({
+      name: 'newsletterPlaceholder',
+      title: 'Newsletter — input placeholder',
+      type: 'string',
+      group: 'chrome',
+      initialValue: 'Enter your e-mail',
+    }),
+    defineField({
+      name: 'newsletterAction',
+      title: 'Newsletter — form action URL',
+      type: 'url',
+      group: 'chrome',
+      description:
+        'Where the email is POSTed. Leave blank and the form shows a thank-you without storing anything.',
+    }),
+    defineField({
+      name: 'aiHeading',
+      title: '"Learn about B2Brain with AI" — heading',
+      type: 'string',
+      group: 'chrome',
+      initialValue: 'Learn about B2Brain with AI',
+    }),
+    defineField({
+      name: 'aiLinks',
+      title: 'AI answer-engine links',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'aiLink',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.required() }),
+            defineField({ name: 'url', title: 'URL', type: 'url', validation: (r) => r.required() }),
+            defineField({
+              name: 'glyph',
+              title: 'Icon',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'ChatGPT', value: 'openai' },
+                  { title: 'Claude', value: 'claude' },
+                  { title: 'Perplexity', value: 'perplexity' },
+                  { title: 'Gemini', value: 'gemini' },
+                  { title: 'Grok', value: 'grok' },
+                ],
+              },
+            }),
+          ],
+          preview: { select: { title: 'label', subtitle: 'url' } },
+        }),
+      ],
+      group: 'chrome',
     }),
     defineField({
       name: 'footerCopyright',
@@ -273,6 +343,14 @@ export const siteSettings = defineType({
         defineField({ name: 'exhibitorsEyebrow', title: 'Exhibitors — eyebrow', type: 'string', initialValue: 'EXHIBITORS & SPONSORS' }),
         defineField({ name: 'exhibitorsHeading', title: 'Exhibitors — heading', type: 'string', initialValue: "Who's setting up on the floor" }),
         defineField({ name: 'exhibitorsNotableHeading', title: 'Exhibitors — note card heading', type: 'string', initialValue: 'Which booths to map first' }),
+        defineField({
+          name: 'exhibitorsCta',
+          title: 'Exhibitors — CTA line (links to demo)',
+          type: 'text',
+          rows: 2,
+          description: 'Shown after the "which booths" box, linked to the closing demo banner.',
+          initialValue: 'Want to discuss booth strategies? Book a demo and take back the updated exhibitor list.',
+        }),
 
         defineField({ name: 'audienceEyebrow', title: 'Who attends — eyebrow', type: 'string', initialValue: 'WHO ATTENDS' }),
         defineField({ name: 'audienceHeading', title: 'Who attends — heading', type: 'string', initialValue: 'The audience your booth is buying access to' }),
@@ -304,7 +382,7 @@ export const siteSettings = defineType({
           name: 'playbookHeadingTemplate',
           title: 'Playbook — heading template',
           type: 'string',
-          initialValue: 'Turn {event} from a cost line into a pipeline line',
+          initialValue: 'Turn {event} from "event spend" to Pipeline Channel',
         }),
         defineField({
           name: 'playbookMotionPrefix',
@@ -313,6 +391,14 @@ export const siteSettings = defineType({
           description:
             'Prefix on each card\'s small step line. {n} is the motion number (1, 2, 3). Rendered as "Motion 01 — Pre-event · target list".',
           initialValue: 'Motion 0{n} — ',
+        }),
+        defineField({
+          name: 'playbookMotion1Cta',
+          title: 'Playbook — Motion 01 CTA line (links to demo)',
+          type: 'text',
+          rows: 2,
+          description: 'A CTA sentence at the end of the Motion 01 card, linked to the closing demo banner.',
+          initialValue: 'Take a demo, learn how, and go back with the list for free.',
         }),
         defineField({ name: 'playbookStep1', title: 'Playbook — motion 01 label', type: 'string', initialValue: 'Pre-event · target list' }),
         defineField({ name: 'playbookStep2', title: 'Playbook — motion 02 label', type: 'string', initialValue: 'On the floor · capture + book' }),
@@ -482,7 +568,7 @@ export const siteSettings = defineType({
       description:
         'Tokens: {ltm} = the visitor\'s calculated rate, {avg} = the industry average above. Wrap text in **double asterisks** to bold it — keep the rate and the comparison bold, because the house rule is that a percentage never appears without the number it is being compared against.',
       initialValue:
-        'At these inputs your **Leads-to-Meeting (LTM) rate is {ltm}** — versus an **~{avg} industry average** for badge-scanner-only teams. LTM is the metric B2Brain is built to move.',
+        'Your **Leads-to-Meeting (LTM) rate is {ltm}** versus an **{avg} industry average** for badge-scanner-only teams. LTM metric moves your Pipeline. B2Brain moves your LTM.',
     }),
 
     /* ---------------------------------------------------- ORG AND DEFAULTS */

@@ -37,6 +37,12 @@ export function Playbook({ event, settings }: { event: EventDoc; settings: SiteS
             <div className="play__icon" aria-hidden="true" />
             <h4>{c.h}</h4>
             {has(c.b) && <p>{c.b}</p>}
+            {/* Motion 01 only: a CTA line linking to the closing demo banner. */}
+            {c.n === '1' && has(L(settings, 'playbookMotion1Cta')) && (
+              <a href="#cta" className="play__cta link-arrow">
+                {L(settings, 'playbookMotion1Cta')}
+              </a>
+            )}
           </div>
         ))}
       </div>

@@ -106,6 +106,19 @@ export const navLink = defineType({
           fields: [
             defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.required() }),
             defineField({ name: 'href', title: 'URL or path', type: 'string', validation: (r) => r.required() }),
+            defineField({
+              name: 'icon',
+              title: 'Icon',
+              type: 'string',
+              description: 'Optional coloured icon square (nav dropdown only).',
+              options: {
+                list: [
+                  { title: 'Pipeline (green)', value: 'pipeline' },
+                  { title: 'Attendees (purple)', value: 'attendees' },
+                  { title: 'Exhibitors (orange)', value: 'exhibitors' },
+                ],
+              },
+            }),
           ],
           preview: { select: { title: 'label', subtitle: 'href' } },
         }),
