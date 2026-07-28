@@ -580,8 +580,8 @@ ul{margin:0;padding:0;list-style:none}
 /* ============================================================ EVENT ARTICLE (blog body + TOC)
    Two columns: a sticky "On this page" TOC on the left, the editorial body on
    the right — the live-site layout. Purple key-takeaways box, section anchors. */
-.article{display:grid;grid-template-columns:230px minmax(0,1fr) 300px;gap:48px;align-items:start}
-@media(max-width:1180px){.article{grid-template-columns:210px minmax(0,1fr)}.artside{display:none}}
+.article{display:grid;grid-template-columns:165px minmax(0,1fr) 240px;gap:48px;align-items:start}
+@media(max-width:1180px){.article{grid-template-columns:165px minmax(0,1fr);gap:40px}.artside{display:none}}
 @media(max-width:991px){.article{grid-template-columns:1fr;gap:32px}}
 .article__toc{position:sticky;top:calc(var(--nav-h) + var(--toc-h) + 20px);align-self:start}
 @media(max-width:991px){.article__toc{position:static;border:1px solid var(--black);padding:20px}}
@@ -592,7 +592,7 @@ ul{margin:0;padding:0;list-style:none}
 .article__toc-link.is-active{color:var(--orange);border-left-color:var(--orange);font-weight:500}
 .article__toc-link--sub{padding-left:26px;font-size:13px}
 
-.article__body{max-width:760px}
+.article__body{max-width:none;min-width:0}
 .article__body > *:first-child{margin-top:0}
 .article__h2{font-size:34px;line-height:42px;letter-spacing:-.8px;margin:56px 0 0;scroll-margin-top:140px}
 .article__h3{font-size:24px;line-height:32px;letter-spacing:-.3px;margin:40px 0 0;scroll-margin-top:140px}
