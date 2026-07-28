@@ -4,38 +4,52 @@
  * forbids icon fonts, and these are cheaper than a font request anyway.
  */
 
-/** Nav dropdown icons: a coloured square with a simple black glyph, matching b2brain.com. */
+/**
+ * Nav dropdown icons — the exact 48×48 SVGs from b2brain.com's Use Cases menu.
+ * Each SVG is a complete tile: its own pastel background rect (green / purple /
+ * beige) plus the black glyph with a red (#FF382C) accent. Rendered verbatim, so
+ * they are pixel-identical to the live site.
+ */
 export function UseCaseIcon({ icon }: { icon?: string }) {
-  const tint =
-    icon === 'pipeline' ? 'var(--green)' : icon === 'attendees' ? 'var(--purple-light)' : 'var(--orange-light)'
   return (
-    <span className="uc-icon" style={{ background: tint }} aria-hidden="true">
-      <svg viewBox="0 0 20 20" width="24" height="24">
-        {icon === 'pipeline' && (
-          // bar chart / pipeline growth
-          <g fill="currentColor">
-            <rect x="3" y="12" width="3" height="5" />
-            <rect x="8.5" y="8" width="3" height="9" />
-            <rect x="14" y="4" width="3" height="13" />
-          </g>
-        )}
-        {icon === 'attendees' && (
-          // person
-          <g fill="currentColor">
-            <circle cx="10" cy="6" r="3" />
-            <path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6z" />
-          </g>
-        )}
-        {icon === 'exhibitors' && (
-          // booth / exhibitor stand
-          <g fill="currentColor">
-            <rect x="3" y="4" width="14" height="3" />
-            <rect x="4.5" y="8" width="2.5" height="8" />
-            <rect x="13" y="8" width="2.5" height="8" />
-            <rect x="4.5" y="14" width="11" height="2" />
-          </g>
-        )}
-      </svg>
+    <span className="uc-icon" aria-hidden="true">
+      {icon === 'pipeline' && (
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect width="48" height="48" fill="#CEE680" />
+          <path d="M19 28H12V38H19V28Z" stroke="black" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M28 20H21V38H28V20Z" stroke="black" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M37 10H30V38H37V10Z" fill="#FF382C" stroke="black" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M8 38H39" stroke="black" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      )}
+      {icon === 'attendees' && (
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect width="48" height="48" fill="#D6C0E7" />
+          <path
+            d="M24 23C27.3137 23 30 20.3137 30 17C30 13.6863 27.3137 11 24 11C20.6863 11 18 13.6863 18 17C18 20.3137 20.6863 23 24 23Z"
+            fill="black"
+          />
+          <path
+            d="M12 39V37C12 33.8174 13.2643 30.7652 15.5147 28.5147C17.7652 26.2643 20.8174 25 24 25C27.1826 25 30.2348 26.2643 32.4853 28.5147C34.7357 30.7652 36 33.8174 36 37V39"
+            stroke="black"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M33 16C34.6569 16 36 14.6569 36 13C36 11.3431 34.6569 10 33 10C31.3431 10 30 11.3431 30 13C30 14.6569 31.3431 16 33 16Z"
+            fill="#FF382C"
+          />
+        </svg>
+      )}
+      {icon === 'exhibitors' && (
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect width="48" height="48" fill="#E8E3CA" />
+          <path d="M40 10H8V19H40V10Z" fill="#FF382C" stroke="black" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M13 19V27" stroke="black" strokeWidth="2" strokeLinecap="round" />
+          <path d="M35 19V27" stroke="black" strokeWidth="2" strokeLinecap="round" />
+          <path d="M39 27H9V38H39V27Z" stroke="black" strokeWidth="2" strokeLinejoin="round" />
+        </svg>
+      )}
     </span>
   )
 }
