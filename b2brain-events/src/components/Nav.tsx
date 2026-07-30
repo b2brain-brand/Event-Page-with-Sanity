@@ -43,7 +43,12 @@ export function Nav({ settings }: { settings?: SiteSettings | null }) {
               <div className="nav__item" key={`${l.label}-${i}`}>
                 <button type="button" className="nav__trigger">
                   {l.label}
-                  <span className="nav__caret" aria-hidden="true" />
+                  {/* Exact chevron path from the live b2brain.com "Use Cases"
+                      dropdown (verified against its DOM) — not a CSS
+                      border-triangle, so it matches stroke-for-stroke. */}
+                  <svg className="nav__caret" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M8.00048 9.78145L11.3005 6.48145L12.2431 7.42411L8.00048 11.6668L3.75781 7.42411L4.70048 6.48145L8.00048 9.78145Z" />
+                  </svg>
                 </button>
                 <div className="nav__menu nav__menu--rich">
                   {children.map((ch, j) => (
