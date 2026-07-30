@@ -1,9 +1,23 @@
 import { resolveChrome } from '@/lib/chrome'
 import { has } from '@/lib/format'
-import { SocialIcon, socialLabel, type SocialPlatform } from './SocialIcons'
-import { AiGlyph } from './BrandIcons'
+import { socialLabel, type SocialPlatform } from './SocialIcons'
+import { AiGlyph, AiInfoIcon } from './BrandIcons'
 import { NewsletterForm } from './NewsletterForm'
 import type { SiteSettings } from '@/lib/types'
+
+/**
+ * The live b2brain.com social icons are self-contained badge assets (a white
+ * circle + light border baked into the SVG itself, not a CSS border) — so
+ * they're self-hosted here verbatim rather than redrawn as React components,
+ * which is the only way to get an exact pixel match.
+ */
+const SOCIAL_ICON_SRC: Record<string, string> = {
+  instagram: '/social/instagram.svg',
+  x: '/social/x.svg',
+  facebook: '/social/facebook.svg',
+  linkedin: '/social/linkedin.svg',
+  youtube: '/social/youtube.svg',
+}
 
 /**
  * Footer — the real b2brain.com footer, now CMS-editable with the verified
@@ -43,7 +57,8 @@ export function Footer({
                   rel="noopener noreferrer"
                   aria-label={socialLabel(s.platform as SocialPlatform)}
                 >
-                  <SocialIcon platform={s.platform as SocialPlatform} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={SOCIAL_ICON_SRC[s.platform]} alt="" width={32} height={32} />
                 </a>
               ))}
             </div>
@@ -79,6 +94,9 @@ export function Footer({
                     {i < arr.length - 1 && <b>B2Brain</b>}
                   </span>
                 ))}
+                <span className="footer__ai-info" aria-hidden="true">
+                  <AiInfoIcon />
+                </span>
               </div>
               <div className="footer__ai-icons">
                 {c.aiLinks.map((a) => (

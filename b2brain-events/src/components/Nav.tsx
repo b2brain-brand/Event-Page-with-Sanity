@@ -29,12 +29,11 @@ export function Nav({ settings }: { settings?: SiteSettings | null }) {
             const children = l.children ?? []
             if (!children.length) {
               return (
-                <a
-                  key={`${l.href}-${i}`}
-                  href={l.href}
-                  style={l.isCurrent ? { color: 'var(--black)' } : undefined}
-                  aria-current={l.isCurrent ? 'page' : undefined}
-                >
+                // The live b2brain.com nav does NOT visually distinguish the
+                // current page (verified: "Events" on /events itself is the
+                // same gray as every other link, only :hover darkens it) — so
+                // no color override here, just the a11y marker.
+                <a key={`${l.href}-${i}`} href={l.href} aria-current={l.isCurrent ? 'page' : undefined}>
                   {l.label}
                 </a>
               )

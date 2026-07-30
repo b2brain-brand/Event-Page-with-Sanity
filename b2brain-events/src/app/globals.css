@@ -65,11 +65,17 @@ ul{margin:0;padding:0;list-style:none}
 .nav__logo{display:flex;align-items:center;gap:10px;font-family:var(--font-heading);font-weight:600;font-size:19px;letter-spacing:-.4px}
 .nav__logo-mark{width:22px;height:22px;background:var(--black);position:relative}
 .nav__logo-mark::after{content:'';position:absolute;inset:6px;background:var(--orange)}
-.nav__links{display:flex;gap:0}
-.nav__links a{padding:0 15px;font-size:16px;font-weight:400;color:var(--black-70)}
+/* align-self:stretch makes .nav__links span the FULL nav height (not just its
+   own content height, which .nav__inner's align-items:center would otherwise
+   leave it at) — that's what makes the "Use Cases" dropdown's `top:100%` land
+   flush under the header instead of cutting across the middle of it. Without
+   this, the dropdown starts partway through the nav bar and visually overlays
+   it, which is the "not a clean dropdown" bug. */
+.nav__links{display:flex;align-self:stretch;gap:0}
+.nav__links a{display:flex;align-items:center;padding:0 15px;font-size:16px;font-weight:400;color:var(--black-70)}
 .nav__links a:hover{color:var(--black)}
 .nav__cta{display:flex;align-items:center;gap:16px}
-.nav__cta .btn--sm{padding:8px 20px;font-weight:400}
+.nav__cta .btn--sm{height:36px;padding:8px 20px;font-weight:400}
 @media(max-width:991px){.nav__links{display:none}}
 
 /* ============================================================ TOC / SUBNAV */
@@ -412,9 +418,9 @@ ul{margin:0;padding:0;list-style:none}
 /* Live b2brain.com renders these as bare 32x32 brand-color icons — no
    border, no circle badge, no hover invert. */
 .footer__social{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.footer__social a{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--black);transition:opacity .2s ease}
+.footer__social a{width:32px;height:32px;display:flex;transition:opacity .2s ease}
 .footer__social a:hover{opacity:.7}
-.footer__social svg{width:32px;height:32px;fill:currentColor;display:block}
+.footer__social img{width:32px;height:32px;display:block}
 .footer__contact{margin-top:18px;font-size:14px}
 .footer__contact a{border-bottom:1px solid rgba(0,0,0,.35)}
 .footer__contact a:hover{border-bottom-color:var(--black)}
@@ -488,8 +494,9 @@ ul{margin:0;padding:0;list-style:none}
 .footer__promo h5{display:flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:16px;font-weight:400;letter-spacing:normal;text-transform:none;color:var(--black)}
 .footer__star{color:inherit}
 .footer__ai{margin-top:28px}
-.footer__ai-head{font-size:16px;font-weight:400;letter-spacing:normal;text-transform:none;color:var(--black)}
+.footer__ai-head{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:400;letter-spacing:normal;text-transform:none;color:var(--black)}
 .footer__ai-head b{color:var(--orange)}
+.footer__ai-info{color:var(--black);flex:0 0 auto;display:flex}
 .footer__ai-icons{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px}
 .footer__ai-icons a{color:var(--black);transition:color .2s ease}
 .footer__ai-icons a:hover{color:var(--orange)}
