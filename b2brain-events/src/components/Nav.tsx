@@ -59,9 +59,10 @@ export function Nav({ settings }: { settings?: SiteSettings | null }) {
         </nav>
 
         <div className="nav__cta">
-          <a href={c.login.href} className="nav__login" target="_blank" rel="noopener noreferrer">
-            {c.login.label}
-          </a>
+          {/* The live b2brain.com desktop header no longer shows a separate
+              "Start Free Trial" link — verified against the current DOM on
+              both the homepage and /events; it's App Store-only, mobile-nav
+              only now. The single CTA button is the only nav__cta item. */}
           <a href={c.cta.href} className="btn btn--primary btn--sm">
             {c.cta.label}
           </a>
