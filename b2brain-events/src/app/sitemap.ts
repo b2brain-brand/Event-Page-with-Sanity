@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { fetchSanity } from '@/sanity/lib/fetch'
+import { client } from '@/sanity/lib/client'
 import { SITEMAP_QUERY } from '@/sanity/lib/queries'
 import { siteUrl } from '@/sanity/env'
 
@@ -12,18 +12,20 @@ import { siteUrl } from '@/sanity/env'
  *  - Upcoming shows get a higher priority than past ones. A trade-show page's
  *    value is almost entirely front-loaded; after the show closes it becomes a
  *    recap that supports next year's edition rather than a conversion page.
- *  - The read goes through `fetchSanity` so it carries the `event` cache tag.
- *    Calling `client.fetch` directly here left the sitemap untagged and
- *    therefore unpurgeable: publishing an event revalidated the pages and the
- *    index but not this file, so a new page sat outside the sitemap for up to
- *    an hour — the one place where a delay actually costs indexing.
+ *  - The read is a direct `client.fetch` tagged `event` — NOT the shared
+ *    `fetchSanity`. fetchSanity calls `draftMode()`, and in a metadata route
+ *    (sitemap.ts) that request-context call fails during background ISR
+ *    revalidation, so Next silently kept serving the build-time sitemap — new
+ *    events never appeared. A sitemap must never render drafts anyway, so the
+ *    preview-aware wrapper is wrong here. The explicit `tags: ['event']` still
+ *    makes it purge the instant any event is published.
  */
 export const revalidate = 60
 
 type Row = { slug: string; lastUpdated?: string; _updatedAt?: string; startDate?: string }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const rows = await fetchSanity<Row[]>({ query: SITEMAP_QUERY, tags: ['event'] })
+  const rows = await client.fetch<Row[]>(SITEMAP_QUERY, {}, { next: { revalidate: 60, tags: ['event'] } })
   const today = new Date().toISOString().slice(0, 10)
 
   const events: MetadataRoute.Sitemap = (rows || []).map((r) => {
