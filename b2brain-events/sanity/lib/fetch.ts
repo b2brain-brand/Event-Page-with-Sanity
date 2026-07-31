@@ -29,7 +29,10 @@ const previewClient = client.withConfig({
  * worth the confusion locally; production keeps the hourly floor plus the
  * webhook.
  */
-const DEFAULT_REVALIDATE = process.env.NODE_ENV === 'development' ? 0 : 3600
+// 60s in production is the safety-net floor behind the webhook (which purges the
+// cache tag instantly on publish). Short enough that a missed webhook still means
+// ~1-minute freshness, not an hour. Dev keeps the cache off entirely.
+const DEFAULT_REVALIDATE = process.env.NODE_ENV === 'development' ? 0 : 60
 
 type FetchArgs = {
   query: string

@@ -25,13 +25,17 @@ import type { EventCard, EventDoc, SiteSettings } from '@/lib/types'
  *
  * Statically generated for every event at build time, then kept current two ways:
  *   - the Sanity webhook purges the `event` cache tag the moment anyone publishes
- *   - an hourly revalidate floor keeps the server-computed countdown honest
+ *     (this is the fast path — a publish is live within seconds)
+ *   - a 60-second revalidate floor is the safety net: if the webhook is ever
+ *     misconfigured or unreachable, a publish still goes live within ~1 minute
+ *     on the next request instead of sitting stale for an hour. It also keeps
+ *     the server-computed countdown honest.
  *
  * `dynamicParams` stays on so a brand-new event published after the last deploy
  * renders on first request instead of 404ing until the next build.
  */
 
-export const revalidate = 3600
+export const revalidate = 60
 export const dynamicParams = true
 
 type Params = { slug: string }

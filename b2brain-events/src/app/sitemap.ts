@@ -18,7 +18,7 @@ import { siteUrl } from '@/sanity/env'
  *    index but not this file, so a new page sat outside the sitemap for up to
  *    an hour — the one place where a delay actually costs indexing.
  */
-export const revalidate = 3600
+export const revalidate = 60
 
 type Row = { slug: string; lastUpdated?: string; _updatedAt?: string; startDate?: string }
 

@@ -24,7 +24,9 @@ import type { EventsIndexPage, IndexEventCard, SiteSettings } from '@/lib/types'
  * into the schema, so it renders correctly before anyone opens the Studio.
  */
 
-export const revalidate = 3600
+// 60s safety-net floor (see /events/[slug]/page.tsx). The webhook is the fast
+// path; this keeps a publish live within ~1 minute even if the webhook fails.
+export const revalidate = 60
 
 type IndexData = { page: EventsIndexPage | null; events: IndexEventCard[] }
 
