@@ -13,15 +13,23 @@ import { apiVersion, dataset, projectId, readToken } from '../env'
  * so Next replaces it with `undefined` in any client bundle — it cannot leak
  * even if this module is imported from the wrong place.
  *
- * `useCdn: true` because every read is either statically rendered at build time
- * or revalidated by the Sanity webhook; no marketing page needs an uncached
- * round-trip.
+ * `useCdn: false` — deliberately. `apicdn.sanity.io` (useCdn:true) has its OWN
+ * ~60s cache that sits BETWEEN the webhook purge and the next read: the
+ * webhook purges Next's tag cache instantly, but the very next fetch can still
+ * get a stale response back from Sanity's CDN if it's within that CDN's cache
+ * window for the same query. That's what was causing "I published but it
+ * still isn't live 5 minutes later" — Next was fresh, Sanity's CDN wasn't.
+ * Hitting the live (non-CDN) API removes that second cache layer entirely, so
+ * a publish is live as soon as the webhook fires (seconds), not up to a
+ * minute-plus later. The trade-off is a slightly slower per-request read
+ * against the non-CDN API — irrelevant here since every page is statically
+ * rendered/ISR'd, not fetched per-visitor.
  */
 export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true,
+  useCdn: false,
   perspective: 'published',
   token: readToken || undefined,
   stega: { studioUrl: '/studio' },

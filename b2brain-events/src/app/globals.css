@@ -62,7 +62,10 @@ ul{margin:0;padding:0;list-style:none}
 /* ============================================================ NAV */
 .nav{position:sticky;top:0;z-index:80;background:var(--white);border-bottom:1px solid var(--black)}
 .nav__inner{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;padding:0 40px;height:var(--nav-h)}
-.nav__logo{display:flex;align-items:center;gap:10px;font-family:var(--font-heading);font-weight:600;font-size:19px;letter-spacing:-.4px}
+/* Live `.nav-brand` reserves a fixed 195px slot even though the logo is 135px.
+   That 60px of slack is what pushes the centre nav 27.5px right of true page
+   centre — drop it and the whole menu sits visibly off against the real site. */
+.nav__logo{display:flex;align-items:center;gap:10px;min-width:195px;max-width:195px;font-family:var(--font-heading);font-weight:600;font-size:19px;letter-spacing:-.4px}
 .nav__logo-mark{width:22px;height:22px;background:var(--black);position:relative}
 .nav__logo-mark::after{content:'';position:absolute;inset:6px;background:var(--orange)}
 /* align-self:stretch makes .nav__links span the FULL nav height (not just its
@@ -343,12 +346,22 @@ ul{margin:0;padding:0;list-style:none}
 .cta__weeks{position:relative}
 
 /* ============================================================ FOOTER */
-.footer{background:var(--white);padding:88px 0 32px}
-.footer__brand p{margin-top:16px;font-size:16px;line-height:24px;color:var(--black-70);max-width:260px}
-.footer__col h5{font-size:14px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;margin-bottom:16px}
-.footer__col a{display:block;font-size:16px;color:var(--black-70);padding:5px 0}
+/* Values below are the live b2brain.com footer verbatim — see
+   docs/04-Header-Footer-Spec.md. The divider sits on the BOTTOM of the top row
+   (.footer-wrap on the live site), not the top of the copyright row: same line
+   on screen, but the 80px of air belongs above it rather than below. */
+.footer{background:var(--white);padding:120px 0 0}
+/* Live b2brain.com footer sits in a 1280px / 40px container — same as the nav,
+   wider than this app's 1160px reading column. Override the inherited
+   `.container` so the footer aligns with the header and the real site rather
+   than the narrower event body. */
+.footer .container{max-width:1280px;padding:0 40px}
+.footer__brand p{font-size:16px;line-height:24px;color:var(--black-70);max-width:260px}
+.footer__col{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.footer__col h5{font-family:var(--font-body);font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0 0 8px}
+.footer__col a{display:block;font-size:16px;line-height:24px;color:var(--black-70);white-space:nowrap;transition:color .4s}
 .footer__col a:hover{color:var(--black)}
-.footer__bottom{display:flex;justify-content:space-between;align-items:center;margin-top:56px;padding-top:24px;border-top:1px solid var(--black);font-size:13px;color:var(--cloudy-grey);flex-wrap:wrap;gap:12px}
+.footer__bottom{display:flex;justify-content:space-between;align-items:center;padding:24px 0 32px;font-size:16px;line-height:24px;letter-spacing:.26px;color:var(--black);flex-wrap:wrap;gap:12px}
 .footer__stamp{font-size:12px;color:var(--black-50);margin-top:8px}
 
 
@@ -411,15 +424,20 @@ ul{margin:0;padding:0;list-style:none}
 .nav__item > a{display:inline-flex;align-items:center;gap:6px}
 .nav__caret{width:16px;height:16px;flex:0 0 auto;transition:transform .2s ease}
 .nav__item:hover .nav__caret,.nav__item:focus-within .nav__caret{transform:rotate(180deg)}
-.nav__menu{position:absolute;top:100%;left:-18px;min-width:236px;background:var(--white);border:1px solid var(--black);padding:6px 0;opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .18s ease,transform .18s ease,visibility .18s;z-index:90}
+/* Live `.home-drop-list`: no TOP border — the panel hangs off the nav's own
+   bottom rule, so a border there would double the line. Width 270px when open,
+   4px block padding. */
+.nav__menu{position:absolute;top:100%;left:-18px;min-width:236px;background:var(--white);border:1px solid var(--black);border-top:none;padding:4px 0;opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .18s ease,transform .18s ease,visibility .18s;z-index:90;overflow:hidden}
 .nav__item:hover .nav__menu,.nav__item:focus-within .nav__menu{opacity:1;visibility:visible;transform:none}
 
 /* --- footer social + contact --- */
 /* Live b2brain.com renders these as bare 32x32 brand-color icons — no
    border, no circle badge, no hover invert. */
-.footer__social{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.footer__social a{width:32px;height:32px;display:flex;transition:opacity .2s ease}
-.footer__social a:hover{opacity:.7}
+/* 21px on top of .footer__brand's 19px gap = the live 40px between the blurb
+   and the social row (.footer-body-l gap on b2brain.com). */
+.footer__social{display:flex;flex-wrap:wrap;gap:10px;margin-top:21px}
+.footer__social a{width:32px;height:32px;display:flex;transition:.6s}
+.footer__social a:hover{transform:translateY(-6px)}
 .footer__social img{width:32px;height:32px;display:block}
 .footer__contact{margin-top:18px;font-size:14px}
 .footer__contact a{border-bottom:1px solid rgba(0,0,0,.35)}
@@ -473,8 +491,8 @@ ul{margin:0;padding:0;list-style:none}
 /* ============================================================ NAV — USE CASES DROPDOWN ICONS */
 .nav__trigger{display:inline-flex;align-items:center;gap:4px;background:none;border:none;cursor:pointer;font:inherit;font-size:16px;font-weight:400;color:var(--black-70);padding:0 15px}
 .nav__item:hover .nav__trigger,.nav__item:focus-within .nav__trigger{color:var(--black)}
-.nav__menu--rich{min-width:330px;padding:0}
-.nav__menu--rich .nav__menu-item{display:flex;align-items:center;gap:16px;padding:18px 22px;font-size:17px;font-weight:500;color:var(--black);border-bottom:1px solid var(--border-light)}
+.nav__menu--rich{min-width:270px;padding:4px 0}
+.nav__menu--rich .nav__menu-item{display:flex;align-items:center;gap:14px;padding:16px 20px;font-size:16px;line-height:24px;font-weight:400;color:var(--black);border-bottom:1px solid var(--border-light)}
 .nav__menu--rich .nav__menu-item:last-child{border-bottom:none}
 .nav__menu--rich .nav__menu-item:hover{background:var(--whitesmoke)}
 .uc-icon{flex:0 0 auto;width:48px;height:48px;border-radius:10px;overflow:hidden;display:flex}
@@ -487,30 +505,51 @@ ul{margin:0;padding:0;list-style:none}
    right-side columns gap-40 at their own content widths, e.g. 76/171/94/283px
    — nothing close to equal fr tracks). `margin-right:auto` on the brand block
    reproduces that: it eats the slack, the rest just sit gap-40 in normal flow. */
-.footer__top{display:flex;align-items:start;gap:40px}
-.footer__brand{flex:0 0 auto;margin-right:auto;max-width:260px}
+.footer__top{display:flex;align-items:start;justify-content:space-between;gap:40px;padding-bottom:80px;border-bottom:1px solid var(--black)}
+.footer__brand{flex:0 0 auto;max-width:262px;display:flex;flex-direction:column;gap:19px}
+.footer__right{flex:0 1 auto;display:flex;align-items:start;justify-content:space-between;gap:40px;width:100%;max-width:771px}
 .footer__col{flex:0 0 auto}
-.footer__promo{flex:0 0 auto;min-width:283px}
-.footer__promo h5{display:flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:16px;font-weight:400;letter-spacing:normal;text-transform:none;color:var(--black)}
+/* Live: .footer-body._04 — gap 40px between the newsletter and AI blocks. */
+.footer__promo{flex:0 0 auto;width:100%;max-width:283px;display:flex;flex-direction:column;gap:40px}
+.footer__promo h5{display:flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0}
 .footer__star{color:inherit}
-.footer__ai{margin-top:28px}
-.footer__ai-head{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:400;letter-spacing:normal;text-transform:none;color:var(--black)}
+.footer__ai{display:flex;flex-direction:column;gap:24px}
+.footer__ai-head{display:flex;align-items:center;gap:6px;font-family:var(--font-body);font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black)}
 .footer__ai-head b{color:var(--orange)}
 .footer__ai-info{color:var(--black);flex:0 0 auto;display:flex}
-.footer__ai-icons{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px}
+.footer__ai-icons{display:flex;flex-wrap:wrap;gap:16px}
 .footer__ai-icons a{color:var(--black);transition:color .2s ease}
 .footer__ai-icons a:hover{color:var(--orange)}
+/* Live: .cp-links — gap 30px, no separator glyph, links at body-02/black-70. */
+.footer__legal{display:flex;align-items:center;gap:30px}
+.footer__legal a{font-size:16px;line-height:24px;color:var(--black-70);transition:color .4s}
 .footer__legal a:hover{color:var(--black)}
-@media(max-width:991px){.footer__top{flex-wrap:wrap}.footer__brand{margin-right:0;flex:1 1 100%;max-width:none}}
+.footer__bottom .footer__mail{color:var(--black-70);font-weight:500}
+.footer__bottom .footer__mail:hover{color:var(--black)}
+@media(max-width:991px){
+  .footer{padding-top:80px}
+  .footer__top{flex-direction:column;flex-wrap:wrap;padding-bottom:60px}
+  .footer__brand{margin-right:0;margin-bottom:60px;flex:1 1 100%;max-width:none}
+  .footer__right{flex-wrap:wrap;max-width:100%}
+  .footer__bottom{padding-bottom:30px}
+}
 
-/* --- newsletter form --- */
-.nl{display:flex;align-items:center;border:1px solid var(--black);margin-top:12px;max-width:320px}
-.nl__icon{display:flex;align-items:center;justify-content:center;padding:0 10px;color:var(--black-50)}
-.nl input{flex:1;border:none;padding:12px 8px;font-family:var(--font-body);font-size:14px;background:none}
+/* --- newsletter form ---
+   Live `.footer-email`: one 48px-tall input, 1px solid black, white fill,
+   envelope inset at the left (44px). The submit is `.ct-btn-wrap` — a 36×36
+   dark (#1f1f1f) square absolutely inset 6px from the top-right, holding a
+   white caret, turning purple on hover. Reproduced to the pixel. */
+.nl{position:relative;display:flex;align-items:center;height:48px;border:1px solid var(--black);background:var(--white);max-width:283px}
+.nl:focus-within{border-color:#ececec}
+/* Envelope: 24px glyph inset ~13px from the left, so the pair (13 + 24 + gap)
+   fills the live 44px left inset. Opacity:.3 is baked into the SVG — not here. */
+.nl__icon{flex:0 0 auto;width:24px;height:24px;margin:0 7px 0 13px;display:block}
+.nl input{flex:1;min-width:0;border:none;padding:0 48px 0 0;height:100%;font-family:var(--font-body);font-size:16px;line-height:24px;letter-spacing:.26px;color:var(--black);background:none}
+.nl input::placeholder{color:rgba(0,0,0,.3)}
 .nl input:focus{outline:none}
-.nl button{width:44px;align-self:stretch;background:var(--black);color:var(--white);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s ease}
+.nl button{position:absolute;top:6px;right:6px;width:36px;height:36px;background:#1f1f1f;color:var(--white);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:background-color .2s ease}
 .nl button:hover{background:var(--purple)}
-.nl__done{margin-top:12px;font-size:14px;font-weight:500;border:1px solid var(--black);padding:12px 14px;max-width:320px}
+.nl__done{margin-top:0;font-size:16px;font-weight:500;border:1px solid var(--black);padding:12px 14px;max-width:283px}
 
 /* ============================================================ EVENTS FILTER (b2brain) */
 .filter{border-top:1px solid var(--black);border-bottom:1px solid var(--black);padding:28px 0;display:grid;grid-template-columns:1fr auto;grid-template-areas:'industries search' 'industries meta';gap:16px 40px;align-items:start;margin-bottom:36px}

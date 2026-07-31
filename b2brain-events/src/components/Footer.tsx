@@ -20,6 +20,27 @@ const SOCIAL_ICON_SRC: Record<string, string> = {
 }
 
 /**
+ * On the live site the support address inside the copyright line is a
+ * `.text-link.text-black70` — 70% black against the black of the rest of the
+ * line. Rendering the whole string flat loses that contrast step, so the email
+ * is pulled out and linked wherever it appears.
+ */
+function renderCopyright(line: string) {
+  const m = line.match(/[\w.+-]+@[\w-]+\.[\w.]+/)
+  if (!m) return line
+  const [before, after] = line.split(m[0])
+  return (
+    <>
+      {before}
+      <a className="footer__mail" href={`mailto:${m[0]}`}>
+        {m[0]}
+      </a>
+      {after}
+    </>
+  )
+}
+
+/**
  * Footer — the real b2brain.com footer, now CMS-editable with the verified
  * b2brain chrome as the field-by-field fallback (see `@/lib/chrome`).
  *
@@ -64,6 +85,11 @@ export function Footer({
             </div>
           </div>
 
+          {/* Live b2brain.com wraps the three link columns and the newsletter
+              block in a single 771px `.footer-right` that lays them out with
+              space-between — without the wrapper the columns pack left and the
+              gaps come out ~9px tight against the real site. */}
+          <div className="footer__right">
           {c.footerColumns.map((col, i) => (
             <div className="footer__col" key={`${col.heading}-${i}`}>
               <h5>{col.heading}</h5>
@@ -114,10 +140,11 @@ export function Footer({
               </div>
             </div>
           </div>
+          </div>
         </div>
 
         <div className="footer__bottom">
-          <span>{c.copyright}</span>
+          <span>{renderCopyright(c.copyright)}</span>
           {has(lastUpdated) && (
             <span className="footer__stamp">
               Page last updated {lastUpdated}
@@ -126,10 +153,9 @@ export function Footer({
           )}
           <span className="footer__legal">
             {c.legal.map((l, i) => (
-              <span key={`${l.href}-${i}`}>
-                {i > 0 && ' · '}
-                <a href={l.href}>{l.label}</a>
-              </span>
+              <a key={`${l.href}-${i}`} href={l.href}>
+                {l.label}
+              </a>
             ))}
           </span>
         </div>

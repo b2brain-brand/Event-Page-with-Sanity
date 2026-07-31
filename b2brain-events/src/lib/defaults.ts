@@ -192,7 +192,7 @@ export const SETTINGS_DEFAULTS: SiteSettings = {
       ],
     },
   ],
-  footerCopyright: '© 2026 B2Brain, Inc.',
+  footerCopyright: '© 2026 B2Brain, Inc. · Wilmington, DE · support@b2brain.com',
   footerLegal: 'Privacy · Terms',
   heroPrimaryCtaLabel: 'Plan your booth',
   heroSecondaryCtaLabel: 'Register for the event',

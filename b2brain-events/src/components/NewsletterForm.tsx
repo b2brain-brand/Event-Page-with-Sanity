@@ -35,8 +35,10 @@ export function NewsletterForm({
         }
       }}
     >
+      {/* Envelope is 24px at 30% opacity on the live site; the opacity lives on
+          the .nl__icon rule so the same asset stays full-black elsewhere. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className="nl__icon" src="/newsletter-envelope.svg" alt="" aria-hidden="true" width={16} height={16} />
+      <img className="nl__icon" src="/newsletter-envelope.svg" alt="" aria-hidden="true" width={24} height={24} />
       <input
         type="email"
         name="email"
@@ -46,7 +48,7 @@ export function NewsletterForm({
       />
       <button type="submit" aria-label="Subscribe">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/newsletter-arrow.svg" alt="" width={18} height={18} />
+        <img src="/newsletter-arrow.svg" alt="" width={20} height={20} />
       </button>
     </form>
   )

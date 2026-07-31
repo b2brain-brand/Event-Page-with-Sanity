@@ -123,7 +123,10 @@ export const BRAND = {
     { label: 'Terms', href: `${SITE}/terms-of-service` },
   ],
 
-  copyright: '© 2026 B2Brain, Inc.',
+  // Verbatim from the live b2brain.com footer. The middot-separated location
+  // and support address are part of the line; the Footer component pulls the
+  // email out and renders it as the 70%-black link the live site uses.
+  copyright: '© 2026 B2Brain, Inc. · Wilmington, DE · support@b2brain.com',
 } as const
 
 export type NavLink = {
