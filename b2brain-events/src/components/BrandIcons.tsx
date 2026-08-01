@@ -14,8 +14,8 @@ export function UseCaseIcon({ icon }: { icon?: string }) {
   return (
     <span className="uc-icon" aria-hidden="true">
       {icon === 'pipeline' && (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <rect width="48" height="48" fill="#CEE680" />
+        <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+          {/* No background <rect> — flat square icon, matching the live nav. */}
           <path d="M19 28H12V38H19V28Z" stroke="black" strokeWidth="2" strokeLinejoin="round" />
           <path d="M28 20H21V38H28V20Z" stroke="black" strokeWidth="2" strokeLinejoin="round" />
           <path d="M37 10H30V38H37V10Z" fill="#FF382C" stroke="black" strokeWidth="2" strokeLinejoin="round" />
@@ -23,8 +23,8 @@ export function UseCaseIcon({ icon }: { icon?: string }) {
         </svg>
       )}
       {icon === 'attendees' && (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <rect width="48" height="48" fill="#D6C0E7" />
+        <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+          {/* No background <rect> — flat square icon, matching the live nav. */}
           <path
             d="M24 23C27.3137 23 30 20.3137 30 17C30 13.6863 27.3137 11 24 11C20.6863 11 18 13.6863 18 17C18 20.3137 20.6863 23 24 23Z"
             fill="black"
@@ -42,8 +42,8 @@ export function UseCaseIcon({ icon }: { icon?: string }) {
         </svg>
       )}
       {icon === 'exhibitors' && (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <rect width="48" height="48" fill="#E8E3CA" />
+        <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+          {/* No background <rect> — flat square icon, matching the live nav. */}
           <path d="M40 10H8V19H40V10Z" fill="#FF382C" stroke="black" strokeWidth="2" strokeLinejoin="round" />
           <path d="M13 19V27" stroke="black" strokeWidth="2" strokeLinecap="round" />
           <path d="M35 19V27" stroke="black" strokeWidth="2" strokeLinecap="round" />
