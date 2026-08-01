@@ -501,13 +501,16 @@ ul{margin:0;padding:0;list-style:none}
 .nav__menu--rich{min-width:270px;padding:4px 0}
 .nav__menu--rich .nav__menu-item{display:flex;align-items:center;gap:14px;padding:16px 20px;font-size:16px;line-height:24px;font-weight:500;color:var(--black);border-bottom:1px solid var(--border-light)}
 .nav__menu--rich .nav__menu-item:last-child{border-bottom:none}
-.nav__menu--rich .nav__menu-item:hover{background:var(--whitesmoke)}
-/* Flat 32x32 square icons, no coloured background box — matches the live
-   b2brain.com Use Cases dropdown (verified: transparent background,
-   border-radius 0). The colour tint was a <rect> inside each SVG; those are
-   removed in BrandIcons so only the line-art glyph remains. */
-.uc-icon{flex:0 0 auto;width:32px;height:32px;border-radius:0;display:flex}
-.uc-icon svg{width:100%;height:100%;display:block}
+/* Hover = the live b2brain.com effect: a 1px black underline that grows left→
+   right under the label (the site's `.footer-link-line`). No background tint —
+   the live dropdown item does not change background on hover. */
+.nav__menu--rich .nav__menu-item span{position:relative;display:inline-block}
+.nav__menu--rich .nav__menu-item span::after{content:'';position:absolute;left:0;bottom:-2px;height:1px;width:0;background:var(--black);transition:width .3s ease}
+.nav__menu--rich .nav__menu-item:hover span::after{width:100%}
+/* The Use Cases dropdown icon — an <img> of the exact live SVG file, sized to
+   match the live `.drop-icon` (32×32). The pastel tile background is inside the
+   SVG, so nothing else is needed here. */
+.uc-icon{flex:0 0 auto;width:32px;height:32px;display:block}
 
 /* ============================================================ FOOTER (b2brain layout) */
 /* Live b2brain.com is NOT an evenly-spaced grid: the brand block sits at the
