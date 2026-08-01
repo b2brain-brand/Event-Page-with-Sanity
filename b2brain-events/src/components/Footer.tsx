@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { resolveChrome } from '@/lib/chrome'
 import { has } from '@/lib/format'
 import { socialLabel, type SocialPlatform } from './SocialIcons'
@@ -68,7 +69,16 @@ export function Footer({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={c.logoSrc} alt={c.logoText} width={602} height={103} />
             </a>
-            <p>{c.footerBlurb}</p>
+            {/* Render newlines as <br> so the blurb keeps the live site's hard
+                break after the first sentence ("Turn…" starts the second line). */}
+            <p>
+              {c.footerBlurb.split('\n').map((line, i) => (
+                <Fragment key={i}>
+                  {i > 0 && <br />}
+                  {line}
+                </Fragment>
+              ))}
+            </p>
             <div className="footer__social">
               {c.social.map((s, i) => (
                 <a

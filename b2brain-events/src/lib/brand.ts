@@ -45,8 +45,10 @@ export const BRAND = {
     events: { label: 'Events', href: `${SITE}/events` },
   },
 
+  // The newline is intentional: the live footer has a hard break after the first
+  // sentence, so "Turn…" starts the second line. The Footer renders \n as <br>.
   footerBlurb:
-    'The Event Intelligence Platform. Turn trade show conversations into booked meetings and measurable pipeline. From Offline to Pipeline.',
+    'The Event Intelligence Platform.\nTurn trade show conversations into booked meetings and measurable pipeline. From Offline to Pipeline.',
 
   /** Footer columns — OVERVIEW / USE CASES / COMPANY, matching b2brain.com. */
   footerColumns: [
