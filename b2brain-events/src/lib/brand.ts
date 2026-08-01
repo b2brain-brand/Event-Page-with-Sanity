@@ -86,12 +86,14 @@ export const BRAND = {
 
   /** "Learn about B2Brain with AI" — links to answer engines that cite the site. */
   aiHeading: 'Learn about B2Brain with AI',
+  // Order matches the live b2brain.com footer exactly (verified against its DOM):
+  // ChatGPT · Gemini · Claude · Grok · Perplexity.
   aiLinks: [
     { label: 'ChatGPT', url: 'https://chatgpt.com/?q=What%20is%20B2Brain', glyph: 'openai' },
-    { label: 'Claude', url: 'https://claude.ai/new?q=What%20is%20B2Brain', glyph: 'claude' },
-    { label: 'Perplexity', url: 'https://www.perplexity.ai/search?q=What%20is%20B2Brain', glyph: 'perplexity' },
     { label: 'Gemini', url: 'https://gemini.google.com/app', glyph: 'gemini' },
+    { label: 'Claude', url: 'https://claude.ai/new?q=What%20is%20B2Brain', glyph: 'claude' },
     { label: 'Grok', url: 'https://grok.com', glyph: 'grok' },
+    { label: 'Perplexity', url: 'https://www.perplexity.ai/search?q=What%20is%20B2Brain', glyph: 'perplexity' },
   ],
 
   /** The two sticky promo cards in the event article's right rail. */

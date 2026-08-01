@@ -357,7 +357,12 @@ ul{margin:0;padding:0;list-style:none}
    docs/04-Header-Footer-Spec.md. The divider sits on the BOTTOM of the top row
    (.footer-wrap on the live site), not the top of the copyright row: same line
    on screen, but the 80px of air belongs above it rather than below. */
-.footer{background:var(--white);padding:120px 0 0}
+/* The live b2brain.com footer is entirely InterDisplay (not plain Inter).
+   InterDisplay is a touch narrower, which is why the live "about" blurb fits in
+   4 lines where our Inter one wrapped to 5. Applying it to the whole footer
+   fixes the wrap and matches the apparent weight. Falls back to the loaded
+   Inter if InterDisplay hasn't painted. */
+.footer{background:var(--white);padding:120px 0 0;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif}
 /* Live b2brain.com footer sits in a 1280px / 40px container — same as the nav,
    wider than this app's 1160px reading column. Override the inherited
    `.container` so the footer aligns with the header and the real site rather
@@ -365,7 +370,7 @@ ul{margin:0;padding:0;list-style:none}
 .footer .container{max-width:1280px;padding:0 40px}
 .footer__brand p{font-size:16px;line-height:24px;color:var(--black-70);max-width:260px}
 .footer__col{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
-.footer__col h5{font-family:var(--font-body);font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0 0 8px}
+.footer__col h5{font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif;font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0 0 8px}
 .footer__col a{display:block;font-size:16px;line-height:24px;color:var(--black-70);white-space:nowrap;transition:color .4s}
 .footer__col a:hover{color:var(--black)}
 .footer__bottom{display:flex;justify-content:space-between;align-items:center;padding:24px 0 32px;font-size:16px;line-height:24px;letter-spacing:.26px;color:var(--black);flex-wrap:wrap;gap:12px}
@@ -525,10 +530,10 @@ ul{margin:0;padding:0;list-style:none}
 .footer__col{flex:0 0 auto}
 /* Live: .footer-body._04 — gap 40px between the newsletter and AI blocks. */
 .footer__promo{flex:0 0 auto;width:100%;max-width:283px;display:flex;flex-direction:column;gap:40px}
-.footer__promo h5{display:flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0}
+.footer__promo h5{display:flex;align-items:center;gap:4px;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif;font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0}
 .footer__star{color:inherit}
 .footer__ai{display:flex;flex-direction:column;gap:24px}
-.footer__ai-head{display:flex;align-items:center;gap:6px;font-family:var(--font-body);font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black)}
+.footer__ai-head{display:flex;align-items:center;gap:6px;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif;font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black)}
 .footer__ai-head b{color:var(--orange)}
 .footer__ai-info{color:var(--black);flex:0 0 auto;display:flex}
 .footer__ai-icons{display:flex;flex-wrap:wrap;gap:16px}
