@@ -578,12 +578,12 @@ export const siteSettings = defineType({
     /* ---------------------------------------------------- ORG AND DEFAULTS */
     defineField({
       name: 'siteUrl',
-      title: 'Canonical site URL',
+      title: 'Canonical site URL (reference only)',
       type: 'url',
       group: 'org',
       description:
-        'No trailing slash. Used for canonicals, OG URLs and the sitemap. The NEXT_PUBLIC_SITE_URL env var wins if both are set.',
-      initialValue: 'https://events.b2brain.com',
+        'No trailing slash. NOTE: the live canonical/OG/sitemap base is the NEXT_PUBLIC_SITE_URL env var, NOT this field — set that to https://www.b2brain.com for the /events rewrite. This field is kept for reference.',
+      initialValue: 'https://www.b2brain.com',
     }),
     defineField({
       name: 'organizationName',

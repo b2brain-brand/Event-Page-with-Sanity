@@ -16,9 +16,22 @@ export const projectId = assertValue(
 /** Server-only. Used for draft-mode reads and live queries — never shipped to the browser. */
 export const readToken = process.env.SANITY_API_READ_TOKEN || ''
 
-/** Canonical origin. Env wins over the value stored in Site settings. */
+/**
+ * Canonical origin — the base for every canonical link, og:url, JSON-LD url,
+ * sitemap and robots host.
+ *
+ * The app is served under b2brain.com/events (a reverse-proxy rewrite), so the
+ * canonical MUST be https://www.b2brain.com — a page at b2brain.com/events/x must
+ * not canonicalise to a different host (e.g. events.b2brain.com), or search
+ * engines treat them as competing URLs.
+ *
+ * This is only the DEFAULT. `NEXT_PUBLIC_SITE_URL` on Vercel still wins, so after
+ * the /events rewrite is live set that env var to https://www.b2brain.com (or
+ * remove it to fall back to this default). Locally, .env.local can point it at
+ * http://localhost:3000.
+ */
 export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.b2brain.com'
 ).replace(/\/$/, '')
 
 function assertValue<T>(v: T | undefined, errorMessage: string): T {
