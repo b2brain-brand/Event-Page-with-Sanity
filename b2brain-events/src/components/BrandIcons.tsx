@@ -13,10 +13,14 @@
  * (An earlier pass stripped the background to make them flat; the live icons
  * keep the pastel tile, so the real files are used here instead.)
  */
+// Absolute Webflow-CDN URLs, not /root paths — under the b2brain.com/events
+// reverse-proxy a root path like /nav-icons/x.svg routes to Webflow and 404s.
+// These are the exact same files the live nav uses.
+const WF = 'https://cdn.prod.website-files.com/69e6119560a70ab3a0930480'
 const USE_CASE_ICON_SRC: Record<string, string> = {
-  pipeline: '/nav-icons/pipeline.svg',
-  attendees: '/nav-icons/attendees.svg',
-  exhibitors: '/nav-icons/exhibitors.svg',
+  pipeline: `${WF}/6a19f65759439dbc9cdbfe7d_New%20Pipeline%20Generation_Nav%20Icon.svg`,
+  attendees: `${WF}/6a19f65753825fbef54f24e4_Event%20Attendees_Nav%20Icon.svg`,
+  exhibitors: `${WF}/6a19f657b04d2bd2867e9676_Event%20Exhibitors_Nav%20Icon.svg`,
 }
 
 export function UseCaseIcon({ icon }: { icon?: string }) {

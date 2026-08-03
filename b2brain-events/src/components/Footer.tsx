@@ -12,12 +12,16 @@ import type { SiteSettings } from '@/lib/types'
  * they're self-hosted here verbatim rather than redrawn as React components,
  * which is the only way to get an exact pixel match.
  */
+// Absolute Webflow-CDN URLs, not /root paths — under the b2brain.com/events
+// reverse-proxy a root path like /social/x.svg routes to Webflow and 404s.
+// These are the exact self-contained badge SVGs the live footer uses.
+const WF = 'https://cdn.prod.website-files.com/69e6119560a70ab3a0930480'
 const SOCIAL_ICON_SRC: Record<string, string> = {
-  instagram: '/social/instagram.svg',
-  x: '/social/x.svg',
-  facebook: '/social/facebook.svg',
-  linkedin: '/social/linkedin.svg',
-  youtube: '/social/youtube.svg',
+  instagram: `${WF}/69e6119760a70ab3a0930562_Group%205004.svg`,
+  x: `${WF}/6a0a1c99d68593a4c2ebd833_x-logo.svg`,
+  facebook: `${WF}/69e6119760a70ab3a0930563_Group%205001.svg`,
+  linkedin: `${WF}/69e6119760a70ab3a0930561_Group%205003.svg`,
+  youtube: `${WF}/6a175eab6e860fb6f2b25e71_youtube-social-icon.svg`,
 }
 
 /**

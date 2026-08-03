@@ -14,7 +14,12 @@ const SITE = 'https://www.b2brain.com'
 
 export const BRAND = {
   logoText: 'B2Brain',
-  logoSrc: '/b2brain-logo.webp',
+  // Absolute Webflow-CDN URL, NOT a self-hosted /root path. Under the
+  // b2brain.com/events reverse-proxy, only /events/* and /_next/* route to
+  // Vercel; a root asset like /b2brain-logo.webp falls through to Webflow and
+  // 404s (the "logo not loading" bug). An absolute CDN URL loads from anywhere.
+  logoSrc:
+    'https://cdn.prod.website-files.com/69e6119560a70ab3a0930480/69efa4bdf72ec4163c3d5632_B2Brain-Right-Logo-2.webp',
   logoHref: `${SITE}/`,
 
   /**
