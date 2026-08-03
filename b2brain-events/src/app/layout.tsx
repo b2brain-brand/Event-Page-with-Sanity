@@ -44,6 +44,15 @@ const interDisplay = localFont({
   ],
 })
 
+// Favicon — the exact same B2Brain symbol PNGs the main Webflow site uses,
+// served from the Webflow CDN. NOT a /icon.png root path: under the
+// b2brain.com/events reverse-proxy a root path routes to Webflow and 404s, so
+// the tab icon was missing on the event pages. Absolute CDN URLs load anywhere,
+// so /events now shows the same favicon as every other page. (The file-based
+// src/app/icon.png convention is removed so Next doesn't also emit the broken
+// /icon.png link.)
+const WF_ICON = 'https://cdn.prod.website-files.com/69e6119560a70ab3a0930480'
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -52,6 +61,17 @@ export const metadata: Metadata = {
   },
   description:
     'Turn trade-show conversations into booked meetings and measurable pipeline.',
+  icons: {
+    icon: [
+      { url: `${WF_ICON}/6a19cab255d2ae94bd212f60_B2Brain%20Logo_Symbol%20(1).png`, sizes: '32x32', type: 'image/png' },
+      { url: `${WF_ICON}/6a19cab2c9f4a6c0ccbdc674_B2Brain%20Logo_Symbol%20(1).png`, sizes: '48x48', type: 'image/png' },
+      { url: `${WF_ICON}/6a19cab22adb2f53feaca611_B2Brain%20Logo_Symbol%20(1).png`, sizes: '192x192', type: 'image/png' },
+      { url: `${WF_ICON}/6a19cab2ceb6c05fe5791492_B2Brain%20Logo_Symbol%20(1).png`, sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: `${WF_ICON}/6a19cab2bfcb55423aa39b58_B2Brain%20Logo_Symbol%20(1).png`, sizes: '180x180', type: 'image/png' },
+    ],
+  },
 }
 
 export default async function RootLayout({
