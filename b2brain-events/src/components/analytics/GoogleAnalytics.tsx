@@ -2,7 +2,7 @@
 
 import Script from 'next/script'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { GA_MEASUREMENT_ID } from '@/lib/analytics'
 
 declare global {
@@ -22,11 +22,17 @@ declare global {
 function GaPageviews() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  // On the initial load this effect runs twice (once before searchParams
+  // resolves, once after), which would send two page_views for one page. Dedupe
+  // on the resolved URL so each distinct URL fires exactly one pageview.
+  const lastUrl = useRef<string | null>(null)
 
   useEffect(() => {
     if (!window.gtag) return
     const qs = searchParams?.toString()
     const path = qs ? `${pathname}?${qs}` : pathname
+    if (lastUrl.current === path) return
+    lastUrl.current = path
     window.gtag('event', 'page_view', {
       page_path: path,
       page_location: window.location.href,
