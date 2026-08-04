@@ -4,6 +4,9 @@ import localFont from 'next/font/local'
 import { draftMode } from 'next/headers'
 import { VisualEditing } from 'next-sanity/visual-editing'
 import { DisableDraftMode } from '@/components/DisableDraftMode'
+import { PostHogAnalytics } from '@/components/analytics/PostHogAnalytics'
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
+import { FactorsAnalytics } from '@/components/analytics/FactorsAnalytics'
 import { siteUrl } from '@/sanity/env'
 import './globals.css'
 
@@ -84,6 +87,16 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${archivo.variable} ${inter.variable} ${interDisplay.variable}`}>
       <body>
+        {/* Analytics — same GA4 / PostHog / Factors as the rest of b2brain.com,
+            so the event pages are tracked in the same dashboards. Skipped in
+            draft/preview so Studio sessions don't pollute production data. */}
+        {!isDraft && (
+          <>
+            <PostHogAnalytics />
+            <GoogleAnalytics />
+            <FactorsAnalytics />
+          </>
+        )}
         {children}
         {isDraft && (
           <>
