@@ -16,8 +16,8 @@ import { useEffect } from 'react'
  */
 const DID_ATTRS: Record<string, string> = {
   'data-mode': 'fabio',
-  'data-client-key': 'ck_XqnxRo4A1Dm_YE9pgacrR',
-  'data-agent-id': 'v2_agt_X4Qd9X_J',
+  'data-client-key': 'ck_qPIyvgzFHQIuoiKeb8zC9',
+  'data-agent-id': 'v2_agt_H4O1YDpP',
   'data-name': 'did-agent',
   'data-monitor': 'true',
   'data-orientation': 'horizontal',
