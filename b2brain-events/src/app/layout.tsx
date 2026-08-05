@@ -7,6 +7,7 @@ import { DisableDraftMode } from '@/components/DisableDraftMode'
 import { PostHogAnalytics } from '@/components/analytics/PostHogAnalytics'
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 import { FactorsAnalytics } from '@/components/analytics/FactorsAnalytics'
+import { DidAgent } from '@/components/DidAgent'
 import { siteUrl } from '@/sanity/env'
 import './globals.css'
 
@@ -95,6 +96,7 @@ export default async function RootLayout({
             <PostHogAnalytics />
             <GoogleAnalytics />
             <FactorsAnalytics />
+            <DidAgent />
           </>
         )}
         {children}
