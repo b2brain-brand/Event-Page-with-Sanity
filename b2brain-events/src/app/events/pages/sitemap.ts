@@ -3,7 +3,7 @@ import { getEventsSitemapEntries } from '@/lib/sitemap-entries'
 
 /**
  * =============================================================================
- * /events/sitemap.xml — the SAME sitemap, served a second time under /events/*.
+ * /events/pages/sitemap.xml — the SAME sitemap, reachable under /events/*.
  * =============================================================================
  *
  * Why this exists: b2brain.com is a reverse proxy in front of Webflow, with
@@ -16,9 +16,16 @@ import { getEventsSitemapEntries } from '@/lib/sitemap-entries'
  * (wf-origin.b2brain.com/sitemap.xml), so there is no way to get our URLs into
  * discovery via the root sitemap without a proxy change on the client's side.
  *
- * This route sidesteps that entirely: it's identical content, served from a
- * path (`/events/sitemap.xml`) that the EXISTING proxy rule already sends to
- * Vercel — reachable today at https://www.b2brain.com/events/sitemap.xml with
+ * Why the extra /pages/ segment: a sitemap.ts placed directly in app/events/
+ * (a sibling of the events/[slug] folder) lost to that dynamic route in
+ * production — Vercel served [slug]'s notFound() for the literal path
+ * "sitemap.xml" instead of this file, even though the local build manifest
+ * listed both as distinct routes. (`next dev` didn't reproduce it either — only
+ * caught by testing the real deployment.) events/industry/[category] already
+ * proved a two-segment-deep path never collides with the single-segment
+ * `[slug]` route, so this route lives two segments deep for the same reason.
+ *
+ * Reachable today at https://www.b2brain.com/events/pages/sitemap.xml with
  * zero infrastructure changes. Register that URL as an "additional sitemap" in
  * Google Search Console (Settings > Sitemaps) and every event + category page
  * is submitted for indexing, independent of whatever Webflow's sitemap says.
