@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { fetchSanity } from '@/sanity/lib/fetch'
-import { EVENTS_INDEX_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/lib/queries'
+import { EVENT_CATEGORIES_QUERY, EVENTS_INDEX_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/lib/queries'
 import { siteUrl } from '@/sanity/env'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
@@ -11,7 +11,7 @@ import { EventsBrowser } from '@/components/events/EventsBrowser'
 import { FaqList } from '@/components/sections/Faq'
 import { has } from '@/lib/format'
 import { BRAND } from '@/lib/brand'
-import type { EventsIndexPage, IndexEventCard, SiteSettings } from '@/lib/types'
+import type { EventsIndexPage, IndexEventCard, IndustryLink, SiteSettings } from '@/lib/types'
 
 /**
  * =============================================================================
@@ -108,8 +108,16 @@ async function getSettings() {
   return fetchSanity<SiteSettings | null>({ query: SITE_SETTINGS_QUERY, tags: ['siteSettings'] })
 }
 
+async function getIndustries() {
+  return fetchSanity<IndustryLink[]>({ query: EVENT_CATEGORIES_QUERY, tags: ['eventCategory'] })
+}
+
 export default async function EventsIndex() {
-  const [{ page, events }, settings] = await Promise.all([getData(), getSettings()])
+  const [{ page, events }, settings, industries] = await Promise.all([
+    getData(),
+    getSettings(),
+    getIndustries(),
+  ])
   const today = new Date().toISOString().slice(0, 10)
 
   // Featured: hand-picked in the CMS, else the next few upcoming shows.
@@ -197,6 +205,7 @@ export default async function EventsIndex() {
           {events.length > 0 ? (
             <EventsBrowser
               events={events}
+              industries={industries}
               industryLabel={v(page, 'industryFilterLabel')}
               searchPlaceholder={v(page, 'searchPlaceholder')}
               cardCtaLabel={v(page, 'allCardCtaLabel')}

@@ -40,6 +40,18 @@ export type IndexEventCard = EventCard & {
   cardImageAlt?: string
 }
 
+/** One entry in the industry nav on /events and every /events/industry/[x] page. */
+export type IndustryLink = { title: string; slug: string }
+
+/** /events/industry/[category] — the category doc plus every event in it. */
+export type CategoryPageData = {
+  _id: string
+  title: string
+  slug: string
+  description?: string
+  events: IndexEventCard[]
+}
+
 export type EventsIndexPage = {
   heroEyebrow?: string
   heroHeading?: string

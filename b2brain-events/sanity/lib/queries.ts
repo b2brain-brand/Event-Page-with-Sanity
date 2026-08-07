@@ -218,3 +218,46 @@ export const SITEMAP_QUERY = defineQuery(`
     startDate
   }
 `)
+
+/* =============================================================================
+   INDUSTRY / CATEGORY PAGES  ->  /events/industry/[category]
+   =============================================================================
+   Real, crawlable, server-rendered pages — one per vertical — replacing what
+   used to be a client-only filter toggle on /events. Each is its own indexable
+   URL a search query like "manufacturing trade shows 2026" can actually match,
+   instead of every crawl of /events returning the same undifferentiated list.
+*/
+
+/** generateStaticParams — every category page. */
+export const EVENT_CATEGORY_SLUGS_QUERY = defineQuery(`
+  *[_type == "eventCategory" && defined(slug.current)]{ "slug": slug.current }
+`)
+
+/** The full industry list, for the nav row on /events AND every category page —
+ *  always every vertical, never just the ones present in whatever event list
+ *  the current page happens to be scoped to. */
+export const EVENT_CATEGORIES_QUERY = defineQuery(`
+  *[_type == "eventCategory" && defined(slug.current)]
+    | order(title asc){ title, "slug": slug.current }
+`)
+
+/** One category page: its own doc + every event referencing it. */
+export const CATEGORY_PAGE_QUERY = defineQuery(`
+  *[_type == "eventCategory" && slug.current == $slug][0]{
+    _id, title, "slug": slug.current, description,
+    "events": *[
+      _type == "event"
+      && defined(slug.current)
+      && seo.noIndex != true
+      && count(categories[@._ref == ^.^._id]) > 0
+    ] | order(startDate asc){ ${INDEX_CARD_FIELDS} }
+  }
+`)
+
+/** sitemap.xml — category pages. */
+export const SITEMAP_CATEGORIES_QUERY = defineQuery(`
+  *[_type == "eventCategory" && defined(slug.current)]{
+    "slug": slug.current,
+    _updatedAt
+  }
+`)

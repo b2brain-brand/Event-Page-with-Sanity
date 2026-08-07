@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { client } from '@/sanity/lib/client'
-import { SITEMAP_QUERY } from '@/sanity/lib/queries'
+import { SITEMAP_CATEGORIES_QUERY, SITEMAP_QUERY } from '@/sanity/lib/queries'
 import { siteUrl } from '@/sanity/env'
 
 /**
@@ -23,9 +23,17 @@ import { siteUrl } from '@/sanity/env'
 export const revalidate = 60
 
 type Row = { slug: string; lastUpdated?: string; _updatedAt?: string; startDate?: string }
+type CategoryRow = { slug: string; _updatedAt?: string }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const rows = await client.fetch<Row[]>(SITEMAP_QUERY, {}, { next: { revalidate: 60, tags: ['event'] } })
+  const [rows, categoryRows] = await Promise.all([
+    client.fetch<Row[]>(SITEMAP_QUERY, {}, { next: { revalidate: 60, tags: ['event'] } }),
+    client.fetch<CategoryRow[]>(
+      SITEMAP_CATEGORIES_QUERY,
+      {},
+      { next: { revalidate: 60, tags: ['event', 'eventCategory'] } },
+    ),
+  ])
   const today = new Date().toISOString().slice(0, 10)
 
   const events: MetadataRoute.Sitemap = (rows || []).map((r) => {
@@ -38,6 +46,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   })
 
+  // The 12 industry hub pages — see events/industry/[category]/page.tsx. Sits
+  // between the events index (1.0) and individual events (0.9/0.5) in priority:
+  // more durable than a single show, less than the top-level hub.
+  const categories: MetadataRoute.Sitemap = (categoryRows || []).map((c) => ({
+    url: `${siteUrl}/events/industry/${c.slug}`,
+    lastModified: new Date(c._updatedAt || Date.now()),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }))
+
   return [
     {
       url: `${siteUrl}/events`,
@@ -45,6 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 1,
     },
+    ...categories,
     ...events,
   ]
 }

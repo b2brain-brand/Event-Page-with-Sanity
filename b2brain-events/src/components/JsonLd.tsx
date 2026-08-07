@@ -104,7 +104,11 @@ export function EventJsonLd({
       // Entity signal: the real profiles this site belongs to — the same list
       // the footer renders, from the code-owned brand chrome.
       sameAs: BRAND.social.map((s2) => s2.url),
-      logo: `${origin}${BRAND.logoSrc}`,
+      // logoSrc is already an absolute CDN URL (see brand.ts) — prepending
+      // origin here previously produced a malformed
+      // "https://www.b2brain.comhttps://cdn…" value in every event page's
+      // structured data.
+      logo: BRAND.logoSrc,
     },
     {
       '@type': 'WebPage',
@@ -201,6 +205,79 @@ export function EventJsonLd({
     <script
       type="application/ld+json"
       // Server-rendered from our own CMS data; JSON.stringify escapes the values.
+      dangerouslySetInnerHTML={{ __html: json.replace(/</g, '\\u003c') }}
+    />
+  )
+}
+
+/**
+ * CollectionPage + ItemList + BreadcrumbList for an /events/industry/[category]
+ * page — tells crawlers this is a curated list of Event pages (not a generic
+ * page competing with them), and gives it the same breadcrumb rigor as the
+ * event pages: Home > Events > [Industry].
+ */
+export function CategoryJsonLd({
+  title,
+  description,
+  pageUrl,
+  events,
+}: {
+  title: string
+  description?: string
+  pageUrl: string
+  events: { name: string; slug: string }[]
+}) {
+  const origin = pageUrl.replace(/\/events\/.*$/, '')
+
+  const graph: Record<string, unknown>[] = [
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: BRAND.breadcrumb.home.label,
+          item: absolute(BRAND.breadcrumb.home.href, origin),
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: BRAND.breadcrumb.events.label,
+          item: absolute(BRAND.breadcrumb.events.href, origin),
+        },
+        { '@type': 'ListItem', position: 3, name: title, item: pageUrl },
+      ],
+    },
+    {
+      '@type': 'CollectionPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: title,
+      description: description || undefined,
+      isPartOf: { '@id': `${origin}/#website` },
+      breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+      mainEntity: { '@id': `${pageUrl}#itemlist` },
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#itemlist`,
+      itemListElement: events.map((e, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${origin}/events/${e.slug}`,
+        name: e.name,
+      })),
+    },
+  ]
+
+  const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, (_k, v) =>
+    v === undefined ? undefined : v,
+  )
+
+  return (
+    <script
+      type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: json.replace(/</g, '\\u003c') }}
     />
   )
