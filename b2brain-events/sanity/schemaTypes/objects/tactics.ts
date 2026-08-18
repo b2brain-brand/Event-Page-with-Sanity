@@ -28,7 +28,7 @@ export const tacticsMoment = defineType({
       title: 'Moment name',
       type: 'string',
       description: 'e.g. "Opening reception", "Partner & customer parties".',
-      validation: (r) => r.required().max(60),
+      validation: (r) => r.max(60),
     }),
     defineField({
       name: 'desc',
@@ -36,7 +36,7 @@ export const tacticsMoment = defineType({
       type: 'text',
       rows: 3,
       description: 'What it is and why a rep should be there. 1–2 sentences.',
-      validation: (r) => r.required().max(240),
+      validation: (r) => r.max(240),
     }),
   ],
   preview: { select: { title: 'name', subtitle: 'when' } },
