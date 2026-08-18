@@ -47,6 +47,10 @@ export const LABEL_DEFAULTS: Record<string, string> = {
   costEyebrow: 'COST & ROI',
   costHeading: 'Do the booth math before you commit the budget',
 
+  // Template V2 addition (2026-07-22) — right after Cost & ROI.
+  tacticsEyebrow: 'BEYOND THE BOOTH',
+  tacticsHeading: 'Where the pipeline actually gets built',
+
   logisticsEyebrow: 'LOGISTICS',
   logisticsHeading: 'Everything you need before you fly in',
   passesLabel: 'PASSES & PRICING',
@@ -56,6 +60,16 @@ export const LABEL_DEFAULTS: Record<string, string> = {
   sentimentVideoLabel: 'Video — previous editions',
   sentimentRedditLabel: 'What people say on Reddit',
   sentimentTestimonialLabel: 'From past exhibitors',
+
+  // Template V2 addition (2026-07-22) — between Reviews and the Playbook.
+  compareEyebrow: 'B2BRAIN VS THE BADGE SCANNER',
+  compareHeading: "What the event's own tool leaves on the table",
+  compareDefaultScannerCol: 'On your own',
+  compareDefaultUsCol: 'B2Brain',
+
+  // Template V2 addition (2026-07-22) — the hero CTA link that appears only
+  // when an event offer exists, pointing down to #offer.
+  heroOfferLinkLabel: 'Claim the event offer',
 
   playbookEyebrowTemplate: 'HOW TO WIN AT {event}',
   playbookHeadingTemplate: 'Turn {event} from "event spend" to Pipeline Channel',
@@ -114,9 +128,12 @@ export const TOC_DEFAULTS: Record<string, string> = {
   exhibitors: 'Exhibitors',
   audience: 'Who attends',
   cost: 'Cost & ROI',
+  tactics: 'Beyond the booth',
   logistics: 'Logistics',
   sentiment: 'Reviews',
+  compare: 'B2Brain vs scanner',
   playbook: 'Win the show',
+  offer: 'Event offer',
   similar: 'Similar events',
   article: 'Full briefing',
   faq: 'FAQ',

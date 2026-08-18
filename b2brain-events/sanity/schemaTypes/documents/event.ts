@@ -357,6 +357,14 @@ export const event = defineType({
       group: 'commercial',
     }),
     defineField({
+      name: 'tactics',
+      title: 'Beyond the booth',
+      type: 'tacticsBlock',
+      group: 'commercial',
+      description:
+        'Template V2 addition (2026-07-22). Off-floor moments — receptions, partner parties, exec dinners — where a real share of the pipeline actually gets built. Renders right after Cost & ROI. Empty removes the section.',
+    }),
+    defineField({
       name: 'logistics',
       title: 'Logistics',
       type: 'logisticsBlock',
@@ -373,12 +381,28 @@ export const event = defineType({
       group: 'proof',
     }),
     defineField({
+      name: 'compare',
+      title: 'B2Brain vs the badge scanner',
+      type: 'compareBlock',
+      group: 'proof',
+      description:
+        'Template V2 addition (2026-07-22). Row-by-row: what the event\'s own lead-retrieval tool captures vs what B2Brain adds. Renders between Reviews and the Playbook. Empty (no rows) removes the section.',
+    }),
+    defineField({
       name: 'playbook',
       title: 'How to win at this event',
       type: 'playbookBlock',
       group: 'proof',
       description:
         'The three-motion grid. Fill all three or none — a partial set renders a lopsided grid.',
+    }),
+    defineField({
+      name: 'offer',
+      title: 'Event offer',
+      type: 'offerBlock',
+      group: 'proof',
+      description:
+        'Template V2 addition (2026-07-22). A single per-event exhibitor offer box, right after the Playbook. Filling this in also adds a "Claim the event offer" link to the Hero. Empty (no headline) removes the section.',
     }),
     defineField({
       name: 'relatedEvents',

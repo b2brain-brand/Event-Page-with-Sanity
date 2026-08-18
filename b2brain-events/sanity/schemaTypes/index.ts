@@ -26,6 +26,9 @@ import {
   testimonial,
 } from './objects/sentiment'
 import { playbookBlock, playbookMotion } from './objects/playbook'
+import { tacticsBlock, tacticsMoment } from './objects/tactics'
+import { compareBlock, compareRow } from './objects/compare'
+import { offerBlock } from './objects/offer'
 import { faqItem } from './objects/faq'
 import { article } from './objects/article'
 import { seo, source, navLink, footerColumn, socialLink } from './objects/shared'
@@ -65,6 +68,11 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   testimonial,
   playbookBlock,
   playbookMotion,
+  tacticsBlock,
+  tacticsMoment,
+  compareBlock,
+  compareRow,
+  offerBlock,
   faqItem,
   article,
 

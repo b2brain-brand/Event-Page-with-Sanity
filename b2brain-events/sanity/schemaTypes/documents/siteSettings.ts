@@ -361,6 +361,9 @@ export const siteSettings = defineType({
         defineField({ name: 'costEyebrow', title: 'Cost & ROI — eyebrow', type: 'string', initialValue: 'COST & ROI' }),
         defineField({ name: 'costHeading', title: 'Cost & ROI — heading', type: 'string', initialValue: 'Do the booth math before you commit the budget' }),
 
+        defineField({ name: 'tacticsEyebrow', title: 'Beyond the booth — eyebrow', type: 'string', initialValue: 'BEYOND THE BOOTH', description: 'Template V2 addition (2026-07-22).' }),
+        defineField({ name: 'tacticsHeading', title: 'Beyond the booth — heading', type: 'string', initialValue: 'Where the pipeline actually gets built' }),
+
         defineField({ name: 'logisticsEyebrow', title: 'Logistics — eyebrow', type: 'string', initialValue: 'LOGISTICS' }),
         defineField({ name: 'logisticsHeading', title: 'Logistics — heading', type: 'string', initialValue: 'Everything you need before you fly in' }),
         defineField({ name: 'passesLabel', title: 'Logistics — passes label', type: 'string', initialValue: 'PASSES & PRICING' }),
@@ -370,6 +373,13 @@ export const siteSettings = defineType({
         defineField({ name: 'sentimentVideoLabel', title: 'Reviews — video block label', type: 'string', initialValue: 'Video — previous editions' }),
         defineField({ name: 'sentimentRedditLabel', title: 'Reviews — Reddit block label', type: 'string', initialValue: 'What people say on Reddit' }),
         defineField({ name: 'sentimentTestimonialLabel', title: 'Reviews — testimonial block label', type: 'string', initialValue: 'From past exhibitors' }),
+
+        defineField({ name: 'compareEyebrow', title: 'B2Brain vs scanner — eyebrow', type: 'string', initialValue: 'B2BRAIN VS THE BADGE SCANNER', description: 'Template V2 addition (2026-07-22).' }),
+        defineField({ name: 'compareHeading', title: 'B2Brain vs scanner — heading', type: 'string', initialValue: "What the event's own tool leaves on the table" }),
+        defineField({ name: 'compareDefaultScannerCol', title: 'B2Brain vs scanner — default column header (their tool)', type: 'string', initialValue: 'On your own', description: 'Used when an event leaves its own column-header field blank.' }),
+        defineField({ name: 'compareDefaultUsCol', title: 'B2Brain vs scanner — default column header (us)', type: 'string', initialValue: 'B2Brain' }),
+
+        defineField({ name: 'heroOfferLinkLabel', title: 'Hero — "claim the offer" link', type: 'string', initialValue: 'Claim the event offer', description: 'Only appears in the hero when the event has an Event offer filled in.' }),
 
         defineField({
           name: 'playbookEyebrowTemplate',
@@ -484,9 +494,12 @@ export const siteSettings = defineType({
         defineField({ name: 'exhibitors', type: 'string', title: 'Exhibitors', initialValue: 'Exhibitors' }),
         defineField({ name: 'audience', type: 'string', title: 'Who attends', initialValue: 'Who attends' }),
         defineField({ name: 'cost', type: 'string', title: 'Cost & ROI', initialValue: 'Cost & ROI' }),
+        defineField({ name: 'tactics', type: 'string', title: 'Beyond the booth', initialValue: 'Beyond the booth' }),
         defineField({ name: 'logistics', type: 'string', title: 'Logistics', initialValue: 'Logistics' }),
         defineField({ name: 'sentiment', type: 'string', title: 'Reviews', initialValue: 'Reviews' }),
+        defineField({ name: 'compare', type: 'string', title: 'B2Brain vs scanner', initialValue: 'B2Brain vs scanner' }),
         defineField({ name: 'playbook', type: 'string', title: 'Playbook', initialValue: 'Win the show' }),
+        defineField({ name: 'offer', type: 'string', title: 'Event offer', initialValue: 'Event offer' }),
         defineField({ name: 'similar', type: 'string', title: 'Similar events', initialValue: 'Similar events' }),
         defineField({ name: 'article', type: 'string', title: 'Full briefing', initialValue: 'Full briefing' }),
         defineField({ name: 'faq', type: 'string', title: 'FAQ', initialValue: 'FAQ' }),

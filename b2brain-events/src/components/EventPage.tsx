@@ -17,9 +17,12 @@ import { Speakers } from './sections/Speakers'
 import { Exhibitors } from './sections/Exhibitors'
 import { Audience } from './sections/Audience'
 import { CostSection } from './sections/CostSection'
+import { Tactics } from './sections/Tactics'
 import { Logistics } from './sections/Logistics'
 import { Sentiment } from './sections/Sentiment'
+import { Compare } from './sections/Compare'
 import { Playbook } from './sections/Playbook'
+import { Offer } from './sections/Offer'
 import { Similar } from './sections/Similar'
 import { Article } from './sections/Article'
 import { FaqSection } from './sections/FaqSection'
@@ -73,9 +76,15 @@ export function EventPage({
     { id: 'exhibitors', navKey: 'exhibitors', node: Exhibitors({ event, settings }) },
     { id: 'audience', navKey: 'audience', node: Audience({ event, settings }) },
     { id: 'cost', navKey: 'cost', node: CostSection({ event, settings }) },
+    // Template V2 addition (2026-07-22).
+    { id: 'tactics', navKey: 'tactics', node: Tactics({ event, settings }) },
     { id: 'logistics', navKey: 'logistics', node: Logistics({ event, settings }) },
     { id: 'sentiment', navKey: 'sentiment', node: Sentiment({ event, settings, thumbs }) },
+    // Template V2 addition (2026-07-22).
+    { id: 'compare', navKey: 'compare', node: Compare({ event, settings }) },
     { id: 'playbook', navKey: 'playbook', node: Playbook({ event, settings }) },
+    // Template V2 addition (2026-07-22).
+    { id: 'offer', navKey: 'offer', node: Offer({ event, settings }) },
     { id: 'article', navKey: 'article', node: Article({ event, settings }) },
     { id: 'similar', navKey: 'similar', node: Similar({ events: related, settings }) },
     { id: 'faq', navKey: 'faq', node: FaqSection({ event, settings }) },

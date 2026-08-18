@@ -159,6 +159,13 @@ export type EventDoc = {
     }
   }
 
+  /** Template V2 addition (2026-07-22). Off-floor moments, right after Cost & ROI. */
+  tactics?: {
+    intro?: string
+    items?: { when?: string; name?: string; desc?: string }[]
+    foot?: string
+  }
+
   logistics?: {
     cells?: { h?: string; body?: string; list?: string[] }[]
     passes?: { name?: string; note?: string; price?: string }[]
@@ -170,10 +177,27 @@ export type EventDoc = {
     testimonials?: { q?: string; a?: string }[]
   }
 
+  /** Template V2 addition (2026-07-22). Row-by-row, between Reviews and the Playbook. */
+  compare?: {
+    intro?: string
+    colScanner?: string
+    colUs?: string
+    rows?: { cap?: string; scanner?: string; us?: string }[]
+  }
+
   playbook?: {
     pre?: { h?: string; b?: string }
     floor?: { h?: string; b?: string }
     post?: { h?: string; b?: string }
+  }
+
+  /** Template V2 addition (2026-07-22). One promo box, right after the Playbook. */
+  offer?: {
+    badge?: string
+    headline?: string
+    body?: string
+    fineprint?: string
+    cta?: string
   }
 
   autoFillRelated?: boolean

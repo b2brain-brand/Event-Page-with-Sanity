@@ -122,6 +122,13 @@ export const EVENT_QUERY = defineQuery(`
       roi{ spend, reps, days, convosPerRepDay, qualRate, meetingRate, acv }
     },
 
+    // Template V2 addition (2026-07-22).
+    tactics{
+      intro,
+      items[]{ when, name, desc },
+      foot
+    },
+
     logistics{
       cells[]{ h, body, list },
       passes[]{ name, note, price }
@@ -133,10 +140,27 @@ export const EVENT_QUERY = defineQuery(`
       testimonials[]{ q, a }
     },
 
+    // Template V2 addition (2026-07-22).
+    compare{
+      intro,
+      colScanner,
+      colUs,
+      rows[]{ cap, scanner, us }
+    },
+
     playbook{
       pre{ h, b },
       floor{ h, b },
       post{ h, b }
+    },
+
+    // Template V2 addition (2026-07-22).
+    offer{
+      badge,
+      headline,
+      body,
+      fineprint,
+      cta
     },
 
     autoFillRelated,
