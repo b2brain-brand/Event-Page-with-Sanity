@@ -9,9 +9,9 @@ import { DidAgent } from '../DidAgent'
  * Public-site analytics live in the website root layout, which is completely
  * separate from the embedded Studio root layout.
  *
- * D-ID is rendered here only because DidAgent has a strict development + local
- * port 3005 guard. It remains inactive in every deployed environment until its
- * interaction suite passes and production activation is explicitly approved.
+ * D-ID is iframe-isolated so its document-level listeners cannot intercept
+ * website controls. This component is never rendered by the separate Studio
+ * root layout.
  */
 export function MarketingRuntime() {
   return (
