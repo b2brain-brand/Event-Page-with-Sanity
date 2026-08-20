@@ -35,6 +35,11 @@ const DID_FRAME_HTML = `<!doctype html>
   </body>
 </html>`
 
+const DID_IDLE_VIDEO =
+  'https://agents-results.d-id.com/google-oauth2%7C104707151394975296647/v2_agt_H4O1YDpP/idle_1785920578294.mp4?modified_at=2026-08-20T07%3A28%3A26.035Z'
+const DID_IDLE_POSTER =
+  'https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/v2_with_background_thumbnail.jpeg'
+
 export function DidAgent() {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -87,7 +92,20 @@ export function DidAgent() {
           aria-expanded="false"
           onClick={() => setIsOpen(true)}
         >
-          <span className={styles.avatar} aria-hidden="true" />
+          <span className={styles.avatar} aria-hidden="true">
+            <video
+              className={styles.avatarVideo}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={DID_IDLE_POSTER}
+              disablePictureInPicture
+            >
+              <source src={DID_IDLE_VIDEO} type="video/mp4" />
+            </video>
+          </span>
           <span className={styles.notification} aria-hidden="true">
             1
           </span>
