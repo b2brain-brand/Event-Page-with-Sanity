@@ -78,18 +78,21 @@ export function DidAgent() {
         </section>
       )}
 
-      <button
-        type="button"
-        className={styles.launcher}
-        aria-controls="did-agent-panel"
-        aria-expanded={isOpen}
-        onClick={() => setIsOpen((current) => !current)}
-      >
-        <span className={styles.badge} aria-hidden="true">
-          AI
-        </span>
-        <span>{isOpen ? 'Close AI' : 'Talk to AI'}</span>
-      </button>
+      {!isOpen && (
+        <button
+          type="button"
+          className={styles.launcher}
+          aria-label="Open video chat"
+          aria-controls="did-agent-panel"
+          aria-expanded="false"
+          onClick={() => setIsOpen(true)}
+        >
+          <span className={styles.avatar} aria-hidden="true" />
+          <span className={styles.notification} aria-hidden="true">
+            1
+          </span>
+        </button>
+      )}
     </div>
   )
 }
