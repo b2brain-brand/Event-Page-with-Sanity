@@ -373,8 +373,9 @@ ul{margin:0;padding:0;list-style:none}
 .faq__icon::before{left:0;top:7px;width:16px;height:1.5px}
 .faq__icon::after{left:7px;top:0;width:1.5px;height:16px}
 .faq__item.is-open .faq__icon::after{transform:scaleY(0)}
-.faq__a{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.faq__a-inner{padding:0 0 24px;font-size:16px;line-height:25px;color:var(--black-70);max-width:720px}
+.faq__a{display:grid;grid-template-rows:0fr;overflow:hidden;transition:grid-template-rows .3s ease}
+.faq__item.is-open .faq__a{grid-template-rows:1fr}
+.faq__a-inner{min-height:0;overflow:hidden;padding:0 0 24px;font-size:16px;line-height:25px;color:var(--black-70);max-width:720px}
 @media(max-width:991px){.faq__grid{grid-template-columns:1fr;gap:28px}}
 
 /* ============================================================ CTA */

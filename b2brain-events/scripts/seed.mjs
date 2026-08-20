@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * =============================================================================
  * SEED — ports the reference build's sample data into Sanity.

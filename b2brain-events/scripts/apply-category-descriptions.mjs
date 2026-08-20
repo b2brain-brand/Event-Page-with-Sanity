@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * =============================================================================
  * APPLY CATEGORY DESCRIPTIONS — fill the 8 verticals that had none.

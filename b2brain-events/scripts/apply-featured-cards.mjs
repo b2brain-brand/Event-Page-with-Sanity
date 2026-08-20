@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * =============================================================================
  * APPLY FEATURED CARDS — match the /events "buying committees" section to live.

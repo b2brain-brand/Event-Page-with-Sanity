@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * =============================================================================
  * APPLY DREAMFORCE STRUCTURE — bring imported events up to the full template.

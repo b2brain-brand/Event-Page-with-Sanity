@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * =============================================================================
  * APPLY BRAND — push the real b2brain.com nav, footer, social and legal links

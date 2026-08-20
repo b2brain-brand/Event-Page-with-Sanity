@@ -303,6 +303,7 @@ so do not run it after you have customised them.
 |---|---|
 | `npm run dev` | Dev server + Studio |
 | `npm run build` | Production build |
+| `npm run lint` | Next.js Core Web Vitals + TypeScript lint checks |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run seed` | Write the two example events |
 | `npm run upload:gallery <slug> <folder>` | Attach local photos to an event's gallery, filename order |

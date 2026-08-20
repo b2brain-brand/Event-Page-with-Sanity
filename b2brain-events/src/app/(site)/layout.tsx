@@ -4,12 +4,9 @@ import localFont from 'next/font/local'
 import { draftMode } from 'next/headers'
 import { VisualEditing } from 'next-sanity/visual-editing'
 import { DisableDraftMode } from '@/components/DisableDraftMode'
-import { PostHogAnalytics } from '@/components/analytics/PostHogAnalytics'
-import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
-import { FactorsAnalytics } from '@/components/analytics/FactorsAnalytics'
-import { DidAgent } from '@/components/DidAgent'
+import { MarketingRuntime } from '@/components/analytics/MarketingRuntime'
 import { siteUrl } from '@/sanity/env'
-import './globals.css'
+import '../globals.css'
 
 /**
  * Archivo for display, Inter for body — the two families the reference build
@@ -41,10 +38,10 @@ const interDisplay = localFont({
   variable: '--font-inter-display',
   display: 'swap',
   src: [
-    { path: './fonts/InterDisplay-Regular.woff2', weight: '400', style: 'normal' },
-    { path: './fonts/InterDisplay-Medium.woff2', weight: '500', style: 'normal' },
-    { path: './fonts/InterDisplay-SemiBold.woff2', weight: '600', style: 'normal' },
-    { path: './fonts/InterDisplay-Bold.woff2', weight: '700', style: 'normal' },
+    { path: '../fonts/InterDisplay-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../fonts/InterDisplay-Medium.woff2', weight: '500', style: 'normal' },
+    { path: '../fonts/InterDisplay-SemiBold.woff2', weight: '600', style: 'normal' },
+    { path: '../fonts/InterDisplay-Bold.woff2', weight: '700', style: 'normal' },
   ],
 })
 
@@ -88,17 +85,11 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${archivo.variable} ${inter.variable} ${interDisplay.variable}`}>
       <body>
+        {!isDraft && <MarketingRuntime />}
         {/* Analytics — same GA4 / PostHog / Factors as the rest of b2brain.com,
             so the event pages are tracked in the same dashboards. Skipped in
-            draft/preview so Studio sessions don't pollute production data. */}
-        {!isDraft && (
-          <>
-            <PostHogAnalytics />
-            <GoogleAnalytics />
-            <FactorsAnalytics />
-            <DidAgent />
-          </>
-        )}
+            draft/preview and inside /studio so editor sessions don't pollute
+            production data or load public-page overlays in the CMS. */}
         {children}
         {isDraft && (
           <>

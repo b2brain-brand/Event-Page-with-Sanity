@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * =============================================================================
  * UPLOAD GALLERY IMAGES — attach local photos to an event's gallery.

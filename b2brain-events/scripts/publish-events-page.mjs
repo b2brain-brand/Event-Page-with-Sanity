@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Create + publish the Events-page (/events) singleton with the b2brain.com copy.
  *

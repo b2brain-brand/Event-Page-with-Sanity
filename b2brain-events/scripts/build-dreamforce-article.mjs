@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Uploads the 4 Dreamforce blog images and writes the full article to the
  * Dreamforce event — the exact live-page content, with images placed in context

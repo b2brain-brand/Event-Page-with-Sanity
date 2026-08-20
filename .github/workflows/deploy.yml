@@ -32,7 +32,7 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
-  # Always runs: catches type errors before anything deploys.
+  # Always runs: catches lint and type errors before anything deploys.
   typecheck:
     runs-on: ubuntu-latest
     defaults:
@@ -46,6 +46,7 @@ jobs:
           cache: npm
           cache-dependency-path: b2brain-events/package-lock.json
       - run: npm ci
+      - run: npm run lint
       - run: npm run typecheck
 
   deploy:

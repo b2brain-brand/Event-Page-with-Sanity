@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * =============================================================================
  * IMPORT — Webflow `Events` CMS collection  ->  Sanity `event` documents.

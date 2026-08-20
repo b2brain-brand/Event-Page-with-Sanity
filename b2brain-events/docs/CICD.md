@@ -93,8 +93,8 @@ The Action already sets **Root Directory** correctly by running from
 
 `.github/workflows/deploy.yml`:
 
-- **`typecheck` job** — runs on every push and PR: `npm ci` + `npm run
-  typecheck`. Deploys wait on it, so a type error never ships.
+- **`typecheck` job** — runs on every push and PR: `npm ci` + `npm run lint` +
+  `npm run typecheck`. Deploys wait on it, so lint or type errors never ship.
 - **`deploy` job** — production on push to `main`, a preview URL on PRs. Skips
   entirely if `VERCEL_TOKEN` is unset.
 

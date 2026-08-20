@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Applies the request-sheet changes + the full b2brain chrome to Sanity.
  *

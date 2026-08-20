@@ -29,6 +29,8 @@ export function YouTubeThumb({ url }: { url?: string }) {
   const id = idFromUrl(url)
   if (!id) return null
   return (
+    // This is a Studio-only preview element, not a public-page image or LCP candidate.
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
       alt=""

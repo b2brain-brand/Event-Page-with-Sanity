@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 export type FaqPair = { q?: string; a?: string }
 
@@ -14,7 +14,6 @@ export type FaqPair = { q?: string; a?: string }
  */
 export function FaqList({ items }: { items: FaqPair[] }) {
   const [open, setOpen] = useState<number | null>(null)
-  const panels = useRef<(HTMLDivElement | null)[]>([])
 
   return (
     <div className="faq__list">
@@ -31,13 +30,7 @@ export function FaqList({ items }: { items: FaqPair[] }) {
               <span>{f.q}</span>
               <span className="faq__icon" aria-hidden="true" />
             </button>
-            <div
-              className="faq__a"
-              ref={(el) => {
-                panels.current[i] = el
-              }}
-              style={{ maxHeight: isOpen ? panels.current[i]?.scrollHeight ?? 999 : 0 }}
-            >
+            <div className="faq__a">
               <div className="faq__a-inner">{f.a}</div>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import type { StructureResolver } from 'sanity/structure'
+import { apiVersion } from './env'
 
 /**
  * Studio desk structure.
@@ -35,6 +36,7 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentList()
                     .title('Upcoming events')
+                    .apiVersion(apiVersion)
                     .filter('_type == "event" && startDate > $today')
                     .params({ today: new Date().toISOString().slice(0, 10) })
                     .defaultOrdering([{ field: 'startDate', direction: 'asc' }]),
@@ -44,6 +46,7 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentList()
                     .title('Live events')
+                    .apiVersion(apiVersion)
                     .filter('_type == "event" && startDate <= $today && endDate >= $today')
                     .params({ today: new Date().toISOString().slice(0, 10) })
                     .defaultOrdering([{ field: 'startDate', direction: 'asc' }]),
@@ -53,6 +56,7 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentList()
                     .title('Past events')
+                    .apiVersion(apiVersion)
                     .filter('_type == "event" && endDate < $today')
                     .params({ today: new Date().toISOString().slice(0, 10) })
                     .defaultOrdering([{ field: 'startDate', direction: 'desc' }]),
@@ -62,6 +66,7 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentList()
                     .title('Needs sourcing')
+                    .apiVersion(apiVersion)
                     .filter(
                       '_type == "event" && (seo.noIndex == true || !defined(tldr) || count(faq) < 3 || count(sources) == 0)',
                     )
