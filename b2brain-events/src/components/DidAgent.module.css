@@ -39,6 +39,16 @@
   background-image: url('https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/v2_with_background_thumbnail.jpeg');
   background-position: center;
   background-size: cover;
+  overflow: hidden;
+}
+
+.avatarVideo {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
 }
 
 .notification {
@@ -118,5 +128,11 @@
   .panel {
     width: calc(100vw - 24px);
     height: calc(100vh - 92px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatarVideo {
+    display: none;
   }
 }
