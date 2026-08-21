@@ -11,7 +11,7 @@ import type { EventDoc, SiteSettings } from '@/lib/types'
  * is never an empty box.
  */
 export function Speakers({ event, settings }: { event: EventDoc; settings: SiteSettings | null }) {
-  const list = (event.speakers || []).filter((s) => has(s?.name))
+  const list = (event.speakers || []).filter((s) => has(s?.name) && has(s?.role))
   if (!list.length) return null
 
   return (

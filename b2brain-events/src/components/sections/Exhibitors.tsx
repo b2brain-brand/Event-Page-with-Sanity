@@ -18,7 +18,9 @@ export function Exhibitors({
   const x = event.exhibitors
   if (!x) return null
 
-  const tiers = (x.tiers || []).filter((t) => has(t?.tier))
+  const tiers = (x.tiers || [])
+    .map((t) => ({ ...t, names: (t.names || []).filter((name) => has(name)) }))
+    .filter((t) => has(t?.tier) && t.names.length > 0)
   const notable = x.notable
   if (!tiers.length && !has(notable)) return null
 

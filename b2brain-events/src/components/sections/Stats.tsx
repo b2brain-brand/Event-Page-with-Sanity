@@ -9,7 +9,7 @@ import type { EventDoc } from '@/lib/types'
  * without a number are dropped; no numbers at all removes the strip.
  */
 export function Stats({ event }: { event: EventDoc }) {
-  const cells = (event.stats || []).filter((s) => has(s?.num))
+  const cells = (event.stats || []).filter((s) => has(s?.num) && has(s?.label))
   if (!cells.length) return null
 
   return (

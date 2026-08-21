@@ -13,8 +13,10 @@ export function Logistics({ event, settings }: { event: EventDoc; settings: Site
   const l = event.logistics
   if (!l) return null
 
-  const cells = (l.cells || []).filter((c) => has(c?.h))
-  const passes = (l.passes || []).filter((p) => has(p?.name))
+  const cells = (l.cells || [])
+    .map((c) => ({ ...c, list: (c.list || []).filter((item) => has(item)) }))
+    .filter((c) => has(c?.h) && (has(c?.body) || c.list.length > 0))
+  const passes = (l.passes || []).filter((p) => has(p?.name) && has(p?.price))
   if (!cells.length && !passes.length) return null
 
   return (
