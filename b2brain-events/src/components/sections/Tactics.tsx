@@ -2,6 +2,7 @@ import { has } from '@/lib/format'
 import { L } from '@/lib/defaults'
 import { Section, SectionHead } from '../SectionHead'
 import type { EventDoc, SiteSettings } from '@/lib/types'
+import type { CSSProperties } from 'react'
 
 /**
  * BEYOND THE BOOTH  ->  mTactics()
@@ -14,12 +15,13 @@ export function Tactics({ event, settings }: { event: EventDoc; settings: SiteSe
   const t = event.tactics
   const items = (t?.items || []).filter((x) => has(x?.name) && has(x?.desc))
   if (!items.length) return null
+  const gridStyle = { '--tact-columns': items.length } as CSSProperties
 
   return (
     <Section id="tactics">
       <SectionHead eyebrow={L(settings, 'tacticsEyebrow')} title={L(settings, 'tacticsHeading')} />
       {has(t?.intro) && <p className="cmp__intro">{t!.intro}</p>}
-      <div className="tact">
+      <div className="tact" style={gridStyle}>
         {items.map((x, i) => (
           <div className="tact__card" key={`${x.name}-${i}`}>
             {has(x.when) && <div className="tact__when">{x.when}</div>}
