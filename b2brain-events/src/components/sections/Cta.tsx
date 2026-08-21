@@ -3,6 +3,7 @@ import { S } from '@/lib/defaults'
 import { BRAND } from '@/lib/brand'
 import { CountdownText } from '../CountdownText'
 import type { EventDoc, SiteSettings } from '@/lib/types'
+import styles from './Cta.module.css'
 
 /**
  * CLOSING CTA  ->  mCta()
@@ -54,23 +55,15 @@ export function Cta({
               )}
             </span>
             <h2>{headline}</h2>
-            {/* Both buttons resolve to the real b2brain.com pages (code-owned,
-                like the nav and footer) so they can never drift to a dead path.
-                Book a Demo -> b2brain.com/demo; the prep-guide/secondary CTA ->
-                Start Free Trial on the App Store. */}
+            {/* The demo is the only action. The prep-guide line is supporting
+                copy, not a second destination, so it cannot drift to an
+                unrelated App Store listing. */}
             <div className="cta__ctas">
               <a href={BRAND.cta.href} className="btn btn--primary">
                 {S(settings, 'ctaPrimaryLabel')}
               </a>
-              <a
-                href={BRAND.login.href}
-                className="btn btn--ghost"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {secondary}
-              </a>
             </div>
+            {has(secondary) && <p className={styles.supportingText}>{secondary}</p>}
           </div>
         </div>
       </div>

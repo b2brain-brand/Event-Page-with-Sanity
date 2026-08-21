@@ -303,7 +303,8 @@ content gate.
 |---|---|---|
 | Eyebrow | `ctaEyebrowOverride` ?? computed countdown ?? `ctaFallbackEyebrow` | — |
 | H2 | `ctaHeadline` ?? `ctaHeadlineTemplate` + `name` | — |
-| Buttons | settings `ctaPrimary*` / `ctaSecondary*` | — |
+| Primary button | settings `ctaPrimary*` | — |
+| Supporting text | `ctaSecondaryLabelTemplate` | hidden when empty; never a link |
 
 Always renders. It is the conversion surface.
 

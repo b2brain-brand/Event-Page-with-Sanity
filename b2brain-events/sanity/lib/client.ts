@@ -25,7 +25,7 @@ import { apiVersion, dataset, projectId, readToken } from '../env'
  * against the non-CDN API — irrelevant here since every page is statically
  * rendered/ISR'd, not fetched per-visitor.
  */
-export const client = createClient({
+const publishedClient = createClient({
   projectId,
   dataset,
   apiVersion,
@@ -34,3 +34,20 @@ export const client = createClient({
   token: readToken || undefined,
   stega: { studioUrl: '/studio' },
 })
+
+/**
+ * @sanity/client network errors can contain the complete request object,
+ * including its Authorization header. Next prints an unhandled error object
+ * during static generation, so replace fetch failures with a deliberately
+ * minimal error before they reach build/runtime logs.
+ */
+const publishedFetch = publishedClient.fetch.bind(publishedClient)
+publishedClient.fetch = (async (...args: Parameters<typeof publishedFetch>) => {
+  try {
+    return await publishedFetch(...args)
+  } catch {
+    throw new Error('Sanity published-content fetch failed. Check network access and Sanity availability.')
+  }
+}) as typeof publishedClient.fetch
+
+export const client = publishedClient
