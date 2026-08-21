@@ -56,7 +56,7 @@ export const LABEL_DEFAULTS: Record<string, string> = {
   passesLabel: 'PASSES & PRICING',
 
   sentimentEyebrow: 'WHAT PEOPLE SAY',
-  sentimentHeading: 'The reviews the event site will never publish',
+  sentimentHeading: 'Reviews that you need to know about this show',
   sentimentVideoLabel: 'Video — previous editions',
   sentimentRedditLabel: 'What people say on Reddit',
   sentimentTestimonialLabel: 'From past exhibitors',

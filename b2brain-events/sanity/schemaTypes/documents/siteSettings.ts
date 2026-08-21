@@ -369,7 +369,7 @@ export const siteSettings = defineType({
         defineField({ name: 'passesLabel', title: 'Logistics — passes label', type: 'string', initialValue: 'PASSES & PRICING' }),
 
         defineField({ name: 'sentimentEyebrow', title: 'Reviews — eyebrow', type: 'string', initialValue: 'WHAT PEOPLE SAY' }),
-        defineField({ name: 'sentimentHeading', title: 'Reviews — heading', type: 'string', initialValue: 'The reviews the event site will never publish' }),
+        defineField({ name: 'sentimentHeading', title: 'Reviews — heading', type: 'string', initialValue: 'Reviews that you need to know about this show' }),
         defineField({ name: 'sentimentVideoLabel', title: 'Reviews — video block label', type: 'string', initialValue: 'Video — previous editions' }),
         defineField({ name: 'sentimentRedditLabel', title: 'Reviews — Reddit block label', type: 'string', initialValue: 'What people say on Reddit' }),
         defineField({ name: 'sentimentTestimonialLabel', title: 'Reviews — testimonial block label', type: 'string', initialValue: 'From past exhibitors' }),
@@ -547,9 +547,10 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'ctaSecondaryLabelTemplate',
-      title: 'Closing CTA — secondary label template',
+      title: 'Closing CTA — supporting text template',
       type: 'string',
       group: 'cta',
+      description: 'Non-clickable supporting text displayed beneath the Book a Demo button. Use {event} for the event name.',
       initialValue: 'Get the {event} prep guide',
     }),
     defineField({
