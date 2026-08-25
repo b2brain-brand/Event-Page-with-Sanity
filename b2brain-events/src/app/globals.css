@@ -522,8 +522,6 @@ ul{margin:0;padding:0;list-style:none}
 .ecard:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
 .ecard__img{position:relative;display:block;aspect-ratio:16/9;border-bottom:1px solid var(--black);overflow:hidden;background:var(--whitesmoke)}
 .ecard__img--photo img{transition:transform .35s ease}
-.ecard__img--video img{width:100%;height:100%;object-fit:cover;display:block}
-.ecard__video-badge{position:absolute;left:14px;bottom:14px;padding:5px 8px;background:rgba(11,11,11,.88);color:var(--white);font-size:10px;font-weight:700;letter-spacing:.65px;text-transform:uppercase}
 .ecard:hover .ecard__img--photo img{transform:scale(1.045)}
 .ecard__img--art{isolation:isolate;background:var(--ecard-art-bg);color:var(--ecard-art-ink)}
 .ecard__img--art::before{content:'';position:absolute;z-index:-1;width:58%;aspect-ratio:1;border-radius:50%;right:-13%;top:-36%;background:var(--ecard-art-pop);transition:transform .35s ease}
