@@ -12,8 +12,16 @@ import { presentationTool } from 'sanity/presentation'
 import { visionTool } from '@sanity/vision'
 
 import { apiVersion, dataset, projectId } from './sanity/env'
+import { VisitSiteAction } from './sanity/actions/visitSite'
 import { schemaTypes } from './sanity/schemaTypes'
 import { structure } from './sanity/structure'
+
+const SITE_PAGE_TYPES = new Set([
+  'event',
+  'eventCategory',
+  'eventsIndexPage',
+  'siteSettings',
+])
 
 export default defineConfig({
   name: 'b2brain-events',
@@ -35,6 +43,10 @@ export default defineConfig({
       prev.filter(
         (item) => !['siteSettings', 'eventsIndexPage'].includes(item.templateId),
       ),
+    // Keep the standard Publish/Delete/etc. actions and add a contextual link
+    // for every Sanity document that owns a frontend page.
+    actions: (prev, context) =>
+      SITE_PAGE_TYPES.has(context.schemaType) ? [...prev, VisitSiteAction] : prev,
   },
 
   plugins: [
