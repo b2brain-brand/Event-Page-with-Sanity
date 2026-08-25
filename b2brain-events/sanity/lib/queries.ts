@@ -212,7 +212,8 @@ const INDEX_CARD_FIELDS = /* groq */ `
   "description": coalesce(tldr, tagline),
   isFeatured,
   cardImageAlt,
-  "cardImage": cardImage{ ..., asset-> }
+  "cardImage": cardImage{ ..., asset-> },
+  "coverVideoUrl": coalesce(heroVideo.youtubeUrl, sentiment.videos[0].url)
 `
 
 /** The /events collection page: its own copy + every event as a card. */

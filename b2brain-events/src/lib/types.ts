@@ -38,6 +38,8 @@ export type IndexEventCard = EventCard & {
   exhibitors?: string
   cardImage?: SanityImage
   cardImageAlt?: string
+  /** Verified hero/review video used only when no approved card image exists. */
+  coverVideoUrl?: string
 }
 
 /** One entry in the industry nav on /events and every /events/industry/[x] page. */
