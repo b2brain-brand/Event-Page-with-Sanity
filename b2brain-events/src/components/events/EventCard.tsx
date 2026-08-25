@@ -1,6 +1,11 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState } from 'react'
 import { fmtRange, has } from '@/lib/format'
+import { hasNumericMetric, resolveEventCardCover } from '@/lib/event-card-cover'
+import { youTubeThumb, youTubeThumbFallback } from '@/lib/youtube'
 import type { IndexEventCard } from '@/lib/types'
 
 /**
@@ -15,9 +20,10 @@ import type { IndexEventCard } from '@/lib/types'
  *   - a button: filled "Open Event Playbook" when featured, ghost
  *     "See The Event Playbook" in the all-events grid
  *
- * The real cards carry NO image — this matches that by default. `cardImage` is
- * optional: populate it in the Studio and it renders at the top (16:9); leave it
- * empty and the card is identical to the live site.
+ * Cover priority is deliberate: approved Sanity image, verified event-video
+ * thumbnail, then deterministic event artwork. Every card gets a stable visual
+ * without fake content, unlicensed photography, or manually maintained
+ * placeholder assets.
  *
  * The static design is fixed here; every value (title, tags, meta, image) is
  * driven per event from Sanity, so the cards are dynamic content in a fixed frame.
@@ -34,19 +40,32 @@ export function EventCard({
   const industry = event.categories?.[0]?.title
   const venueLine = [event.venueName, event.city].filter((x) => has(x)).join(' · ')
   const dateLine = fmtRange(event.startDate, event.endDate)
-  const img = event.cardImage?.asset?.url
+  const cover = resolveEventCardCover(event, industry)
 
   return (
     <Link className="ecard" href={`/events/${event.slug}`}>
-      {img && (
-        <span className="ecard__img">
+      {cover.kind === 'sanity' ? (
+        <span className="ecard__img ecard__img--photo">
           <Image
-            src={img}
-            alt={event.cardImageAlt || event.name}
+            src={cover.url}
+            alt={cover.alt}
             fill
             sizes="(max-width: 991px) 100vw, 380px"
             style={{ objectFit: 'cover' }}
           />
+        </span>
+      ) : cover.kind === 'video' ? (
+        <span className="ecard__img ecard__img--photo ecard__img--video">
+          <EventVideoCover videoId={cover.videoId} alt={cover.alt} />
+          <span className="ecard__video-badge">Event video</span>
+        </span>
+      ) : (
+        <span className="ecard__img ecard__img--art" style={cover.style} aria-hidden="true">
+          <span className="ecard__art-grid" />
+          <span className="ecard__art-orbit" />
+          <span className="ecard__art-kicker">{industry || event.type || 'B2B event'}</span>
+          <span className="ecard__art-monogram">{cover.monogram}</span>
+          <span className="ecard__art-year">{event.startDate?.slice(0, 4) || 'EVENT'}</span>
         </span>
       )}
 
@@ -61,12 +80,12 @@ export function EventCard({
         <span className="ecard__meta">
           {has(dateLine) && <span className="ecard__row">{dateLine}</span>}
           {has(venueLine) && <span className="ecard__row">{venueLine}</span>}
-          {has(event.attendees) && (
+          {hasNumericMetric(event.attendees) && (
             <span className="ecard__row">
               <b className="mono-num">{event.attendees}</b> Attendees
             </span>
           )}
-          {has(event.exhibitors) && (
+          {hasNumericMetric(event.exhibitors) && (
             <span className="ecard__row">
               <b className="mono-num">{event.exhibitors}</b> Exhibitors
             </span>
@@ -78,5 +97,25 @@ export function EventCard({
         </span>
       </span>
     </Link>
+  )
+}
+
+function EventVideoCover({ videoId, alt }: { videoId: string; alt: string }) {
+  const fallback = youTubeThumbFallback(videoId)
+  const [src, setSrc] = useState(youTubeThumb(videoId))
+
+  return (
+    // YouTube already serves an optimized JPEG. Keeping this as a native image
+    // also lets a missing max-resolution still fall back without a broken card.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      onError={() => {
+        if (src !== fallback) setSrc(fallback)
+      }}
+    />
   )
 }

@@ -517,9 +517,26 @@ ul{margin:0;padding:0;list-style:none}
 @media(max-width:991px){.ecards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.ecards{grid-template-columns:1fr}}
 
-.ecard{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--black);transition:background .18s ease}
-.ecard:hover{background:var(--whitesmoke)}
+.ecard{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--black);transition:background .18s ease,transform .18s ease}
+.ecard:hover{background:var(--whitesmoke);transform:translateY(-3px)}
+.ecard:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
 .ecard__img{position:relative;display:block;aspect-ratio:16/9;border-bottom:1px solid var(--black);overflow:hidden;background:var(--whitesmoke)}
+.ecard__img--photo img{transition:transform .35s ease}
+.ecard__img--video img{width:100%;height:100%;object-fit:cover;display:block}
+.ecard__video-badge{position:absolute;left:14px;bottom:14px;padding:5px 8px;background:rgba(11,11,11,.88);color:var(--white);font-size:10px;font-weight:700;letter-spacing:.65px;text-transform:uppercase}
+.ecard:hover .ecard__img--photo img{transform:scale(1.045)}
+.ecard__img--art{isolation:isolate;background:var(--ecard-art-bg);color:var(--ecard-art-ink)}
+.ecard__img--art::before{content:'';position:absolute;z-index:-1;width:58%;aspect-ratio:1;border-radius:50%;right:-13%;top:-36%;background:var(--ecard-art-pop);transition:transform .35s ease}
+.ecard__img--art::after{content:'';position:absolute;z-index:-1;width:46%;height:132%;left:var(--ecard-art-x);top:-16%;background:var(--ecard-art-accent);transform:rotate(var(--ecard-art-angle));transition:transform .35s ease}
+.ecard__art-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(11,11,11,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(11,11,11,.12) 1px,transparent 1px);background-size:32px 32px;mix-blend-mode:multiply}
+.ecard__art-orbit{position:absolute;width:32%;aspect-ratio:1;border:1px solid currentColor;border-radius:50%;right:12%;bottom:-19%;box-shadow:0 0 0 12px color-mix(in srgb,currentColor 12%,transparent),0 0 0 26px color-mix(in srgb,currentColor 7%,transparent);transition:transform .35s ease}
+.ecard__art-kicker{position:absolute;left:22px;top:20px;max-width:62%;font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;background:var(--white);border:1px solid currentColor;padding:5px 8px}
+.ecard__art-monogram{position:absolute;left:22px;bottom:17px;font-family:var(--font-heading);font-size:64px;line-height:.82;font-weight:600;letter-spacing:-4px;color:var(--white);text-shadow:1px 1px 0 var(--ecard-art-ink),-1px -1px 0 var(--ecard-art-ink),1px -1px 0 var(--ecard-art-ink),-1px 1px 0 var(--ecard-art-ink);transition:transform .35s ease}
+.ecard__art-year{position:absolute;right:18px;bottom:16px;font-family:var(--font-heading);font-size:12px;font-weight:700;letter-spacing:1px;writing-mode:vertical-rl}
+.ecard:hover .ecard__img--art::before{transform:translate(-8px,8px) scale(1.08)}
+.ecard:hover .ecard__img--art::after{transform:rotate(calc(var(--ecard-art-angle) + 4deg)) translateX(5px)}
+.ecard:hover .ecard__art-orbit{transform:translate(-8px,-8px) scale(1.06)}
+.ecard:hover .ecard__art-monogram{transform:translateX(6px)}
 .ecard__body{display:flex;flex-direction:column;flex:1;padding:24px}
 .ecard__tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:16px}
 .ecard__type{font-size:13px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--black-70)}
@@ -529,6 +546,7 @@ ul{margin:0;padding:0;list-style:none}
 .ecard__row{font-size:14px;line-height:20px;color:var(--black-70)}
 .ecard__row b{color:var(--black);margin-right:2px}
 .ecard__btn{margin-top:24px;align-self:flex-start}
+@media(prefers-reduced-motion:reduce){.ecard,.ecard__img--photo img,.ecard__img--art::before,.ecard__img--art::after,.ecard__art-orbit,.ecard__art-monogram{transition:none}.ecard:hover{transform:none}}
 
 /* --- browse controls (see .filter below) --- */
 .ebrowse__empty{border:1px solid var(--black);padding:44px 30px;text-align:center;font-size:16px;color:var(--black-70)}
