@@ -530,10 +530,9 @@ export const event = defineType({
       start: 'startDate',
       city: 'venue.city',
       media: 'seo.ogImage',
-      noIndex: 'seo.noIndex',
     },
-    prepare: ({ title, start, city, media, noIndex }) => ({
-      title: noIndex ? `${title}  ·  [noindex]` : title,
+    prepare: ({ title, start, city, media }) => ({
+      title,
       subtitle: [start, city].filter(Boolean).join('  ·  '),
       media,
     }),
