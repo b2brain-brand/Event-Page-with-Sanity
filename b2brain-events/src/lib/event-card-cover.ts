@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react'
 
 import type { IndexEventCard } from './types'
-import { youTubeId } from './youtube'
 
 export type CardArtStyle = CSSProperties & {
   '--ecard-art-bg': string
@@ -14,7 +13,6 @@ export type CardArtStyle = CSSProperties & {
 
 export type EventCardCover =
   | { kind: 'sanity'; url: string; alt: string }
-  | { kind: 'video'; videoId: string; alt: string }
   | { kind: 'art'; monogram: string; style: CardArtStyle }
 
 const ART_PALETTES = [
@@ -29,8 +27,9 @@ const ART_PALETTES = [
 /**
  * Resolve a collection-card cover without network access.
  *
- * The caller renders the returned source. A malformed or absent video can
- * never produce a broken image because it falls through to deterministic art.
+ * Videos belong inside event pages, not in collection-card covers. When an
+ * approved Sanity image is absent, deterministic artwork keeps every card
+ * stable without depending on an external thumbnail service.
  */
 export function resolveEventCardCover(
   event: IndexEventCard,
@@ -39,11 +38,6 @@ export function resolveEventCardCover(
   const imageUrl = event.cardImage?.asset?.url?.trim()
   if (imageUrl) {
     return { kind: 'sanity', url: imageUrl, alt: event.cardImageAlt?.trim() || event.name }
-  }
-
-  const videoId = youTubeId(event.coverVideoUrl)
-  if (videoId) {
-    return { kind: 'video', videoId, alt: `${event.name} event video cover` }
   }
 
   return { kind: 'art', ...cardArt(event, industry) }

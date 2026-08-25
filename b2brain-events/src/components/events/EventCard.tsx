@@ -2,10 +2,8 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
 import { fmtRange, has } from '@/lib/format'
 import { hasNumericMetric, resolveEventCardCover } from '@/lib/event-card-cover'
-import { youTubeThumb, youTubeThumbFallback } from '@/lib/youtube'
 import type { IndexEventCard } from '@/lib/types'
 
 /**
@@ -20,10 +18,9 @@ import type { IndexEventCard } from '@/lib/types'
  *   - a button: filled "Open Event Playbook" when featured, ghost
  *     "See The Event Playbook" in the all-events grid
  *
- * Cover priority is deliberate: approved Sanity image, verified event-video
- * thumbnail, then deterministic event artwork. Every card gets a stable visual
- * without fake content, unlicensed photography, or manually maintained
- * placeholder assets.
+ * Cover priority is deliberate: approved Sanity image, then deterministic
+ * event artwork. Videos remain available inside the event page but collection
+ * cards never depend on YouTube thumbnail loading.
  *
  * The static design is fixed here; every value (title, tags, meta, image) is
  * driven per event from Sanity, so the cards are dynamic content in a fixed frame.
@@ -53,11 +50,6 @@ export function EventCard({
             sizes="(max-width: 991px) 100vw, 380px"
             style={{ objectFit: 'cover' }}
           />
-        </span>
-      ) : cover.kind === 'video' ? (
-        <span className="ecard__img ecard__img--photo ecard__img--video">
-          <EventVideoCover videoId={cover.videoId} alt={cover.alt} />
-          <span className="ecard__video-badge">Event video</span>
         </span>
       ) : (
         <span className="ecard__img ecard__img--art" style={cover.style} aria-hidden="true">
@@ -97,25 +89,5 @@ export function EventCard({
         </span>
       </span>
     </Link>
-  )
-}
-
-function EventVideoCover({ videoId, alt }: { videoId: string; alt: string }) {
-  const fallback = youTubeThumbFallback(videoId)
-  const [src, setSrc] = useState(youTubeThumb(videoId))
-
-  return (
-    // YouTube already serves an optimized JPEG. Keeping this as a native image
-    // also lets a missing max-resolution still fall back without a broken card.
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      decoding="async"
-      onError={() => {
-        if (src !== fallback) setSrc(fallback)
-      }}
-    />
   )
 }
