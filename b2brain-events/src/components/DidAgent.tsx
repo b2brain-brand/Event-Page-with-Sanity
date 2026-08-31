@@ -24,22 +24,26 @@ export function DidAgent() {
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsOpen(false)
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+        setIsReady(false)
+      }
     }
     const closeFromAgent = (event: MessageEvent) => {
       if (event.source !== frameRef.current?.contentWindow) return
       if (event.origin !== DID_FRAME_ORIGIN) return
-      if (event.data?.type === 'b2brain-did-close') setIsOpen(false)
+      if (event.data?.type === 'b2brain-did-close') {
+        setIsOpen(false)
+        setIsReady(false)
+      }
       if (event.data?.type === 'b2brain-did-ready') setIsReady(true)
     }
 
     window.addEventListener('keydown', closeOnEscape)
     window.addEventListener('message', closeFromAgent)
-    const readyFallback = window.setTimeout(() => setIsReady(true), 5000)
     return () => {
       window.removeEventListener('keydown', closeOnEscape)
       window.removeEventListener('message', closeFromAgent)
-      window.clearTimeout(readyFallback)
     }
   }, [])
 
@@ -93,7 +97,10 @@ export function DidAgent() {
           aria-label="Open video chat"
           aria-controls="did-agent-panel"
           aria-expanded="false"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsReady(false)
+            setIsOpen(true)
+          }}
         >
           <span className={styles.avatar} aria-hidden="true">
             <video

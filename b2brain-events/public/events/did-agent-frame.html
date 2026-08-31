@@ -41,21 +41,46 @@
           'https://project-pcxmd.vercel.app',
           'http://localhost:3005'
         ];
+        var openTimer = null;
+        var lastOpenClick = 0;
 
         function openAgent(shadowRoot) {
           var fabio = shadowRoot && shadowRoot.querySelector('.didagent__fabio');
-          if (!fabio || fabio.getAttribute('data-enabled') !== 'false') return;
+          if (!fabio) return false;
+          if (fabio.getAttribute('data-enabled') === 'true') return true;
+          if (fabio.getAttribute('data-enabled') !== 'false') return false;
+          if (Date.now() - lastOpenClick < 750) return false;
           var toggle = fabio.querySelector(':scope > button');
-          if (toggle) toggle.click();
+          if (!toggle) return false;
+          toggle.click();
+          lastOpenClick = Date.now();
+          return false;
+        }
+
+        function requestOpen() {
+          shouldOpen = true;
+          if (openTimer) window.clearInterval(openTimer);
+          var openTries = 0;
+          openTimer = window.setInterval(function () {
+            var host = document.querySelector('[data-testid="didagent_root"]');
+            var shadowRoot = host && host.shadowRoot;
+            if (openAgent(shadowRoot)) {
+              window.parent.postMessage({ type: 'b2brain-did-ready' }, parentOrigin);
+              window.clearInterval(openTimer);
+              openTimer = null;
+            } else if (++openTries > 200) {
+              window.clearInterval(openTimer);
+              openTimer = null;
+            }
+          }, 100);
         }
 
         window.addEventListener('message', function (event) {
           if (allowedParentOrigins.indexOf(event.origin) === -1) return;
           if (!event.data || event.data.type !== 'b2brain-did-open') return;
           parentOrigin = event.origin;
-          shouldOpen = true;
-          var host = document.querySelector('[data-testid="didagent_root"]');
-          openAgent(host && host.shadowRoot);
+          lastOpenClick = 0;
+          requestOpen();
         });
 
         var tries = 0;
@@ -63,8 +88,6 @@
           var host = document.querySelector('[data-testid="didagent_root"]');
           var shadowRoot = host && host.shadowRoot;
           if (shadowRoot) {
-            window.parent.postMessage({ type: 'b2brain-did-ready' }, parentOrigin);
-            if (shouldOpen) openAgent(shadowRoot);
             shadowRoot.addEventListener('click', function (event) {
               var path = event.composedPath ? event.composedPath() : [];
               var close = path.some(function (node) {
