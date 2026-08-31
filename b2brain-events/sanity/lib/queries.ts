@@ -211,8 +211,12 @@ const INDEX_CARD_FIELDS = /* groq */ `
   cardStat, cardAudience, cardHeadline,
   "description": coalesce(tldr, tagline),
   isFeatured,
-  cardImageAlt,
-  "cardImage": cardImage{ ..., asset-> },
+  "cardImageAlt": coalesce(
+    cardImageAlt,
+    gallery[defined(image.asset)][0].alt,
+    gallery[defined(image.asset)][0].caption
+  ),
+  "cardImage": coalesce(cardImage, gallery[defined(image.asset)][0].image){ ..., asset-> },
   "coverVideoUrl": coalesce(heroVideo.youtubeUrl, sentiment.videos[0].url)
 `
 

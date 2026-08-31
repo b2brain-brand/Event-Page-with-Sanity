@@ -517,9 +517,13 @@ ul{margin:0;padding:0;list-style:none}
 @media(max-width:991px){.ecards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.ecards{grid-template-columns:1fr}}
 
-.ecard{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--black);transition:background .18s ease,transform .18s ease}
+.ecard{position:relative;display:flex;flex-direction:column;background:var(--white);border:1px solid var(--black);transition:background .18s ease,transform .18s ease}
 .ecard:hover{background:var(--whitesmoke);transform:translateY(-3px)}
 .ecard:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+.ecard__status{position:absolute;z-index:3;top:16px;right:16px;display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--orange);background:var(--orange);color:var(--white);font-size:11px;font-weight:700;line-height:1;letter-spacing:.65px;text-transform:uppercase}
+.ecard__status-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.ecard__status--coming-soon{background:var(--white);color:var(--orange)}
+.ecard__status--past{border-color:var(--black);background:rgba(255,255,255,.92);color:var(--black-70)}
 .ecard__img{position:relative;display:block;aspect-ratio:16/9;border-bottom:1px solid var(--black);overflow:hidden;background:var(--whitesmoke)}
 .ecard__img--photo img{transition:transform .35s ease}
 .ecard:hover .ecard__img--photo img{transform:scale(1.045)}
@@ -544,6 +548,7 @@ ul{margin:0;padding:0;list-style:none}
 .ecard__row{font-size:14px;line-height:20px;color:var(--black-70)}
 .ecard__row b{color:var(--black);margin-right:2px}
 .ecard__btn{margin-top:24px;align-self:flex-start}
+@media(max-width:420px){.ecard__status{top:12px;right:12px;padding:6px 8px;font-size:10px}.ecard__art-kicker{max-width:54%}}
 @media(prefers-reduced-motion:reduce){.ecard,.ecard__img--photo img,.ecard__img--art::before,.ecard__img--art::after,.ecard__art-orbit,.ecard__art-monogram{transition:none}.ecard:hover{transform:none}}
 
 /* --- browse controls (see .filter below) --- */
@@ -633,6 +638,12 @@ ul{margin:0;padding:0;list-style:none}
 .filter__search{grid-area:search;min-width:260px}
 .filter__meta{grid-area:meta;display:flex;align-items:center;gap:18px;justify-self:end}
 .filter__label{font-size:15px;font-weight:600;margin-bottom:14px}
+.filter__timing{margin-bottom:26px}
+.filter__status{display:flex;flex-wrap:wrap;gap:10px}
+.filter__status-button{min-height:40px;padding:8px 14px;border:1px solid var(--black);border-radius:0;background:var(--white);color:var(--black);font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.filter__status-button:hover{background:var(--whitesmoke)}
+.filter__status-button.is-active{background:var(--black);color:var(--white)}
+.filter__status-button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 .filter__radios{display:flex;flex-wrap:wrap;gap:10px 22px}
 /* Industry nav — real <Link>s now (see EventsBrowser.tsx), styled to look
    exactly like the old radio row. `.filter__radio-dot` replaces the `<input

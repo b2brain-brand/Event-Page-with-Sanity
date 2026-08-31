@@ -4,6 +4,11 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { EventCard } from './EventCard'
 import { has } from '@/lib/format'
+import {
+  eventTimeCounts,
+  eventsForTimeFilter,
+  type EventTimeFilter,
+} from '@/lib/event-status'
 import type { IndexEventCard, IndustryLink } from '@/lib/types'
 
 /**
@@ -25,6 +30,7 @@ export function EventsBrowser({
   events,
   industries,
   activeIndustry,
+  today,
   industryLabel,
   searchPlaceholder,
   cardCtaLabel,
@@ -34,23 +40,31 @@ export function EventsBrowser({
   industries: IndustryLink[]
   /** The current category page's slug; undefined on /events itself ("All"). */
   activeIndustry?: string
+  /** Server-derived ISO day; keeps status filtering timezone-stable. */
+  today: string
   industryLabel: string
   searchPlaceholder: string
   cardCtaLabel: string
 }) {
   const [query, setQuery] = useState('')
+  const [timeFilter, setTimeFilter] = useState<EventTimeFilter>('upcoming')
+  const counts = useMemo(() => eventTimeCounts(events, today), [events, today])
+  const statusEvents = useMemo(
+    () => eventsForTimeFilter(events, timeFilter, today),
+    [events, timeFilter, today],
+  )
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return events
-    return events.filter((e) => {
+    if (!q) return statusEvents
+    return statusEvents.filter((e) => {
       const hay = [e.name, e.city, e.venueName, ...(e.categories || []).map((c) => c.title)]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
       return hay.includes(q)
     })
-  }, [events, query])
+  }, [query, statusEvents])
 
   const clear = () => setQuery('')
 
@@ -59,6 +73,29 @@ export function EventsBrowser({
       <div className="filter">
         {/* Industry nav — real links, not radios; see file note above. */}
         <div className="filter__industries">
+          <div className="filter__timing">
+            <div className="filter__label">Event Date</div>
+            <div className="filter__status" role="group" aria-label="Filter events by date">
+              {(
+                [
+                  ['upcoming', `Upcoming (${counts.upcoming})`],
+                  ['past', `Past (${counts.past})`],
+                  ['all', `All events (${events.length})`],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`filter__status-button${timeFilter === value ? ' is-active' : ''}`}
+                  aria-pressed={timeFilter === value}
+                  onClick={() => setTimeFilter(value)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="filter__label">{industryLabel}</div>
           <div className="filter__radios">
             <Link
@@ -97,7 +134,7 @@ export function EventsBrowser({
 
         <div className="filter__meta">
           <span className="filter__count">
-            Showing <b>{filtered.length}</b> Out of <b>{events.length}</b>
+            Showing <b>{filtered.length}</b> Out of <b>{statusEvents.length}</b>
           </span>
           {has(query) && (
             <button type="button" className="filter__clear" onClick={clear}>
@@ -110,12 +147,13 @@ export function EventsBrowser({
       {filtered.length > 0 ? (
         <div className="ecards">
           {filtered.map((e) => (
-            <EventCard key={e._id} event={e} ctaLabel={cardCtaLabel} />
+            <EventCard key={e._id} event={e} ctaLabel={cardCtaLabel} today={today} />
           ))}
         </div>
       ) : (
         <div className="ebrowse__empty">
-          No events match{has(query) ? ` “${query}”` : ''}. Try clearing the search.
+          No {timeFilter === 'all' ? '' : `${timeFilter} `}events match
+          {has(query) ? ` “${query}”` : ''}. Try another date filter or clear the search.
         </div>
       )}
     </div>

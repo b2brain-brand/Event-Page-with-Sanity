@@ -31,13 +31,27 @@ test('best case: approved Sanity image takes precedence over a video', () => {
   })
 })
 
-test('video-only events use stable artwork instead of a remote video thumbnail', () => {
+test('an unverified video URL alone still uses stable artwork', () => {
   const cover = resolveEventCardCover(
     { ...baseEvent, coverVideoUrl: 'https://youtu.be/BBBBBBBBBBB' },
     'Technology',
   )
 
   assert.equal(cover.kind, 'art')
+})
+
+test('a server-verified HD video still can cover an otherwise image-less card', () => {
+  const cover = resolveEventCardCover({
+    ...baseEvent,
+    coverVideoUrl: 'https://youtu.be/BBBBBBBBBBB',
+    cardThumbnailUrl: 'https://i.ytimg.com/vi/BBBBBBBBBBB/maxresdefault.jpg',
+  })
+
+  assert.deepEqual(cover, {
+    kind: 'youtube',
+    url: 'https://i.ytimg.com/vi/BBBBBBBBBBB/maxresdefault.jpg',
+    alt: 'Test Event 2026 official event video',
+  })
 })
 
 test('worst case: a malformed video URL also uses stable artwork', () => {
