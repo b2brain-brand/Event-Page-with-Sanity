@@ -92,7 +92,7 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  visibility: hidden;
+  clip-path: inset(50%);
   opacity: 0;
   pointer-events: none;
 }

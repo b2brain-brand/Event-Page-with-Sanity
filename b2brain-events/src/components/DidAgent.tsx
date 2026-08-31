@@ -103,9 +103,11 @@ export function DidAgent() {
 
     window.addEventListener('keydown', closeOnEscape)
     window.addEventListener('message', closeFromAgent)
+    const readyFallback = window.setTimeout(() => setIsReady(true), 5000)
     return () => {
       window.removeEventListener('keydown', closeOnEscape)
       window.removeEventListener('message', closeFromAgent)
+      window.clearTimeout(readyFallback)
     }
   }, [])
 
@@ -117,6 +119,7 @@ export function DidAgent() {
         aria-label="B2Brain AI assistant"
         aria-hidden={!isOpen}
         aria-busy={isOpen && !isReady}
+        inert={!isOpen}
       >
         <iframe
           ref={frameRef}
