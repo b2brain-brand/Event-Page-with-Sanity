@@ -19,6 +19,7 @@ import { EventsBrowser } from '@/components/events/EventsBrowser'
 import { CategoryJsonLd } from '@/components/JsonLd'
 import { BRAND } from '@/lib/brand'
 import { has } from '@/lib/format'
+import { enrichEventCardMedia } from '@/lib/event-card-media'
 import type { CategoryPageData, IndustryLink, SiteSettings } from '@/lib/types'
 
 /**
@@ -110,7 +111,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
   if (!category) notFound()
 
   const today = new Date().toISOString().slice(0, 10)
-  const events = category.events
+  const events = await enrichEventCardMedia(category.events)
   const upcoming = events.filter((e) => (e.startDate || '') >= today)
   const cities = new Set(events.map((e) => e.city).filter(has))
   const nextShow = upcoming[0]
@@ -186,6 +187,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
               events={events}
               industries={industries}
               activeIndustry={slug}
+              today={today}
               industryLabel="Filter By Industry"
               searchPlaceholder="Search by name & industry"
               cardCtaLabel="See The Event Playbook"

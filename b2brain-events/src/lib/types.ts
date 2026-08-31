@@ -40,6 +40,8 @@ export type IndexEventCard = EventCard & {
   cardImageAlt?: string
   /** Verified hero/review video used only when no approved card image exists. */
   coverVideoUrl?: string
+  /** Server-verified 1280x720 YouTube still; absent when max-resolution is unavailable. */
+  cardThumbnailUrl?: string
 }
 
 /** One entry in the industry nav on /events and every /events/industry/[x] page. */

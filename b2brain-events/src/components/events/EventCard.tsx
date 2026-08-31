@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { fmtRange, has } from '@/lib/format'
 import { hasNumericMetric, resolveEventCardCover } from '@/lib/event-card-cover'
+import { eventCardTiming } from '@/lib/event-status'
 import type { IndexEventCard } from '@/lib/types'
 
 /**
@@ -18,9 +19,9 @@ import type { IndexEventCard } from '@/lib/types'
  *   - a button: filled "Open Event Playbook" when featured, ghost
  *     "See The Event Playbook" in the all-events grid
  *
- * Cover priority is deliberate: approved Sanity image, then deterministic
- * event artwork. Videos remain available inside the event page but collection
- * cards never depend on YouTube thumbnail loading.
+ * Cover priority is deliberate: approved Sanity image, then a server-verified
+ * YouTube still, then deterministic event artwork. A failed or unavailable
+ * remote thumbnail can therefore never leave a broken/loading card.
  *
  * The static design is fixed here; every value (title, tags, meta, image) is
  * driven per event from Sanity, so the cards are dynamic content in a fixed frame.
@@ -28,20 +29,32 @@ import type { IndexEventCard } from '@/lib/types'
 export function EventCard({
   event,
   ctaLabel,
+  today,
   featured = false,
 }: {
   event: IndexEventCard
   ctaLabel: string
+  /** Server-derived ISO day so the badge never changes during hydration. */
+  today: string
   featured?: boolean
 }) {
   const industry = event.categories?.[0]?.title
   const venueLine = [event.venueName, event.city].filter((x) => has(x)).join(' · ')
   const dateLine = fmtRange(event.startDate, event.endDate)
   const cover = resolveEventCardCover(event, industry)
+  const timing = eventCardTiming(event, today)
+  const statusLabel =
+    timing === 'live' ? 'Live now' : timing === 'coming-soon' ? 'Coming soon' : timing === 'past' ? 'Past' : ''
 
   return (
     <Link className="ecard" href={`/events/${event.slug}`}>
-      {cover.kind === 'sanity' ? (
+      {statusLabel && (
+        <span className={`ecard__status ecard__status--${timing}`}>
+          <span className="ecard__status-dot" aria-hidden="true" />
+          {statusLabel}
+        </span>
+      )}
+      {cover.kind !== 'art' ? (
         <span className="ecard__img ecard__img--photo">
           <Image
             src={cover.url}

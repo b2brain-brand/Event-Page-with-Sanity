@@ -42,6 +42,10 @@ export function youTubeThumbFallback(id: string): string {
   return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
 }
 
+export function youTubeThumbStandard(id: string): string {
+  return `https://i.ytimg.com/vi/${id}/sddefault.jpg`
+}
+
 /**
  * Pick the best thumbnail that actually exists, ON THE SERVER.
  *
@@ -66,6 +70,34 @@ export async function resolveYouTubeThumb(id: string): Promise<string> {
     /* network hiccup — fall through */
   }
   return youTubeThumbFallback(id)
+}
+
+/**
+ * Card covers have a stricter quality bar than in-page video previews. Verify
+ * that YouTube still recognises the video, then prefer its 1280x720 still and
+ * fall back to the 640x480 standard still. We deliberately stop before the
+ * low-resolution hq/default variants that produced the grey loading artwork on
+ * older cards.
+ */
+export async function resolveYouTubeCardThumb(id: string): Promise<string | null> {
+  try {
+    const metadata = new URL('https://www.youtube.com/oembed')
+    metadata.searchParams.set('url', `https://www.youtube.com/watch?v=${id}`)
+    metadata.searchParams.set('format', 'json')
+    const verified = await fetch(metadata, { next: { revalidate: 86400 } })
+    if (!verified.ok) return null
+
+    for (const thumbnail of [youTubeThumb(id), youTubeThumbStandard(id)]) {
+      const res = await fetch(thumbnail, {
+        method: 'HEAD',
+        next: { revalidate: 86400 },
+      })
+      if (res.ok && res.headers.get('content-type')?.startsWith('image/')) return thumbnail
+    }
+  } catch {
+    /* A stable generated cover is safer than a failed remote thumbnail. */
+  }
+  return null
 }
 
 /**

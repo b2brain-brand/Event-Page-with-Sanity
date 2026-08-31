@@ -11,6 +11,7 @@ import { EventsBrowser } from '@/components/events/EventsBrowser'
 import { FaqList } from '@/components/sections/Faq'
 import { has } from '@/lib/format'
 import { BRAND } from '@/lib/brand'
+import { enrichEventCardMedia } from '@/lib/event-card-media'
 import type { EventsIndexPage, IndexEventCard, IndustryLink, SiteSettings } from '@/lib/types'
 
 /**
@@ -113,11 +114,12 @@ async function getIndustries() {
 }
 
 export default async function EventsIndex() {
-  const [{ page, events }, settings, industries] = await Promise.all([
+  const [{ page, events: sourceEvents }, settings, industries] = await Promise.all([
     getData(),
     getSettings(),
     getIndustries(),
   ])
+  const events = await enrichEventCardMedia(sourceEvents || [])
   const today = new Date().toISOString().slice(0, 10)
 
   // Featured: hand-picked in the CMS, else the next few upcoming shows.
@@ -206,6 +208,7 @@ export default async function EventsIndex() {
             <EventsBrowser
               events={events}
               industries={industries}
+              today={today}
               industryLabel={v(page, 'industryFilterLabel')}
               searchPlaceholder={v(page, 'searchPlaceholder')}
               cardCtaLabel={v(page, 'allCardCtaLabel')}

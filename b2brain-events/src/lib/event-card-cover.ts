@@ -13,6 +13,7 @@ export type CardArtStyle = CSSProperties & {
 
 export type EventCardCover =
   | { kind: 'sanity'; url: string; alt: string }
+  | { kind: 'youtube'; url: string; alt: string }
   | { kind: 'art'; monogram: string; style: CardArtStyle }
 
 const ART_PALETTES = [
@@ -38,6 +39,15 @@ export function resolveEventCardCover(
   const imageUrl = event.cardImage?.asset?.url?.trim()
   if (imageUrl) {
     return { kind: 'sanity', url: imageUrl, alt: event.cardImageAlt?.trim() || event.name }
+  }
+
+  const thumbnailUrl = event.cardThumbnailUrl?.trim()
+  if (thumbnailUrl) {
+    return {
+      kind: 'youtube',
+      url: thumbnailUrl,
+      alt: `${event.name} official event video`,
+    }
   }
 
   return { kind: 'art', ...cardArt(event, industry) }

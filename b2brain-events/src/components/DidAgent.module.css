@@ -11,8 +11,8 @@
 
 .launcher {
   position: relative;
-  width: 208px;
-  height: 208px;
+  width: 58px;
+  height: 58px;
   padding: 0;
   border: 0;
   border-radius: 24px;
@@ -55,14 +55,14 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #f98686;
   color: #090604;
   display: grid;
   place-items: center;
-  font: 13.333px/1 Arial, sans-serif;
+  font: 10px/16px Arial, sans-serif;
 }
 
 .panel {
@@ -113,16 +113,16 @@
   background: #fff;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .root {
     right: 16px;
     bottom: 16px;
   }
 
   .launcher {
-    width: 96px;
-    height: 96px;
-    border-radius: 18px;
+    width: 72px;
+    height: 72px;
+    border-radius: 24px;
   }
 
   .panel {
