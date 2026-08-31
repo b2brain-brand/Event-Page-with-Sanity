@@ -81,13 +81,9 @@ export function Hero({
             {S(settings, 'heroSecondaryCtaLabel')}
           </a>
         )}
-        {/* Template V2 addition (2026-07-22): only appears once an Event
-            offer exists (see Offer.tsx), linking down to it. */}
-        {has(event.offer?.headline) && (
-          <a href="#offer" className="hero__offerlink link-arrow">
-            {L(settings, 'heroOfferLinkLabel')}
-          </a>
-        )}
+        <a href="#offer" className="hero__offerlink link-arrow">
+          {L(settings, 'heroOfferLinkLabel')}
+        </a>
       </div>
 
       {metaPairs.length > 0 && (

@@ -341,15 +341,22 @@ ul{margin:0;padding:0;list-style:none}
 @media(max-width:991px){.play{grid-template-columns:1fr}.play__card{border-right:none;border-bottom:1px solid var(--black)}.play__card:last-child{border-bottom:none}}
 
 /* ============================================================ EVENT OFFER (Template V2, 2026-07-22) */
-.offer__box{position:relative;background:var(--orange-light);border:1px solid var(--black);padding:46px 40px;display:grid;grid-template-columns:1fr auto;gap:36px;align-items:center}
+.offer__box{position:relative;background:var(--orange-light);border:1px solid var(--black);padding:46px 40px;display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:48px;align-items:center}
+.offer__copy{min-width:0}
 .offer__badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;background:var(--black);color:var(--white);padding:7px 13px;margin-bottom:18px}
 .offer__headline{font-family:var(--font-heading);font-weight:500;font-size:30px;line-height:38px;letter-spacing:-.6px;max-width:640px}
 .offer__body{margin-top:16px;font-size:16px;line-height:25px;color:var(--black-70);max-width:640px}
 .offer__fine{margin-top:16px;font-size:12px;color:var(--black-50)}
-.offer__cta{white-space:nowrap}
-/* the hero's "Claim the event offer" link — only rendered when Offer exists */
+.offer__trial{display:flex;flex-direction:column;align-items:center;text-align:center}
+.offer__qr-link{display:block;border:1px solid var(--black);background:var(--white);padding:10px;transition:transform .2s ease,box-shadow .2s ease}
+.offer__qr-link:hover{transform:translateY(-2px);box-shadow:4px 4px 0 var(--black)}
+.offer__qr{width:180px;height:180px;object-fit:contain}
+.offer__qr-label{margin-top:12px;font-size:14px;font-weight:600;line-height:20px}
+.offer__device-link{margin-top:5px;font-size:13px;font-weight:500;color:var(--black-70)}
+.offer__device-link:hover{color:var(--black)}
+/* the hero's "Claim the event offer" link — rendered on every event page */
 .hero__offerlink{display:inline-flex;align-items:center;font-size:15px;font-weight:600;color:var(--orange);align-self:center}
-@media(max-width:800px){.offer__box{grid-template-columns:1fr;padding:36px 26px}}
+@media(max-width:800px){.offer__box{grid-template-columns:1fr;padding:36px 26px;gap:30px}.offer__trial{align-items:flex-start;text-align:left}.offer__qr{width:164px;height:164px}}
 
 /* ============================================================ SIMILAR */
 .similar{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--black)}
