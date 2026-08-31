@@ -4,82 +4,13 @@ import {useEffect, useRef, useState} from 'react'
 import styles from './DidAgent.module.css'
 
 /**
- * D-ID's full conversation UI, isolated inside an iframe.
- *
- * D-ID installs document-level pointer listeners and a fixed overlay. Keeping
- * both inside this document prevents them from intercepting event-page and
- * Studio controls. The parent only owns the launcher and the panel boundary;
- * D-ID owns voice, replies, prompts, chat, fullscreen and speaking states.
+ * D-ID installs document-level pointer listeners and a fixed overlay. The
+ * conversation UI therefore lives in a dedicated same-origin document: it
+ * retains the website origin required by D-ID's API while preventing those
+ * listeners from intercepting event-page and Studio controls.
  */
-const DID_FRAME_HTML = `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      html, body, #did-agent-container { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent; }
-    </style>
-  </head>
-  <body>
-    <div id="did-agent-container"></div>
-    <script
-      type="module"
-      src="https://agent.d-id.com/v2/index.js"
-      data-mode="full"
-      data-client-key="ck_qPIyvgzFHQIuoiKeb8zC9"
-      data-agent-id="v2_agt_H4O1YDpP"
-      data-name="did-agent"
-      data-target-id="did-agent-container"
-      data-orientation="horizontal"
-      data-monitor="true"
-      data-position="right"
-      data-open-mode="compact"
-      data-track="true"
-    ></script>
-    <script>
-      (function () {
-        function deepQuery(root, selector) {
-          if (!root || !root.querySelector) return null;
-          var direct = root.querySelector(selector);
-          if (direct) return direct;
-          var elements = root.querySelectorAll('*');
-          for (var index = 0; index < elements.length; index += 1) {
-            var nested = elements[index].shadowRoot && deepQuery(elements[index].shadowRoot, selector);
-            if (nested) return nested;
-          }
-          return null;
-        }
-
-        var readyTimer = window.setInterval(function () {
-          if (deepQuery(document, '[data-testid="didagent_message_loader_done"]')) {
-            window.parent.postMessage({ type: 'b2brain-did-ready' }, '*');
-            window.clearInterval(readyTimer);
-          }
-        }, 100);
-
-        var tries = 0;
-        var timer = window.setInterval(function () {
-          var host = document.querySelector('[data-testid="didagent_root"]');
-          var shadowRoot = host && host.shadowRoot;
-          if (shadowRoot) {
-            shadowRoot.addEventListener('click', function (event) {
-              var path = event.composedPath ? event.composedPath() : [];
-              var close = path.some(function (node) {
-                return node && node.getAttribute && node.getAttribute('aria-label') === 'Close';
-              });
-              if (close) {
-                window.parent.postMessage({ type: 'b2brain-did-close' }, '*');
-              }
-            });
-            window.clearInterval(timer);
-          } else if (++tries > 80) {
-            window.clearInterval(timer);
-          }
-        }, 250);
-      })();
-    </script>
-  </body>
-</html>`
+const DID_FRAME_URL = 'https://www.b2brain.com/events/did-agent-frame.html'
+const DID_FRAME_ORIGIN = 'https://www.b2brain.com'
 
 const DID_IDLE_VIDEO =
   'https://agents-results.d-id.com/google-oauth2%7C104707151394975296647/v2_agt_H4O1YDpP/idle_1785920578294.mp4?modified_at=2026-08-20T07%3A28%3A26.035Z'
@@ -97,6 +28,7 @@ export function DidAgent() {
     }
     const closeFromAgent = (event: MessageEvent) => {
       if (event.source !== frameRef.current?.contentWindow) return
+      if (event.origin !== DID_FRAME_ORIGIN) return
       if (event.data?.type === 'b2brain-did-close') setIsOpen(false)
       if (event.data?.type === 'b2brain-did-ready') setIsReady(true)
     }
@@ -110,6 +42,11 @@ export function DidAgent() {
       window.clearTimeout(readyFallback)
     }
   }, [])
+
+  useEffect(() => {
+    if (!isOpen) return
+    frameRef.current?.contentWindow?.postMessage({type: 'b2brain-did-open'}, DID_FRAME_ORIGIN)
+  }, [isOpen])
 
   return (
     <div className={styles.root}>
@@ -125,10 +62,18 @@ export function DidAgent() {
           ref={frameRef}
           className={styles.frame}
           title="B2Brain AI assistant conversation"
-          srcDoc={DID_FRAME_HTML}
+          src={DID_FRAME_URL}
           allow="autoplay; camera; microphone"
           loading="eager"
           tabIndex={isOpen ? 0 : -1}
+          onLoad={() => {
+            if (isOpen) {
+              frameRef.current?.contentWindow?.postMessage(
+                {type: 'b2brain-did-open'},
+                DID_FRAME_ORIGIN,
+              )
+            }
+          }}
         />
         {isOpen && !isReady && (
           <div

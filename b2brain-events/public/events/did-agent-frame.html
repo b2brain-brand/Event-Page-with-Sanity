@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>B2Brain AI assistant</title>
+    <style>
+      html,
+      body,
+      #did-agent-container {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="did-agent-container"></div>
+    <script
+      type="module"
+      src="https://agent.d-id.com/v2/index.js"
+      data-mode="fabio"
+      data-client-key="ck_qPIyvgzFHQIuoiKeb8zC9"
+      data-agent-id="v2_agt_H4O1YDpP"
+      data-name="did-agent"
+      data-orientation="horizontal"
+      data-monitor="true"
+      data-position="right"
+      data-open-mode="compact"
+      data-track="true"
+    ></script>
+    <script>
+      (function () {
+        var shouldOpen = false;
+        var parentOrigin = 'https://www.b2brain.com';
+        var allowedParentOrigins = [
+          'https://www.b2brain.com',
+          'https://b2brain.com',
+          'https://project-pcxmd.vercel.app',
+          'http://localhost:3005'
+        ];
+
+        function openAgent(shadowRoot) {
+          var fabio = shadowRoot && shadowRoot.querySelector('.didagent__fabio');
+          if (!fabio || fabio.getAttribute('data-enabled') !== 'false') return;
+          var toggle = fabio.querySelector(':scope > button');
+          if (toggle) toggle.click();
+        }
+
+        window.addEventListener('message', function (event) {
+          if (allowedParentOrigins.indexOf(event.origin) === -1) return;
+          if (!event.data || event.data.type !== 'b2brain-did-open') return;
+          parentOrigin = event.origin;
+          shouldOpen = true;
+          var host = document.querySelector('[data-testid="didagent_root"]');
+          openAgent(host && host.shadowRoot);
+        });
+
+        var tries = 0;
+        var timer = window.setInterval(function () {
+          var host = document.querySelector('[data-testid="didagent_root"]');
+          var shadowRoot = host && host.shadowRoot;
+          if (shadowRoot) {
+            window.parent.postMessage({ type: 'b2brain-did-ready' }, parentOrigin);
+            if (shouldOpen) openAgent(shadowRoot);
+            shadowRoot.addEventListener('click', function (event) {
+              var path = event.composedPath ? event.composedPath() : [];
+              var close = path.some(function (node) {
+                return node && node.getAttribute && node.getAttribute('aria-label') === 'Close';
+              });
+              if (close) {
+                window.parent.postMessage({ type: 'b2brain-did-close' }, parentOrigin);
+              }
+            });
+            window.clearInterval(timer);
+          } else if (++tries > 80) {
+            window.clearInterval(timer);
+          }
+        }, 250);
+      })();
+    </script>
+  </body>
+</html>
