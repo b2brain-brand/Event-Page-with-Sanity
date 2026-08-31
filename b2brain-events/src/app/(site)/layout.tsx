@@ -84,6 +84,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${archivo.variable} ${inter.variable} ${interDisplay.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://agent.d-id.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://agents-results.d-id.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://create-images-results.d-id.com" crossOrigin="anonymous" />
+      </head>
       <body>
         {!isDraft && <MarketingRuntime />}
         {/* Analytics — same GA4 / PostHog / Factors as the rest of b2brain.com,

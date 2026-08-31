@@ -38,6 +38,25 @@ const DID_FRAME_HTML = `<!doctype html>
     ></script>
     <script>
       (function () {
+        function deepQuery(root, selector) {
+          if (!root || !root.querySelector) return null;
+          var direct = root.querySelector(selector);
+          if (direct) return direct;
+          var elements = root.querySelectorAll('*');
+          for (var index = 0; index < elements.length; index += 1) {
+            var nested = elements[index].shadowRoot && deepQuery(elements[index].shadowRoot, selector);
+            if (nested) return nested;
+          }
+          return null;
+        }
+
+        var readyTimer = window.setInterval(function () {
+          if (deepQuery(document, '[data-testid="didagent_message_loader_done"]')) {
+            window.parent.postMessage({ type: 'b2brain-did-ready' }, '*');
+            window.clearInterval(readyTimer);
+          }
+        }, 100);
+
         var tries = 0;
         var timer = window.setInterval(function () {
           var host = document.querySelector('[data-testid="didagent_root"]');
@@ -69,17 +88,17 @@ const DID_IDLE_POSTER =
 
 export function DidAgent() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isReady, setIsReady] = useState(false)
   const frameRef = useRef<HTMLIFrameElement>(null)
 
   useEffect(() => {
-    if (!isOpen) return
-
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setIsOpen(false)
     }
     const closeFromAgent = (event: MessageEvent) => {
       if (event.source !== frameRef.current?.contentWindow) return
       if (event.data?.type === 'b2brain-did-close') setIsOpen(false)
+      if (event.data?.type === 'b2brain-did-ready') setIsReady(true)
     }
 
     window.addEventListener('keydown', closeOnEscape)
@@ -88,21 +107,38 @@ export function DidAgent() {
       window.removeEventListener('keydown', closeOnEscape)
       window.removeEventListener('message', closeFromAgent)
     }
-  }, [isOpen])
+  }, [])
 
   return (
     <div className={styles.root}>
-      {isOpen ? (
-        <section id="did-agent-panel" className={styles.panel} aria-label="B2Brain AI assistant">
-          <iframe
-            ref={frameRef}
-            className={styles.frame}
-            title="B2Brain AI assistant conversation"
-            srcDoc={DID_FRAME_HTML}
-            allow="autoplay; camera; microphone"
-          />
-        </section>
-      ) : (
+      <section
+        id="did-agent-panel"
+        className={`${styles.panel} ${isOpen ? styles.panelOpen : styles.panelWarming}`}
+        aria-label="B2Brain AI assistant"
+        aria-hidden={!isOpen}
+        aria-busy={isOpen && !isReady}
+      >
+        <iframe
+          ref={frameRef}
+          className={styles.frame}
+          title="B2Brain AI assistant conversation"
+          srcDoc={DID_FRAME_HTML}
+          allow="autoplay; camera; microphone"
+          loading="eager"
+          tabIndex={isOpen ? 0 : -1}
+        />
+        {isOpen && !isReady && (
+          <div
+            className={styles.startup}
+            style={{backgroundImage: `url(${DID_IDLE_POSTER})`}}
+            role="status"
+          >
+            <span className={styles.startupLabel}>Preparing AI assistant…</span>
+          </div>
+        )}
+      </section>
+
+      {!isOpen && (
         <button
           type="button"
           className={styles.launcher}
