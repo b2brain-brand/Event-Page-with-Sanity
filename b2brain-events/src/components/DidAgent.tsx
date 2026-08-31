@@ -1,14 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import {useEffect, useRef, useState} from 'react'
 import styles from './DidAgent.module.css'
 
 /**
- * D-ID runs in an isolated iframe so its document-level pointer listeners and
- * generated overlay can never become part of the event page document.
+ * D-ID's full conversation UI, isolated inside an iframe.
  *
- * This component is mounted only by the public website layout. Sanity Studio
- * has a separate root layout and never imports or renders this runtime.
+ * D-ID installs document-level pointer listeners and a fixed overlay. Keeping
+ * both inside this document prevents them from intercepting event-page and
+ * Studio controls. The parent only owns the launcher and the panel boundary;
+ * D-ID owns voice, replies, prompts, chat, fullscreen and speaking states.
  */
 const DID_FRAME_HTML = `<!doctype html>
 <html lang="en">
@@ -16,7 +17,7 @@ const DID_FRAME_HTML = `<!doctype html>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-      html, body, #did-agent-container { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #fff; }
+      html, body, #did-agent-container { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent; }
     </style>
   </head>
   <body>
@@ -30,8 +31,34 @@ const DID_FRAME_HTML = `<!doctype html>
       data-name="did-agent"
       data-target-id="did-agent-container"
       data-orientation="horizontal"
+      data-monitor="true"
+      data-position="right"
+      data-open-mode="compact"
       data-track="true"
     ></script>
+    <script>
+      (function () {
+        var tries = 0;
+        var timer = window.setInterval(function () {
+          var host = document.querySelector('[data-testid="didagent_root"]');
+          var shadowRoot = host && host.shadowRoot;
+          if (shadowRoot) {
+            shadowRoot.addEventListener('click', function (event) {
+              var path = event.composedPath ? event.composedPath() : [];
+              var close = path.some(function (node) {
+                return node && node.getAttribute && node.getAttribute('aria-label') === 'Close';
+              });
+              if (close) {
+                window.parent.postMessage({ type: 'b2brain-did-close' }, '*');
+              }
+            });
+            window.clearInterval(timer);
+          } else if (++tries > 80) {
+            window.clearInterval(timer);
+          }
+        }, 250);
+      })();
+    </script>
   </body>
 </html>`
 
@@ -42,6 +69,7 @@ const DID_IDLE_POSTER =
 
 export function DidAgent() {
   const [isOpen, setIsOpen] = useState(false)
+  const frameRef = useRef<HTMLIFrameElement>(null)
 
   useEffect(() => {
     if (!isOpen) return
@@ -49,41 +77,32 @@ export function DidAgent() {
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setIsOpen(false)
     }
+    const closeFromAgent = (event: MessageEvent) => {
+      if (event.source !== frameRef.current?.contentWindow) return
+      if (event.data?.type === 'b2brain-did-close') setIsOpen(false)
+    }
 
     window.addEventListener('keydown', closeOnEscape)
-    return () => window.removeEventListener('keydown', closeOnEscape)
+    window.addEventListener('message', closeFromAgent)
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape)
+      window.removeEventListener('message', closeFromAgent)
+    }
   }, [isOpen])
 
   return (
     <div className={styles.root}>
-      {isOpen && (
-        <section
-          id="did-agent-panel"
-          className={styles.panel}
-          role="dialog"
-          aria-label="B2Brain AI assistant"
-        >
-          <header className={styles.header}>
-            <span>Talk to B2Brain AI</span>
-            <button
-              type="button"
-              className={styles.close}
-              aria-label="Close B2Brain AI assistant"
-              onClick={() => setIsOpen(false)}
-            >
-              ×
-            </button>
-          </header>
+      {isOpen ? (
+        <section id="did-agent-panel" className={styles.panel} aria-label="B2Brain AI assistant">
           <iframe
+            ref={frameRef}
             className={styles.frame}
-            title="B2Brain AI assistant"
+            title="B2Brain AI assistant conversation"
             srcDoc={DID_FRAME_HTML}
             allow="autoplay; camera; microphone"
           />
         </section>
-      )}
-
-      {!isOpen && (
+      ) : (
         <button
           type="button"
           className={styles.launcher}
