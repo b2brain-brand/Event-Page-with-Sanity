@@ -31,6 +31,7 @@ export type IndexEventCard = EventCard & {
   cardStat?: string
   cardAudience?: string
   cardHeadline?: string
+  cardExcerpt?: string
   description?: string
   isFeatured?: boolean
   attendees?: string

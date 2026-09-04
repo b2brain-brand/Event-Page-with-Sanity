@@ -554,6 +554,7 @@ ul{margin:0;padding:0;list-style:none}
 .ecard__meta{display:flex;flex-direction:column;gap:8px;margin-top:16px}
 .ecard__row{font-size:14px;line-height:20px;color:var(--black-70)}
 .ecard__row b{color:var(--black);margin-right:2px}
+.ecard__desc{display:-webkit-box;margin-top:16px;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3;font-size:14px;line-height:21px;color:var(--black-70)}
 .ecard__btn{margin-top:24px;align-self:flex-start}
 @media(max-width:420px){.ecard__status{top:12px;right:12px;padding:6px 8px;font-size:10px}.ecard__art-kicker{max-width:54%}}
 @media(prefers-reduced-motion:reduce){.ecard,.ecard__img--photo img,.ecard__img--art::before,.ecard__img--art::after,.ecard__art-orbit,.ecard__art-monogram{transition:none}.ecard:hover{transform:none}}

@@ -97,6 +97,8 @@ export function EventCard({
           )}
         </span>
 
+        {has(event.description) && <span className="ecard__desc">{event.description}</span>}
+
         <span className={`btn ${featured ? 'btn--primary' : 'btn--ghost'} ecard__btn`}>
           {ctaLabel}
         </span>

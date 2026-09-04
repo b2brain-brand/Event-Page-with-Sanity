@@ -207,8 +207,8 @@ export const EVENT_SLUGS_QUERY = defineQuery(`
 const INDEX_CARD_FIELDS = /* groq */ `
   ${EVENT_CARD_FIELDS},
   tagline,
-  cardStat, cardAudience, cardHeadline,
-  "description": coalesce(tldr, tagline),
+  cardStat, cardAudience, cardHeadline, cardExcerpt,
+  "description": coalesce(cardExcerpt, tldr, tagline),
   isFeatured,
   "cardImageAlt": coalesce(
     cardImageAlt,

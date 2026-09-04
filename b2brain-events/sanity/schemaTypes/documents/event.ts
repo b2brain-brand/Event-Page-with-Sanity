@@ -239,13 +239,23 @@ export const event = defineType({
       validation: (r) => r.max(160),
     }),
     defineField({
+      name: 'cardExcerpt',
+      title: 'Collection card — excerpt',
+      type: 'text',
+      rows: 3,
+      group: 'identity',
+      description:
+        'A concise, event-specific summary shown on the /events collection card. Cover the event intent first; use 120–200 characters and do not repeat the title.',
+      validation: (r) => r.min(90).max(220),
+    }),
+    defineField({
       name: 'cardImage',
       title: 'Collection card image',
       type: 'image',
       group: 'identity',
       options: { hotspot: true },
       description:
-        'OPTIONAL. Shown at the top of this event\'s card on the /events collection page (16:9). Leave empty to match b2brain.com, whose cards are text-only. Does not affect the landing page.',
+        'OPTIONAL. Shown at the top of this event\'s card on the /events collection page (16:9). If absent, the frontend uses a verified hero/review YouTube thumbnail and then deterministic event artwork. Does not affect the landing page.',
     }),
     defineField({
       name: 'cardImageAlt',
