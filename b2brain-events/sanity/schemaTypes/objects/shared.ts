@@ -13,9 +13,12 @@ export const seo = defineType({
       title: 'Meta title',
       type: 'string',
       description:
-        '50–60 chars. Pattern: "[Event] [Year] — dates, who attends, and the booth math". Falls back to "[Event name] — B2Brain — The Event Meeting Platform".',
+        '100–120 chars. Include the full event name and year, event-planning intent, lead-capture intent, and verified alternative intent when an official tool is confirmed.',
       validation: (r) =>
-        r.max(70).warning('Over ~60 characters Google will truncate this in results.'),
+        r
+          .min(100)
+          .max(120)
+          .warning('Use 100–120 characters to match the event-page SEO content contract.'),
     }),
     defineField({
       name: 'metaDescription',

@@ -735,7 +735,7 @@ async function mapEvent(item, categories) {
     ctaHeadline: clip(f['footer-cta-title'], 160, { slug, field: 'ctaHeadline' }),
     seo: {
       _type: 'seo',
-      metaTitle: clip(f['meta-title-seo'], 70, { slug, field: 'seo.metaTitle' }),
+      metaTitle: clip(f['meta-title-seo'], 120, { slug, field: 'seo.metaTitle' }),
       metaDescription: clip(f['meta-description-seo'], 260, { slug, field: 'seo.metaDescription' }),
       ogImage,
       noIndex: false,
