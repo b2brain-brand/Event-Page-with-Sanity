@@ -54,7 +54,7 @@ export function Sentiment({
                       videoId={id}
                       thumbUrl={thumbs[id]}
                       title={v.title || 'Event video'}
-                      openOnYouTube={Boolean(v.openOnYouTube)}
+                      thumbnailAlt={`${event.name} event video preview for exhibitors evaluating B2Brain lead capture`}
                     />
                   ) : (
                     <div className="video__thumb">

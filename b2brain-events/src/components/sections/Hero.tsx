@@ -116,13 +116,12 @@ export function Hero({
           videoId={videoId}
           thumbUrl={thumbs[videoId]}
           title={v?.caption || `${event.name} video`}
-          openOnYouTube={Boolean(v?.openOnYouTube)}
+          thumbnailAlt={`${event.name} video preview in the B2Brain event lead-capture guide`}
         />
 
         {has(v?.caption) && (
           <div className="herovid__cap">
             {v!.caption}
-            {v?.openOnYouTube && <span className="herovid__ext"> · Watch on YouTube ↗</span>}
           </div>
         )}
       </div>

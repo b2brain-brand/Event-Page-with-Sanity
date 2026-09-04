@@ -5,7 +5,6 @@ import {
   youTubeEmbed,
   youTubeThumb,
   youTubeThumbFallback,
-  youTubeWatch,
 } from '@/lib/youtube'
 
 /**
@@ -21,8 +20,8 @@ import {
  *   hero — the large panel beside the H1
  *   card — the 3-up cards in the Reviews section
  *
- * `openOnYouTube` swaps inline playback for a new-tab link, for videos where
- * the uploader has disabled embedding.
+ * Event videos never navigate away. Content ingestion rejects videos whose
+ * uploader has disabled embedding, so every accepted click stays inline.
  */
 
 const VARIANTS = {
@@ -34,15 +33,16 @@ export function YouTubeFacade({
   videoId,
   thumbUrl,
   title,
+  thumbnailAlt,
   variant = 'hero',
-  openOnYouTube = false,
 }: {
   videoId: string
   /** Resolved on the server so the HTML ships a URL that exists. */
   thumbUrl?: string
   title: string
+  /** Describes the thumbnail before playback. The button still names the action. */
+  thumbnailAlt?: string
   variant?: keyof typeof VARIANTS
-  openOnYouTube?: boolean
 }) {
   const c = VARIANTS[variant]
   const [playing, setPlaying] = useState(false)
@@ -69,7 +69,7 @@ export function YouTubeFacade({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
-        alt=""
+        alt={thumbnailAlt || `Video thumbnail: ${title}`}
         loading="lazy"
         onError={() => {
           const fb = youTubeThumbFallback(videoId)
@@ -79,20 +79,6 @@ export function YouTubeFacade({
       <span className="video__play" aria-hidden="true" />
     </span>
   )
-
-  if (openOnYouTube) {
-    return (
-      <a
-        className={c.btn}
-        href={youTubeWatch(videoId)}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Watch on YouTube: ${title}`}
-      >
-        {thumb}
-      </a>
-    )
-  }
 
   return (
     <button

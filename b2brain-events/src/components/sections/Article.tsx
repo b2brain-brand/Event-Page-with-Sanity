@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
 import { has } from '@/lib/format'
 import { L } from '@/lib/defaults'
+import { articleTocMarker } from '@/lib/article-toc'
 import { Section, SectionHead } from '../SectionHead'
 import { ArticleToc, type ArticleTocEntry } from './ArticleToc'
 import { ArticleSidebar } from './ArticleSidebar'
@@ -47,6 +48,7 @@ export function Article({
   const toc: TocEntry[] = []
   const idFor = new Map<string, string>()
   const used = new Set<string>()
+  let h2Index = 0
   for (const b of blocks) {
     if (b._type !== 'block' || (b.style !== 'h2' && b.style !== 'h3')) continue
     const text = blockText(b).trim()
@@ -55,7 +57,9 @@ export function Article({
     while (used.has(id)) id = `${id}-${b._key.slice(0, 4)}`
     used.add(id)
     idFor.set(b._key, id)
-    toc.push({ id, text, level: b.style === 'h2' ? 2 : 3 })
+    const level = b.style === 'h2' ? 2 : 3
+    toc.push({ id, text: articleTocMarker(text, h2Index, level), level })
+    if (level === 2) h2Index += 1
   }
 
   const components: PortableTextComponents = {
