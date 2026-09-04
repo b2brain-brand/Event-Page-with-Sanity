@@ -23,9 +23,12 @@ export const seo = defineType({
       type: 'text',
       rows: 3,
       description:
-        '140–160 chars. Lead with the date and city — that is the query being answered. Falls back to the hero sub-headline, then the Quick answer.',
+        '160–260 chars. Cover the event intent first, then add the relevant lead-capture or verified alternative intent. Falls back to the hero sub-headline, then the Quick answer.',
       validation: (r) =>
-        r.max(200).warning('Over ~160 characters Google will truncate this in results.'),
+        r
+          .min(160)
+          .max(260)
+          .warning('Use 160–260 characters to match the event-page SEO content contract.'),
     }),
     defineField({
       name: 'ogImage',

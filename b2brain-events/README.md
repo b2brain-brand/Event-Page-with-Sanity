@@ -195,7 +195,7 @@ Answers must be **self-contained** — "see above" is worthless to a crawler.
 | Field | Type | What it does |
 |---|---|---|
 | Meta title | text | 50–60 chars. Falls back to "[name] — B2Brain — The Event Meeting Platform" |
-| Meta description | text | 140–160 chars. Falls back to Positioning line → Quick answer → Hero sub-headline |
+| Meta description | text | 160–260 chars. Cover event intent first, then relevant lead-capture or verified alternative intent. Falls back to Positioning line → Quick answer → Hero sub-headline |
 | Share image | image | 1200×630. Falls back to the site default |
 | Canonical URL override | url | Leave blank — the template writes the correct self-canonical |
 | Hide from search engines | toggle | Adds `noindex` and drops the page from the sitemap. Use for half-sourced pages |

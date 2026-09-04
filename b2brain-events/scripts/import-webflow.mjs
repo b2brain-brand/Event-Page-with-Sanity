@@ -736,7 +736,7 @@ async function mapEvent(item, categories) {
     seo: {
       _type: 'seo',
       metaTitle: clip(f['meta-title-seo'], 70, { slug, field: 'seo.metaTitle' }),
-      metaDescription: clip(f['meta-description-seo'], 200, { slug, field: 'seo.metaDescription' }),
+      metaDescription: clip(f['meta-description-seo'], 260, { slug, field: 'seo.metaDescription' }),
       ogImage,
       noIndex: false,
     },
