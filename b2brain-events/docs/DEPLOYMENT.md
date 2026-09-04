@@ -161,7 +161,7 @@ nothing else.
       reviews **absent** — that is the graceful degradation working
 - [ ] `/studio` loads and lists Events, Venues, Series, Categories, Site settings
 - [ ] Presentation shows a live page next to the form
-- [ ] `/sitemap.xml` lists both events, excludes anything `noIndex`
+- [ ] `/sitemap.xml` lists every published event that has a slug
 - [ ] `/robots.txt` disallows `/studio` and `/api/`
 - [ ] Publishing an edit in Sanity changes the live page within ~10s
 - [ ] Rich Results Test passes for `Event` and `FAQPage`:

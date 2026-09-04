@@ -738,7 +738,6 @@ async function mapEvent(item, categories) {
       metaTitle: clip(f['meta-title-seo'], 120, { slug, field: 'seo.metaTitle' }),
       metaDescription: clip(f['meta-description-seo'], 260, { slug, field: 'seo.metaDescription' }),
       ogImage,
-      noIndex: false,
     },
     lastUpdated: (item.lastUpdated || item.lastPublished || new Date().toISOString()).slice(0, 10),
     publishedAt: item.createdOn || undefined,

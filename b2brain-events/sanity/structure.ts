@@ -17,9 +17,9 @@ import { apiVersion } from './env'
  *       Upcoming: startDate > today            (hasn't started yet)
  *       Live:     startDate <= today <= endDate (in progress right now)
  *       Past:     endDate < today               (already finished)
- *  3. "Needs sourcing" is the production queue: anything still flagged
- *     noindex or missing its quick answer is not finished, and this makes
- *     that visible without opening docs.
+ *  3. "Needs sourcing" is the production queue: anything missing its quick
+ *     answer, minimum FAQ coverage, or sources is not finished, and this
+ *     makes that visible without opening docs.
  */
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -68,7 +68,7 @@ export const structure: StructureResolver = (S) =>
                     .title('Needs sourcing')
                     .apiVersion(apiVersion)
                     .filter(
-                      '_type == "event" && (seo.noIndex == true || !defined(tldr) || count(faq) < 3 || count(sources) == 0)',
+                      '_type == "event" && (!defined(tldr) || count(faq) < 3 || count(sources) == 0)',
                     )
                     .defaultOrdering([{ field: 'startDate', direction: 'asc' }]),
                 ),

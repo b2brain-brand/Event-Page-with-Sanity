@@ -328,7 +328,6 @@ on them.
 | `seo.metaDescription` | meta description. Falls back to `subhead` → `tldr` → `tagline` |
 | `seo.ogImage` | OG / Twitter image (1200×630). Falls back to `defaultOgImage` |
 | `seo.canonicalUrl` | `<link rel=canonical>` override |
-| `seo.noIndex` | `robots noindex` + drops the page from the sitemap |
 | `publishedAt` | JSON-LD `datePublished` |
 | `lastUpdated` | JSON-LD `dateModified` + the footer stamp + sitemap `lastmod` |
 | `sources[]` | the footer stamp; your own verification trail |

@@ -176,7 +176,7 @@ export const EVENT_QUERY = defineQuery(`
     ctaEyebrowOverride,
 
     seo{
-      metaTitle, metaDescription, canonicalUrl, noIndex,
+      metaTitle, metaDescription, canonicalUrl,
       "ogImage": ogImage{ ..., asset-> }
     },
     lastUpdated,
@@ -193,7 +193,6 @@ export const RELATED_FALLBACK_QUERY = defineQuery(`
   *[
     _type == "event"
     && _id != $id
-    && seo.noIndex != true
     && defined(slug.current)
     && count(categories[@._ref in $categoryIds]) > 0
   ] | order(startDate asc)[0...3]{ ${EVENT_CARD_FIELDS} }
@@ -233,14 +232,14 @@ export const EVENTS_INDEX_QUERY = defineQuery(`
       ctaEyebrow, ctaHeading,
       metaTitle, metaDescription
     },
-    "events": *[_type == "event" && defined(slug.current) && seo.noIndex != true]
+    "events": *[_type == "event" && defined(slug.current)]
       | order(startDate asc){ ${INDEX_CARD_FIELDS} }
   }
 `)
 
 /** sitemap.xml */
 export const SITEMAP_QUERY = defineQuery(`
-  *[_type == "event" && defined(slug.current) && seo.noIndex != true]{
+  *[_type == "event" && defined(slug.current)]{
     "slug": slug.current,
     lastUpdated,
     _updatedAt,
@@ -277,7 +276,6 @@ export const CATEGORY_PAGE_QUERY = defineQuery(`
     "events": *[
       _type == "event"
       && defined(slug.current)
-      && seo.noIndex != true
       && count(categories[@._ref == ^.^._id]) > 0
     ] | order(startDate asc){ ${INDEX_CARD_FIELDS} }
   }

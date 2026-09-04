@@ -218,7 +218,6 @@ export type EventDoc = {
     metaTitle?: string
     metaDescription?: string
     canonicalUrl?: string
-    noIndex?: boolean
     ogImage?: SanityImage
   }
   lastUpdated?: string

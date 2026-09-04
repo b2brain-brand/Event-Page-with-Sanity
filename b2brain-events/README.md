@@ -198,7 +198,6 @@ Answers must be **self-contained** — "see above" is worthless to a crawler.
 | Meta description | text | 160–260 chars. Cover event intent first, then relevant lead-capture or verified alternative intent. Falls back to Positioning line → Quick answer → Hero sub-headline |
 | Share image | image | 1200×630. Falls back to the site default |
 | Canonical URL override | url | Leave blank — the template writes the correct self-canonical |
-| Hide from search engines | toggle | Adds `noindex` and drops the page from the sitemap. Use for half-sourced pages |
 | **Last updated** | date | ✅ Footer stamp + `dateModified` + sitemap. **Bump every time you re-verify numbers** |
 | **Sources** | list | Where the numbers came from. Printed in the footer. Every number should trace to one |
 | First published | datetime | `datePublished`. Set once |
@@ -278,7 +277,7 @@ prices as offers, and speakers as performers. That is what makes the page
 eligible for Google's event rich result and gives AI answer engines a
 machine-readable "when and where".
 
-Also automatic: sitemap (excludes `noindex`, ranks upcoming shows higher),
+Also automatic: sitemap (includes every published event with a slug and ranks upcoming shows higher),
 `robots.txt`, canonical tags, OpenGraph and Twitter cards.
 
 **Rule: nothing goes into structured data that is not also visible on the page.**
@@ -402,7 +401,7 @@ Archivo ≤ weight 500 + Inter body.
 not need a GitHub or Vercel account.
 
 **The "Needs sourcing" queue** — Studio → Events → *Needs sourcing* lists
-anything still `noindex`, missing a quick answer, under three FAQs, or with no
+anything missing a quick answer, under three FAQs, or with no
 sources. That is your production backlog.
 
 **After a show closes** the page changes job rather than dying: bump *Last

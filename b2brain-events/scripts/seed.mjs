@@ -559,7 +559,6 @@ const dreamforce = {
     metaTitle: 'Dreamforce 2026 — dates, who attends, and the booth math',
     metaDescription:
       'Dreamforce 2026 runs September 15–17 at Moscone Center, San Francisco. Agenda, exhibitors, attendee mix, pass prices and the exhibitor ROI math.',
-    noIndex: false,
   },
   lastUpdated: '2026-07-18',
   sources: [
@@ -690,7 +689,6 @@ const smts = {
     _type: 'seo',
     metaDescription:
       'SE Manufacturing Technology Show 2026 runs October 20–21 at Music City Center, Nashville. Who attends, booth costs and the exhibitor ROI math.',
-    noIndex: false,
   },
   lastUpdated: '2026-07-10',
   sources: [{ _type: 'source', _key: 'sr1', label: 'organizer site' }],

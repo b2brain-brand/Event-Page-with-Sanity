@@ -49,3 +49,8 @@ test('event meta descriptions use the 160–260 character SEO contract', () => {
     ['warning', 'Use 160–260 characters to match the event-page SEO content contract.'],
   ])
 })
+
+test('event SEO schema does not expose a no-index control', () => {
+  const fieldNames = seo.fields.map((field) => String(field.name))
+  assert.equal(fieldNames.includes('noIndex'), false)
+})

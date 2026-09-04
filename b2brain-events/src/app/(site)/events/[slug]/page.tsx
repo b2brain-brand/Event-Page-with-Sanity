@@ -82,7 +82,6 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical },
-    robots: event.seo?.noIndex ? { index: false, follow: false } : undefined,
     openGraph: {
       type: 'website',
       title,

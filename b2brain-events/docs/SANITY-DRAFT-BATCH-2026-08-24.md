@@ -1,8 +1,8 @@
 # Sanity event draft batch - 2026-08-24
 
 This record documents the 15 event drafts created in Sanity project `gwr013fi`, dataset
-`production`. The documents were written only to `drafts.event.*` IDs. Every draft keeps
-`seo.noIndex` set to `true` and has no `publishedAt` value.
+`production`. The documents were written only to `drafts.event.*` IDs and have no
+`publishedAt` value. Draft IDs remain unpublished regardless of search metadata.
 
 | Event | Draft ID | Dates | Venue reference |
 |---|---|---|---|

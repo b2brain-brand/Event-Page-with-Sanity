@@ -47,14 +47,6 @@ export const seo = defineType({
       description:
         'Only set this when the same event is intentionally covered by another page. Otherwise leave blank — the template writes the correct self-canonical.',
     }),
-    defineField({
-      name: 'noIndex',
-      title: 'Hide from search engines',
-      type: 'boolean',
-      description:
-        'Adds noindex and drops the page from the sitemap. Use for pages that are still being sourced.',
-      initialValue: false,
-    }),
   ],
 })
 

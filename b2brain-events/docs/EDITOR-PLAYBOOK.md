@@ -98,8 +98,7 @@ Gallery, why it matters, agenda, speakers, exhibitors.
 
 ### 6 · SEO & page meta — 5 min
 
-Meta title, meta description, **last updated**, **sources**. Set `noIndex` if
-you are parking a half-sourced page.
+Meta title, meta description, **last updated**, and **sources**.
 
 ---
 
@@ -159,5 +158,5 @@ your buyers skip will not rank, and they dilute the topical authority of the
 ones that do.
 
 The Studio's **Events → Needs sourcing** list is your queue: it surfaces
-anything still `noIndex`, missing a quick answer, under three FAQs, or with no
+anything missing a quick answer, under three FAQs, or with no
 sources.
