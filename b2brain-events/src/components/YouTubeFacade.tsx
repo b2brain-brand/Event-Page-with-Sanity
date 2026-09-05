@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
   youTubeEmbed,
   youTubeThumb,
@@ -13,7 +14,7 @@ import {
  * Paste a URL; everything else is derived. Until someone clicks there is no
  * iframe, no YouTube request and no third-party cookie — the card is an image
  * and a black play square. The embed mounts only on click, via
- * youtube-nocookie.com.
+ * youtube-nocookie.com, inside a large same-page modal.
  *
  * Two variants, differing only in class names so each section keeps its own
  * styling:
@@ -21,12 +22,12 @@ import {
  *   card — the 3-up cards in the Reviews section
  *
  * Event videos never navigate away. Content ingestion rejects videos whose
- * uploader has disabled embedding, so every accepted click stays inline.
+ * uploader has disabled embedding, so every accepted click stays on-page.
  */
 
 const VARIANTS = {
-  hero: { btn: 'herovid__btn', thumb: 'herovid__thumb', frame: 'herovid__frame' },
-  card: { btn: 'video__link', thumb: 'video__thumb', frame: 'video__frame' },
+  hero: { btn: 'herovid__btn', thumb: 'herovid__thumb' },
+  card: { btn: 'video__link', thumb: 'video__thumb' },
 } as const
 
 export function YouTubeFacade({
@@ -47,19 +48,28 @@ export function YouTubeFacade({
   const c = VARIANTS[variant]
   const [playing, setPlaying] = useState(false)
   const [src, setSrc] = useState(thumbUrl || youTubeThumb(videoId))
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
 
-  if (playing) {
-    return (
-      <div className={c.frame}>
-        <iframe
-          src={youTubeEmbed(videoId)}
-          title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-    )
-  }
+  useEffect(() => {
+    if (!playing) return
+
+    const trigger = triggerRef.current
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    closeRef.current?.focus()
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPlaying(false)
+    }
+    document.addEventListener('keydown', closeOnEscape)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', closeOnEscape)
+      trigger?.focus()
+    }
+  }, [playing])
 
   const thumb = (
     <span className={c.thumb}>
@@ -81,13 +91,52 @@ export function YouTubeFacade({
   )
 
   return (
-    <button
-      type="button"
-      className={c.btn}
-      onClick={() => setPlaying(true)}
-      aria-label={`Play video: ${title}`}
-    >
-      {thumb}
-    </button>
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        className={c.btn}
+        onClick={() => setPlaying(true)}
+        aria-label={`Play video: ${title}`}
+        aria-haspopup="dialog"
+      >
+        {thumb}
+      </button>
+
+      {playing && typeof document !== 'undefined'
+        ? createPortal(
+            <div
+              className="ytmodal"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Playing video: ${title}`}
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) setPlaying(false)
+              }}
+            >
+              <div className="ytmodal__dialog">
+                <button
+                  ref={closeRef}
+                  type="button"
+                  className="ytmodal__close"
+                  onClick={() => setPlaying(false)}
+                  aria-label="Close video"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+                <div className="ytmodal__frame">
+                  <iframe
+                    src={youTubeEmbed(videoId)}
+                    title={title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
+    </>
   )
 }

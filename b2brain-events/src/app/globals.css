@@ -464,6 +464,19 @@ ul{margin:0;padding:0;list-style:none}
 .video__frame{position:relative;aspect-ratio:16/9;border-bottom:1px solid var(--black);background:var(--black)}
 .video__frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
+/* ============================================================ EVENT VIDEO MODAL
+   One large same-page player for both the hero and review cards. The iframe
+   is created only after a click and removed on close, so playback stops and
+   event videos never redirect visitors to YouTube. */
+.ytmodal{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,56px);background:rgba(0,0,0,.84)}
+.ytmodal__dialog{position:relative;width:min(1200px,94vw);background:var(--black);border:1px solid var(--white);box-shadow:0 24px 80px rgba(0,0,0,.45)}
+.ytmodal__frame{position:relative;width:100%;aspect-ratio:16/9;background:var(--black)}
+.ytmodal__frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ytmodal__close{position:absolute;z-index:1;top:12px;right:12px;width:44px;height:44px;border:1px solid var(--white);border-radius:50%;background:var(--black);color:var(--white);font:400 30px/1 Arial,sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.35)}
+.ytmodal__close:hover{background:var(--red)}
+.ytmodal__close:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+@media(max-width:640px){.ytmodal{padding:12px}.ytmodal__dialog{width:100%}.ytmodal__close{top:8px;right:8px;width:40px;height:40px;font-size:27px}}
+
 /* ============================================================ BRAND CHROME
    Real B2Brain logo in the nav and footer, the Platform dropdown, and the
    footer social squares. All zero-radius, 1px black borders — the logo mark's

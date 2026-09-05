@@ -54,7 +54,7 @@ export function Sentiment({
                       videoId={id}
                       thumbUrl={thumbs[id]}
                       title={v.title || 'Event video'}
-                      thumbnailAlt={`${event.name} event video preview for exhibitors evaluating B2Brain lead capture`}
+                      thumbnailAlt={`${event.name} exhibitors using B2Brain event lead capture while attending the event`}
                     />
                   ) : (
                     <div className="video__thumb">

@@ -116,7 +116,7 @@ export function Hero({
           videoId={videoId}
           thumbUrl={thumbs[videoId]}
           title={v?.caption || `${event.name} video`}
-          thumbnailAlt={`${event.name} video preview in the B2Brain event lead-capture guide`}
+          thumbnailAlt={`${event.name} exhibitors using B2Brain event lead capture while attending the event`}
         />
 
         {has(v?.caption) && (
