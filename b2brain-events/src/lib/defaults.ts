@@ -144,7 +144,11 @@ export const SETTINGS_DEFAULTS: SiteSettings = {
   logoHref: 'https://www.b2brain.com/',
   navLinks: [
     {
-      label: 'Platform',
+      label: 'Event Lead Capture',
+      href: 'https://www.b2brain.com/platform',
+    },
+    {
+      label: 'Use Cases',
       href: 'https://www.b2brain.com/platform',
       children: [
         { label: 'New Pipeline Generation', href: 'https://www.b2brain.com/new-pipeline-generation' },
@@ -169,7 +173,7 @@ export const SETTINGS_DEFAULTS: SiteSettings = {
   tocLabel: 'On this page',
   tocCtaLabel: 'Plan your booth',
   footerBlurb:
-    'The Event Meeting Platform. Turn trade-show conversations into booked meetings and measurable pipeline.',
+    'The Event Intelligence Platform.\nTurn trade show conversations into booked meetings and measurable pipeline. From Offline to Pipeline.',
   socialLinks: [
     { platform: 'instagram', url: 'https://www.instagram.com/getb2brain/' },
     { platform: 'x', url: 'https://x.com/getb2brain' },
@@ -184,33 +188,46 @@ export const SETTINGS_DEFAULTS: SiteSettings = {
   ],
   footerColumns: [
     {
-      heading: 'Platform',
+      heading: 'Overview',
       links: [
-        { label: 'Platform', href: 'https://www.b2brain.com/platform' },
-        { label: 'New Pipeline Generation', href: 'https://www.b2brain.com/new-pipeline-generation' },
-        { label: 'Event Attendees', href: 'https://www.b2brain.com/event-attendees' },
-        { label: 'Event Exhibitors', href: 'https://www.b2brain.com/event-exhibitors' },
+        { label: 'Event Lead Capture', href: 'https://www.b2brain.com/platform' },
+        { label: 'Events', href: 'https://www.b2brain.com/events' },
+        { label: 'Blogs', href: 'https://www.b2brain.com/blogs' },
       ],
     },
     {
-      heading: 'Resources',
+      heading: 'Why B2Brain ?',
       links: [
-        { label: 'Events', href: 'https://www.b2brain.com/events' },
-        { label: 'Blogs', href: 'https://www.b2brain.com/blogs' },
-        { label: 'Pricing', href: 'https://www.b2brain.com/pricing' },
+        { label: 'B2Brain vs HiHello', href: 'https://www.b2brain.com/b2brain-vs-hihello' },
+        { label: 'B2Brain vs Blinq', href: 'https://www.b2brain.com/b2brain-vs-blinq' },
+        { label: 'B2Brain vs Captello', href: 'https://www.b2brain.com/b2brain-vs-captello' },
+        { label: 'B2Brain vs iCapture', href: 'https://www.b2brain.com/b2brain-vs-icapture' },
+        { label: 'B2Brain vs Mobly', href: 'https://www.b2brain.com/b2brain-vs-mobly' },
+        { label: 'B2Brain vs Popl', href: 'https://www.b2brain.com/b2brain-vs-popl' },
+      ],
+    },
+    {
+      heading: 'Use Cases',
+      links: [
+        { label: 'Event Exhibitors', href: 'https://www.b2brain.com/event-exhibitors' },
+        { label: 'Marketing Leaders', href: 'https://www.b2brain.com/for-marketing-leaders' },
+        { label: 'New Pipeline Generation', href: 'https://www.b2brain.com/new-pipeline-generation' },
+        { label: 'Event Attendees', href: 'https://www.b2brain.com/event-attendees' },
       ],
     },
     {
       heading: 'Company',
       links: [
-        { label: 'About us', href: 'https://www.b2brain.com/about' },
         { label: 'Book a Demo', href: 'https://www.b2brain.com/demo' },
-        { label: 'Contact', href: 'mailto:support@b2brain.com' },
+        { label: 'Pricing', href: 'https://www.b2brain.com/pricing' },
+        { label: 'About us', href: 'https://www.b2brain.com/about' },
+        { label: 'Help', href: 'https://www.b2brain.com/help/' },
       ],
     },
   ],
   footerCopyright: '© 2026 B2Brain, Inc. · Wilmington, DE · support@b2brain.com',
   footerLegal: 'Privacy · Terms',
+  newsletterHeading: 'Subscribe to Newsletter',
   heroPrimaryCtaLabel: 'Plan your booth',
   heroSecondaryCtaLabel: 'Register for the event',
   ctaHeadlineTemplate: 'Walk into {event} with a target list — and out with meetings booked.',

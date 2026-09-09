@@ -1,6 +1,6 @@
 # Header & footer — exact spec from live b2brain.com
 
-Extracted 2026-07-31 from `https://www.b2brain.com/` by reading the authored Webflow
+Extracted 2026-09-09 from `https://www.b2brain.com/` by reading the live DOM and Webflow
 CSS rules (not just resolved pixels), so `fr`/`auto` units, hover states and
 breakpoints are the real values rather than one viewport's snapshot.
 
@@ -75,7 +75,7 @@ the SVG, not CSS. Do not redraw them; ship the files.
 .navbar-component            z-index 999 · border-bottom 1px solid black
 └ .nav-container             grid · 80px
   ├ .nav-brand > img.website-brand-img
-  ├ nav.nav-menu-light       Platform · Use Cases ▾ · Pricing · Events · Blogs
+  ├ nav.nav-menu-light       Event Lead Capture · Use Cases ▾ · Pricing · Events · Blogs
   └ .log-infos               Book a Demo · [Start Free Trial]
 ```
 
@@ -122,10 +122,11 @@ section.footer
   └ .footer-content
     ├ .footer-wrap                     ← border-bottom 1px black, padding-bottom 80px
     │ ├ .footer-left    (262px)        logo · blurb · socials
-    │ └ .footer-right   (771px)        4 × .footer-body
-    │   ├ Overview   (76px)
-    │   ├ Use cases  (171px)
-    │   ├ Company    (94px)
+    │ └ .footer-right                  5 × .footer-body
+    │   ├ Overview
+    │   ├ Why B2Brain ?
+    │   ├ Use cases
+    │   ├ Company
     │   └ ._04       (283px)           newsletter + AI
     └ .footer-copyright                ← pt 24px, pb 32px
       ├ p.copyright-text
@@ -172,10 +173,11 @@ section.footer
 
 ### Footer content (verbatim)
 - **Blurb:** “The Event Intelligence Platform. Turn trade show conversations into booked meetings and measurable pipeline. From Offline to Pipeline.”
-- **Overview:** Platform `/platform` · Events `/events` · Blogs `/blogs`
-- **Use cases:** New Pipeline Generation `/new-pipeline-generation` · Event Attendees `/event-attendees` · Event Exhibitors `/event-exhibitors`
-- **Company:** Book a Demo `/demo` · Pricing `/pricing` · About us `/about`
-- **Headings:** `*Subscribe newsletter` · `Learn about B2Brain with AI` (both rendered uppercase by CSS)
+- **Overview:** Event Lead Capture `/platform` · Events `/events` · Blogs `/blogs`
+- **Why B2Brain ?:** B2Brain vs HiHello `/b2brain-vs-hihello` · B2Brain vs Blinq `/b2brain-vs-blinq` · B2Brain vs Captello `/b2brain-vs-captello` · B2Brain vs iCapture `/b2brain-vs-icapture` · B2Brain vs Mobly `/b2brain-vs-mobly` · B2Brain vs Popl `/b2brain-vs-popl`
+- **Use cases:** Event Exhibitors `/event-exhibitors` · Marketing Leaders `/for-marketing-leaders` · New Pipeline Generation `/new-pipeline-generation` · Event Attendees `/event-attendees`
+- **Company:** Book a Demo `/demo` · Pricing `/pricing` · About us `/about` · Help `/help/`
+- **Headings:** `*Subscribe to newsletter` · `Learn about B2Brain with AI` (both rendered uppercase by CSS)
 - **AI blurb:** “Wondering if B2Brain is right for your team? Ask AI to evaluate pricing, ROI, ideal customer fit, alternatives, implementation requirements, and whether B2Brain deserves a place on your shortlist.”
 - **Copyright:** `© 2026 B2Brain, Inc. · Wilmington, DE · support@b2brain.com` (the email is a `.text-link.text-black70`)
 - **Legal:** Privacy `/privacy-policy` · Terms `/terms-of-service`

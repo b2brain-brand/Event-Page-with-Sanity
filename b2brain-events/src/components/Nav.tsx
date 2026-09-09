@@ -5,10 +5,8 @@ import type { SiteSettings } from '@/lib/types'
 /**
  * Sticky nav — the real b2brain.com nav.
  *
- * Now CMS-editable: it renders whatever is in Site settings, falling back
- * field-by-field to the verified b2brain.com chrome in `@/lib/brand`. So the
- * default is an exact copy, editors can add or change links in the Studio, and
- * clearing a field degrades to the real value rather than breaking.
+ * The corporate links are code-owned in `@/lib/brand`, so stale Site settings
+ * cannot make the event-site header drift from the current b2brain.com header.
  *
  * Dropdown items (Use Cases) carry a coloured icon, open on hover AND keyboard
  * focus. Links hide below 991px, per the design.

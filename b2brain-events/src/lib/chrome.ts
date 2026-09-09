@@ -3,20 +3,19 @@ import type { SiteSettings } from './types'
 
 /**
  * =============================================================================
- * CHROME RESOLVER — merges the CMS-editable nav/footer over the code defaults.
+ * CHROME RESOLVER — supplies the code-owned parent-site nav/footer.
  * =============================================================================
  *
- * The header and footer are now editable in Sanity, but BRAND (the verified
- * b2brain.com chrome) is the FALLBACK for every field. So:
+ * The parent-site header and footer are code-owned through BRAND. Sanity can
+ * still provide the newsletter endpoint, but it cannot leave event pages on a
+ * stale copy of the corporate navigation whenever b2brain.com changes. So:
  *
- *   - out of the box the page renders the exact b2brain.com nav/footer;
- *   - an editor can add a nav link, a footer column, a button, a social link;
- *   - clearing a field in the Studio degrades to the real b2brain value rather
- *     than rendering blank or a dead link.
+ *   - every event page renders the same current corporate chrome;
+ *   - an old Site settings document cannot override it;
+ *   - the Sanity Studio route and schema remain untouched.
  *
- * That fallback is what keeps this from drifting the way it did when the chrome
- * was seeded with placeholder paths. The seed writes the BRAND values in, so
- * CMS == code == the real site on day one, and edits only ever extend it.
+ * Keeping one source of truth prevents stale seeded settings from drifting away
+ * from the parent site. Only `newsletterAction` remains environment-specific.
  */
 
 type Resolved = {
@@ -42,8 +41,6 @@ type Resolved = {
   copyright: string
 }
 
-const nonEmpty = <T,>(v: T[] | undefined | null, fallback: T[]): T[] =>
-  v && v.length ? v : fallback
 const str = (v: string | undefined | null, fallback: string): string =>
   v && v.trim() ? v : fallback
 
@@ -51,64 +48,35 @@ export function resolveChrome(settings: SiteSettings | null): Resolved {
   const s = settings ?? {}
 
   return {
-    logoText: str(s.logoText, BRAND.logoText),
+    logoText: BRAND.logoText,
     logoSrc: BRAND.logoSrc, // the asset ships with the app, not the CMS
-    logoHref: str(s.logoHref, BRAND.logoHref),
+    logoHref: BRAND.logoHref,
 
-    nav: nonEmpty(
-      s.navLinks
-        ?.filter((l) => l?.label && l?.href)
-        .map((l) => ({
-          label: l.label!,
-          href: l.href!,
-          isCurrent: l.isCurrent,
-          children: l.children
-            ?.filter((c) => c?.label && c?.href)
-            .map((c) => ({ label: c.label!, href: c.href!, icon: c.icon })),
-        })),
-      BRAND.nav as unknown as Resolved['nav'],
-    ),
+    nav: BRAND.nav as unknown as Resolved['nav'],
 
     login: {
-      label: str(s.navLoginLabel, BRAND.login.label),
-      href: str(s.navLoginHref, BRAND.login.href),
+      label: BRAND.login.label,
+      href: BRAND.login.href,
     },
     cta: {
-      label: str(s.navCtaLabel, BRAND.cta.label),
-      href: str(s.navCtaHref, BRAND.cta.href),
+      label: BRAND.cta.label,
+      href: BRAND.cta.href,
     },
 
-    footerBlurb: str(s.footerBlurb, BRAND.footerBlurb),
-    footerColumns: nonEmpty(
-      s.footerColumns
-        ?.filter((c) => c?.heading)
-        .map((c) => ({
-          heading: c.heading!,
-          links: (c.links ?? []).filter((l) => l?.label && l?.href).map((l) => ({ label: l.label!, href: l.href! })),
-        })),
-      BRAND.footerColumns as unknown as Resolved['footerColumns'],
-    ),
+    footerBlurb: BRAND.footerBlurb,
+    footerColumns: BRAND.footerColumns as unknown as Resolved['footerColumns'],
 
-    social: nonEmpty(
-      s.socialLinks?.filter((x) => x?.platform && x?.url).map((x) => ({ platform: x.platform!, url: x.url! })),
-      BRAND.social as unknown as Resolved['social'],
-    ),
-    contactEmail: str(s.contactEmail, BRAND.contactEmail),
-    legal: nonEmpty(
-      s.legalLinks?.filter((l) => l?.label && l?.href).map((l) => ({ label: l.label!, href: l.href! })),
-      BRAND.legal as unknown as Resolved['legal'],
-    ),
+    social: BRAND.social as unknown as Resolved['social'],
+    contactEmail: BRAND.contactEmail,
+    legal: BRAND.legal as unknown as Resolved['legal'],
 
     newsletter: {
-      heading: str(s.newsletterHeading, BRAND.newsletter.heading),
-      placeholder: str(s.newsletterPlaceholder, BRAND.newsletter.placeholder),
+      heading: BRAND.newsletter.heading,
+      placeholder: BRAND.newsletter.placeholder,
       action: str(s.newsletterAction, BRAND.newsletter.action),
     },
-    aiHeading: str(s.aiHeading, BRAND.aiHeading),
-    aiLinks: nonEmpty(
-      s.aiLinks?.filter((a) => a?.label && a?.url).map((a) => ({ label: a.label!, url: a.url!, glyph: a.glyph || 'openai' })),
-      BRAND.aiLinks as unknown as Resolved['aiLinks'],
-    ),
-    copyright: str(s.footerCopyright, BRAND.copyright),
+    aiHeading: BRAND.aiHeading,
+    aiLinks: BRAND.aiLinks as unknown as Resolved['aiLinks'],
+    copyright: BRAND.copyright,
   }
 }

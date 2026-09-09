@@ -27,7 +27,7 @@ export const BRAND = {
    * items carry a coloured icon, matching b2brain.com.
    */
   nav: [
-    { label: 'Platform', href: `${SITE}/platform` },
+    { label: 'Event Lead Capture', href: `${SITE}/platform` },
     {
       label: 'Use Cases',
       href: `${SITE}/platform`,
@@ -55,22 +55,34 @@ export const BRAND = {
   footerBlurb:
     'The Event Intelligence Platform.\nTurn trade show conversations into booked meetings and measurable pipeline. From Offline to Pipeline.',
 
-  /** Footer columns — OVERVIEW / USE CASES / COMPANY, matching b2brain.com. */
+  /** Footer columns — current live order and copy from b2brain.com. */
   footerColumns: [
     {
       heading: 'Overview',
       links: [
-        { label: 'Platform', href: `${SITE}/platform` },
+        { label: 'Event Lead Capture', href: `${SITE}/platform` },
         { label: 'Events', href: `${SITE}/events` },
         { label: 'Blogs', href: `${SITE}/blogs` },
       ],
     },
     {
+      heading: 'Why B2Brain ?',
+      links: [
+        { label: 'B2Brain vs HiHello', href: `${SITE}/b2brain-vs-hihello` },
+        { label: 'B2Brain vs Blinq', href: `${SITE}/b2brain-vs-blinq` },
+        { label: 'B2Brain vs Captello', href: `${SITE}/b2brain-vs-captello` },
+        { label: 'B2Brain vs iCapture', href: `${SITE}/b2brain-vs-icapture` },
+        { label: 'B2Brain vs Mobly', href: `${SITE}/b2brain-vs-mobly` },
+        { label: 'B2Brain vs Popl', href: `${SITE}/b2brain-vs-popl` },
+      ],
+    },
+    {
       heading: 'Use Cases',
       links: [
+        { label: 'Event Exhibitors', href: `${SITE}/event-exhibitors` },
+        { label: 'Marketing Leaders', href: `${SITE}/for-marketing-leaders` },
         { label: 'New Pipeline Generation', href: `${SITE}/new-pipeline-generation` },
         { label: 'Event Attendees', href: `${SITE}/event-attendees` },
-        { label: 'Event Exhibitors', href: `${SITE}/event-exhibitors` },
       ],
     },
     {
@@ -79,12 +91,13 @@ export const BRAND = {
         { label: 'Book a Demo', href: `${SITE}/demo` },
         { label: 'Pricing', href: `${SITE}/pricing` },
         { label: 'About us', href: `${SITE}/about` },
+        { label: 'Help', href: `${SITE}/help/` },
       ],
     },
   ],
 
   newsletter: {
-    heading: 'Subscribe Newsletter',
+    heading: 'Subscribe to Newsletter',
     placeholder: 'Enter your e-mail',
     // The live site posts to its own list. Point this at a real endpoint when you
     // have one; until then the form validates and shows a thank-you state only.

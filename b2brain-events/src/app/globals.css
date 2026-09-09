@@ -61,7 +61,7 @@ ul{margin:0;padding:0;list-style:none}
 
 /* ============================================================ NAV */
 .nav{position:sticky;top:0;z-index:80;background:var(--white);border-bottom:1px solid var(--black)}
-.nav__inner{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;padding:0 40px;height:var(--nav-h)}
+.nav__inner{display:grid;grid-template-columns:max-content 1fr max-content;align-items:center;gap:16px;max-width:1280px;margin:0 auto;padding:0 40px;height:var(--nav-h)}
 /* Live `.nav-brand` reserves a fixed 195px slot even though the logo is 135px.
    That 60px of slack is what pushes the centre nav 27.5px right of true page
    centre — drop it and the whole menu sits visibly off against the real site. */
@@ -78,15 +78,20 @@ ul{margin:0;padding:0;list-style:none}
    loads), not plain Inter. Scoped to .nav__links so the logo (Archivo) and the
    Book a Demo button, both siblings, are left as-is. Falls back to the loaded
    Inter if InterDisplay hasn't painted yet. */
-.nav__links{display:flex;align-self:stretch;gap:0;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif}
+.nav__links{display:flex;align-self:stretch;justify-content:center;gap:0;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif}
 /* 29px block padding makes each link fill the full header height, matching the
    live nav-link. The nested dropdown items keep 16px 20px via the higher-
    specificity .nav__menu--rich .nav__menu-item rule below. */
 .nav__links a{display:flex;align-items:center;padding:29px 15px;font-size:16px;font-weight:400;color:var(--black-70)}
 .nav__links a:hover{color:var(--black)}
 .nav__cta{display:flex;align-items:center;gap:16px}
-.nav__cta .btn--sm{height:36px;padding:8px 20px;font-weight:400}
+.nav__cta .btn--sm{height:36px;padding:8px 20px;font-weight:400;white-space:nowrap}
 @media(max-width:991px){.nav__links{display:none}}
+@media(max-width:479px){
+  :root{--nav-h:64px}
+  .nav__logo{min-width:128px;max-width:128px}
+  .nav__logo img{width:128px}
+}
 
 /* ============================================================ TOC / SUBNAV */
 .toc{position:sticky;top:var(--nav-h);z-index:70;background:var(--white);border-bottom:1px solid var(--black)}
@@ -609,10 +614,11 @@ ul{margin:0;padding:0;list-style:none}
    reproduces that: it eats the slack, the rest just sit gap-40 in normal flow. */
 .footer__top{display:flex;align-items:start;justify-content:space-between;gap:40px;padding-bottom:80px;border-bottom:1px solid var(--black)}
 .footer__brand{flex:0 0 auto;max-width:262px;display:flex;flex-direction:column;gap:19px}
-.footer__right{flex:0 1 auto;display:flex;align-items:start;justify-content:space-between;gap:40px;width:100%;max-width:771px}
+.footer__right{flex:0 1 auto;display:flex;align-items:start;justify-content:space-between;gap:12px;width:100%;max-width:771px}
 .footer__col{flex:0 0 auto}
 /* Live: .footer-body._04 — gap 40px between the newsletter and AI blocks. */
 .footer__promo{flex:0 0 auto;width:100%;max-width:283px;display:flex;flex-direction:column;gap:40px}
+.footer__newsletter{display:flex;flex-direction:column;gap:24px}
 .footer__promo h5{display:flex;align-items:center;gap:4px;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif;font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0}
 .footer__star{color:inherit}
 .footer__ai{display:flex;flex-direction:column;gap:24px}
@@ -632,8 +638,23 @@ ul{margin:0;padding:0;list-style:none}
   .footer{padding-top:80px}
   .footer__top{flex-direction:column;flex-wrap:wrap;padding-bottom:60px}
   .footer__brand{margin-right:0;margin-bottom:60px;flex:1 1 100%;max-width:none}
-  .footer__right{flex-wrap:wrap;max-width:100%}
+  .footer__right{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;max-width:100%}
+  .footer__promo{max-width:none}
   .footer__bottom{padding-bottom:30px}
+}
+@media(min-width:1600px){
+  .nav__inner,.footer .container{max-width:1600px}
+  .footer__right{max-width:981px;gap:40px}
+}
+@media(max-width:767px){
+  .nav__inner,.footer .container{padding-left:20px;padding-right:20px}
+  .footer__right{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .footer__bottom{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:479px){
+  .footer__right{grid-template-columns:1fr}
+  .footer__brand{margin-bottom:20px}
+  .footer__promo{max-width:283px}
 }
 
 /* --- newsletter form ---

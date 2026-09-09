@@ -46,8 +46,8 @@ function renderCopyright(line: string) {
 }
 
 /**
- * Footer — the real b2brain.com footer, now CMS-editable with the verified
- * b2brain chrome as the field-by-field fallback (see `@/lib/chrome`).
+ * Footer — the current b2brain.com footer. Corporate chrome is code-owned in
+ * `@/lib/brand`; only the newsletter endpoint remains configurable in Sanity.
  *
  * The "stamp" line is the one event-specific thing here (last-updated + sources);
  * it is passed in, not part of the shared chrome.
@@ -116,15 +116,17 @@ export function Footer({
           ))}
 
           <div className="footer__promo">
-            <h5>
-              <span className="footer__star">*</span>
-              {c.newsletter.heading}
-            </h5>
-            <NewsletterForm
-              placeholder={c.newsletter.placeholder}
-              action={c.newsletter.action}
-              heading={c.newsletter.heading}
-            />
+            <div className="footer__newsletter">
+              <h5>
+                <span className="footer__star">*</span>
+                {c.newsletter.heading}
+              </h5>
+              <NewsletterForm
+                placeholder={c.newsletter.placeholder}
+                action={c.newsletter.action}
+                heading={c.newsletter.heading}
+              />
+            </div>
 
             <div className="footer__ai">
               <div className="footer__ai-head">
