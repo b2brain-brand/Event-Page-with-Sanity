@@ -619,10 +619,10 @@ ul{margin:0;padding:0;list-style:none}
 /* Live: .footer-body._04 — gap 40px between the newsletter and AI blocks. */
 .footer__promo{flex:0 0 auto;width:100%;max-width:283px;display:flex;flex-direction:column;gap:40px}
 .footer__newsletter{display:flex;flex-direction:column;gap:24px}
-.footer__promo h5{display:flex;align-items:center;gap:4px;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif;font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0}
+.footer__promo h5{display:flex;align-items:center;gap:4px;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif;font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);margin:0;white-space:nowrap}
 .footer__star{color:inherit}
 .footer__ai{display:flex;flex-direction:column;gap:24px}
-.footer__ai-head{display:flex;align-items:center;gap:6px;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif;font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black)}
+.footer__ai-head{display:flex;align-items:center;gap:6px;font-family:var(--font-inter-display),var(--font-inter),'Inter',Arial,sans-serif;font-size:14px;line-height:20px;font-weight:600;letter-spacing:.56px;text-transform:uppercase;color:var(--black);white-space:nowrap}
 .footer__ai-head b{color:var(--orange)}
 .footer__ai-info{color:var(--black);flex:0 0 auto;display:flex}
 .footer__ai-icons{display:flex;flex-wrap:wrap;gap:16px}
