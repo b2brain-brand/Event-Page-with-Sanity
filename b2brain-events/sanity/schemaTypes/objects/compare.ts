@@ -50,7 +50,8 @@ export const compareBlock = defineType({
       title: 'Intro paragraph',
       type: 'text',
       rows: 3,
-      description: 'What the event\'s own tool captures, and what it leaves on the table. 1–2 sentences.',
+      description:
+        'Explain the verified current-edition comparison. If the official product is unverified, say so and describe the organiser-side details exhibitors should confirm. 1–2 sentences.',
       validation: (r) => r.max(400),
     }),
     defineField({
@@ -72,7 +73,9 @@ export const compareBlock = defineType({
       title: 'Rows',
       type: 'array',
       of: [defineArrayMember({ type: 'compareRow' })],
-      description: 'The reference build ships 6. Zero rows removes the section.',
+      description:
+        'Mandatory. Ship at least 4 complete rows. Never infer a named organiser tool or feature; use evidence-safe “confirm with organiser” cells when current details are unverified.',
+      validation: (r) => r.required().min(4).error('Add at least 4 complete comparison rows.'),
     }),
   ],
   preview: {

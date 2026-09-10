@@ -1,5 +1,6 @@
 import { has } from '@/lib/format'
 import { L } from '@/lib/defaults'
+import { eventComparison } from '@/lib/event-comparison'
 import { Section, SectionHead } from '../SectionHead'
 import type { EventDoc, SiteSettings } from '@/lib/types'
 
@@ -12,17 +13,16 @@ import type { EventDoc, SiteSettings } from '@/lib/types'
  * are not.
  */
 export function Compare({ event, settings }: { event: EventDoc; settings: SiteSettings | null }) {
-  const c = event.compare
-  const rows = (c?.rows || []).filter((r) => has(r?.cap) && has(r?.scanner) && has(r?.us))
-  if (!rows.length) return null
+  const c = eventComparison(event)
+  const rows = c.rows
 
-  const colScanner = has(c?.colScanner) ? c!.colScanner! : L(settings, 'compareDefaultScannerCol')
-  const colUs = has(c?.colUs) ? c!.colUs! : L(settings, 'compareDefaultUsCol')
+  const colScanner = has(c.colScanner) ? c.colScanner! : L(settings, 'compareDefaultScannerCol')
+  const colUs = has(c.colUs) ? c.colUs! : L(settings, 'compareDefaultUsCol')
 
   return (
     <Section id="compare">
       <SectionHead eyebrow={L(settings, 'compareEyebrow')} title={L(settings, 'compareHeading')} />
-      {has(c?.intro) && <p className="cmp__intro">{c!.intro}</p>}
+      {has(c.intro) && <p className="cmp__intro">{c.intro}</p>}
       <div className="cmp">
         <div className="cmp__row cmp__head">
           <div className="cmp__cell cmp__cell--cap">Capability</div>

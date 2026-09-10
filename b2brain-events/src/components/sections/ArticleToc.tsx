@@ -10,7 +10,8 @@ export type ArticleTocEntry = { id: string; text: string; level: 2 | 3 }
  * As the reader scrolls the blog body, the heading currently in view is tracked
  * via IntersectionObserver and its TOC link is highlighted orange. Clicking a
  * link smooth-scrolls to the heading, offset for the two sticky bars (nav 64 +
- * sub-nav 56 + gap). The list itself is sticky (handled in CSS).
+ * sub-nav 56 + gap). The list itself remains in normal document flow so all
+ * entries move with the page instead of being trapped in a pinned sidebar.
  */
 export function ArticleToc({
   entries,

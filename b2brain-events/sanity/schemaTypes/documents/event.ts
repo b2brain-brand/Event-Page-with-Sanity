@@ -396,7 +396,8 @@ export const event = defineType({
       type: 'compareBlock',
       group: 'proof',
       description:
-        'Template V2 addition (2026-07-22). Row-by-row: what the event\'s own lead-retrieval tool captures vs what B2Brain adds. Renders between Reviews and the Playbook. Empty (no rows) removes the section.',
+        'Mandatory row-by-row comparison between verified current-edition organiser-tool facts and B2Brain. If the official tool is unverified, use neutral organiser-confirmation cells instead of guessing. Renders between Reviews and the Playbook.',
+      validation: (r) => r.required().error('Every event page requires a comparison table.'),
     }),
     defineField({
       name: 'playbook',
