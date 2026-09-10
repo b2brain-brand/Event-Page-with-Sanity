@@ -763,18 +763,19 @@ ul{margin:0;padding:0;list-style:none}
 .simcard__btn{margin-top:28px;width:100%}
 
 /* ============================================================ EVENT ARTICLE (blog body + TOC)
-   Two columns: a normal-flow "On this page" TOC on the left, the editorial body on
-   the right — the live-site layout. Purple key-takeaways box, section anchors. */
+   Two columns: an independently scrollable "On this page" TOC on the left, the
+   editorial body on the right. Purple key-takeaways box, section anchors. */
 /* The blog section runs a touch wider than the rest of the page (matching the
    live site's ~1185px blog container) so the reading column fills out. */
 #article > .container{max-width:1240px}
 .article{display:grid;grid-template-columns:165px minmax(0,1fr) 240px;gap:48px;align-items:start}
 @media(max-width:1180px){.article{grid-template-columns:165px minmax(0,1fr);gap:40px}.artside{display:none}}
 @media(max-width:991px){.article{grid-template-columns:1fr;gap:32px}}
-.article__toc{position:static;align-self:start}
+.article__toc{position:sticky;top:calc(var(--nav-h) + var(--toc-h) + 20px);align-self:start;min-height:0}
 @media(max-width:991px){.article__toc{position:static;border:1px solid var(--black);padding:20px}}
 .article__toc-label{font-size:18px;font-weight:500;letter-spacing:normal;text-transform:none;color:var(--black);margin-bottom:18px;font-family:var(--font-heading)}
-.article__toc nav{display:flex;flex-direction:column;gap:1px;border-left:1px solid var(--border-light)}
+.article__toc nav{display:flex;flex-direction:column;gap:1px;max-height:calc(100vh - var(--nav-h) - var(--toc-h) - 96px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;border-left:1px solid var(--border-light);padding-right:8px}
+@media(max-width:991px){.article__toc nav{max-height:50vh}}
 .article__toc-link{padding:5px 0 5px 14px;margin-left:-1px;border-left:2px solid transparent;font-size:14px;font-weight:500;line-height:19px;color:var(--black-70)}
 .article__toc-link:hover{color:var(--black)}
 .article__toc-link.is-active{color:var(--orange);border-left-color:var(--orange);font-weight:500}

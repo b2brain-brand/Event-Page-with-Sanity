@@ -11,10 +11,10 @@ import type { ArticleBlock, EventDoc, SiteSettings } from '@/lib/types'
 /**
  * EVENT ARTICLE — the editorial "blog" body, before the FAQ.
  *
- * Renders the Portable Text with an "On this page" TOC built from the H2
- * and H3 headings, matching the live layout. Each heading gets a slug id so the
- * TOC links and in-page anchors resolve. A "Key takeaways" block renders as the
- * highlighted TL;DR panel.
+ * Renders the Portable Text with an independently scrollable "On this page" TOC
+ * built from the H2 and H3 headings, matching the live layout. Each heading gets
+ * a slug id so the TOC links and in-page anchors resolve. A "Key takeaways" block
+ * renders as the highlighted TL;DR panel.
  */
 
 /** "Day-by-Day Floor Strategy" -> "day-by-day-floor-strategy". */
