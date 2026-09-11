@@ -11,7 +11,7 @@ const CTA_FILES: Record<EventCtaKind, string> = {
 /**
  * Site-settings URLs may be absolute or root-relative. The CTA lives in an
  * iframe, so relative links must be resolved against b2brain.com rather than
- * against /b2brain-ctas/ inside the iframe.
+ * against /events/b2brain-ctas/ inside the iframe.
  */
 export function eventCtaDemoHref(value?: string | null): string {
   const candidate = value?.trim() || BRAND.cta.href
@@ -45,5 +45,7 @@ export function eventCtaSrc({
   if (eventDates?.trim()) params.set('dates', eventDates.trim())
   if (startDate?.trim()) params.set('start', startDate.trim())
 
-  return `/b2brain-ctas/${CTA_FILES[kind]}?${params.toString()}`
+  // Keep assets below /events so the public b2brain.com proxy forwards them
+  // to this Next.js app instead of falling through to the Webflow origin.
+  return `/events/b2brain-ctas/${CTA_FILES[kind]}?${params.toString()}`
 }

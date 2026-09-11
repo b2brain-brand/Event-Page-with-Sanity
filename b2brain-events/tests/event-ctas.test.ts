@@ -4,7 +4,7 @@ import test from 'node:test'
 
 import { eventCtaDemoHref, eventCtaSrc } from '../src/lib/event-cta'
 
-const PUBLIC_DIR = 'public/b2brain-ctas'
+const PUBLIC_DIR = 'public/events/b2brain-ctas'
 const CTA_FILES = [
   '2026-09-10_b2brain_deliverable_bioprocess-cta1.html',
   '2026-09-10_b2brain_deliverable_bioprocess-cta2.html',
@@ -45,6 +45,7 @@ test('event CTA URLs carry the event, dates, start date and a safe demo destinat
   })
   const url = new URL(src, 'https://www.b2brain.com')
 
+  assert.equal(url.pathname, '/events/b2brain-ctas/2026-09-10_b2brain_deliverable_bioprocess-cta2.html')
   assert.equal(url.searchParams.get('event'), 'CAMX & Advanced Materials 2026')
   assert.equal(url.searchParams.get('dates'), 'Sep 21–24, 2026')
   assert.equal(url.searchParams.get('start'), '2026-09-21')
