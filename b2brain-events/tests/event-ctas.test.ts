@@ -35,13 +35,13 @@ test('CTA HTML scripts compile and every local asset reference resolves', () => 
   }
 })
 
-test('event CTA URLs carry the event, dates, start date and a safe demo destination', () => {
+test('event CTA URLs carry the event, dates, start date and the canonical demo destination', () => {
   const src = eventCtaSrc({
     kind: 2,
     eventName: 'CAMX & Advanced Materials 2026',
     eventDates: 'Sep 21–24, 2026',
     startDate: '2026-09-21',
-    demoHref: '/demo',
+    demoHref: 'https://www.b2brain.com/book-a-demo',
   })
   const url = new URL(src, 'https://www.b2brain.com')
 
@@ -52,7 +52,18 @@ test('event CTA URLs carry the event, dates, start date and a safe demo destinat
   assert.equal(url.searchParams.get('demo'), 'https://www.b2brain.com/demo')
 })
 
-test('unsafe CTA destinations fall back to the approved B2Brain demo URL', () => {
+test('all three CTAs ignore overrides and stay locked to the approved B2Brain demo URL', () => {
+  for (const kind of [1, 2, 3] as const) {
+    const src = eventCtaSrc({
+      kind,
+      eventName: 'BioProcess International Conference & Exhibition 2026',
+      demoHref: 'https://www.b2brain.com/book-a-demo',
+    })
+    const url = new URL(src, 'https://www.b2brain.com')
+    assert.equal(url.searchParams.get('demo'), 'https://www.b2brain.com/demo')
+  }
+
+  assert.equal(eventCtaDemoHref('https://example.com/another-page'), 'https://www.b2brain.com/demo')
   assert.equal(eventCtaDemoHref('javascript:alert(1)'), 'https://www.b2brain.com/demo')
   assert.equal(eventCtaDemoHref(''), 'https://www.b2brain.com/demo')
 })
@@ -66,6 +77,15 @@ test('CTA placement stays in the approved page order', () => {
   assert.ok(page.indexOf("id: 'compare'") < page.indexOf("id: 'event-cta-multi-format'"))
   assert.ok(page.indexOf("id: 'event-cta-multi-format'") < page.indexOf("id: 'playbook'"))
   assert.ok(article.indexOf('data-event-cta="cta3"') < article.indexOf('artside__ai'))
+})
+
+test('the article CTA uses the integrated pale AI footer, never the legacy black card', () => {
+  const css = readFileSync('src/app/globals.css', 'utf8')
+
+  assert.match(css, /\.artside\{[^}]*gap:0[^}]*background:#fff[^}]*border:1px solid #e6d9d2/)
+  assert.match(css, /\.artside__ai\{background:#fcf6f2;color:#57463c/)
+  assert.match(css, /\.artside__ai-icons a\{[^}]*background:#fff[^}]*color:#8f5947/)
+  assert.doesNotMatch(css, /\.artside__ai\{[^}]*background:var\(--black\)/)
 })
 
 test('the parent verifies both message source and same-origin before resizing', () => {

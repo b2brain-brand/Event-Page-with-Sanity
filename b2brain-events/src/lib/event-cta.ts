@@ -9,19 +9,13 @@ const CTA_FILES: Record<EventCtaKind, string> = {
 }
 
 /**
- * Site-settings URLs may be absolute or root-relative. The CTA lives in an
- * iframe, so relative links must be resolved against b2brain.com rather than
- * against /events/b2brain-ctas/ inside the iframe.
+ * The three shared event CTAs always use the canonical B2Brain demo page.
+ * Keep accepting the legacy argument so existing callers remain compatible,
+ * but do not allow stale Sanity site settings to override this destination.
  */
 export function eventCtaDemoHref(value?: string | null): string {
-  const candidate = value?.trim() || BRAND.cta.href
-
-  try {
-    const url = new URL(candidate, BRAND.logoHref)
-    return url.protocol === 'https:' || url.protocol === 'http:' ? url.toString() : BRAND.cta.href
-  } catch {
-    return BRAND.cta.href
-  }
+  void value
+  return BRAND.cta.href
 }
 
 export function eventCtaSrc({
