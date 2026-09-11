@@ -1,11 +1,13 @@
 import { Fragment, type ReactElement } from 'react'
 
 import { S, T } from '@/lib/defaults'
+import { fmtRange } from '@/lib/format'
 import type { EventCard, EventDoc, SiteSettings } from '@/lib/types'
 
 import { Nav } from './Nav'
 import { Toc, type TocEntry } from './Toc'
 import { Footer } from './Footer'
+import { EventCtaBand } from './EventCtaFrame'
 
 import { Hero } from './sections/Hero'
 import { Stats } from './sections/Stats'
@@ -65,10 +67,24 @@ export function EventPage({
   /** videoId -> resolved thumbnail URL, for every YouTube embed on the page. */
   thumbs: Record<string, string>
 }) {
+  const eventDates = fmtRange(event.startDate, event.endDate)
+  const demoHref = S(settings, 'ctaPrimaryHref') as string
   const modules: Module[] = [
     { id: 'overview', navKey: 'overview', node: Hero({ event, settings, now, thumbs }) },
     { id: 'stats', node: Stats({ event }) },
     { id: 'answer', node: Answer({ event, settings }) },
+    {
+      id: 'event-cta-scan-to-crm',
+      node: (
+        <EventCtaBand
+          kind={1}
+          eventName={event.name}
+          eventDates={eventDates}
+          startDate={event.startDate}
+          demoHref={demoHref}
+        />
+      ),
+    },
     { id: 'gallery', navKey: 'gallery', node: GallerySection({ event, settings }) },
     { id: 'why', navKey: 'why', node: Why({ event, settings }) },
     { id: 'agenda', navKey: 'agenda', node: AgendaSection({ event, settings }) },
@@ -82,6 +98,18 @@ export function EventPage({
     { id: 'sentiment', navKey: 'sentiment', node: Sentiment({ event, settings, thumbs }) },
     // Template V2 addition (2026-07-22).
     { id: 'compare', navKey: 'compare', node: Compare({ event, settings }) },
+    {
+      id: 'event-cta-multi-format',
+      node: (
+        <EventCtaBand
+          kind={2}
+          eventName={event.name}
+          eventDates={eventDates}
+          startDate={event.startDate}
+          demoHref={demoHref}
+        />
+      ),
+    },
     { id: 'playbook', navKey: 'playbook', node: Playbook({ event, settings }) },
     // Template V2 addition (2026-07-22).
     { id: 'offer', navKey: 'offer', node: Offer({ event, settings }) },

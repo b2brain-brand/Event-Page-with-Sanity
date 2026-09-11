@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
-import { has } from '@/lib/format'
-import { L } from '@/lib/defaults'
+import { fmtRange, has } from '@/lib/format'
+import { L, S } from '@/lib/defaults'
 import { articleTocMarker } from '@/lib/article-toc'
 import { Section, SectionHead } from '../SectionHead'
 import { ArticleToc, type ArticleTocEntry } from './ArticleToc'
@@ -145,7 +145,12 @@ export function Article({
         <div className="article__body">
           <PortableText value={blocks as never} components={components} />
         </div>
-        <ArticleSidebar />
+        <ArticleSidebar
+          eventName={event.name}
+          eventDates={fmtRange(event.startDate, event.endDate)}
+          startDate={event.startDate}
+          demoHref={S(settings, 'ctaPrimaryHref') as string}
+        />
       </div>
     </Section>
   )
