@@ -147,6 +147,8 @@ function secondsToIsoDuration(value?: string): string | undefined {
   return `PT${hours ? `${hours}H` : ''}${minutes ? `${minutes}M` : ''}${seconds || (!hours && !minutes) ? `${seconds}S` : ''}`
 }
 
+import knownYouTubeMetadata from './youtube-metadata.json'
+
 /**
  * Resolve the fields Google requires for VideoObject without inventing them.
  * YouTube's oEmbed endpoint supplies the published title. Its player metadata
@@ -157,6 +159,17 @@ function secondsToIsoDuration(value?: string): string | undefined {
  * incomplete VideoObject rather than publishing invalid structured data.
  */
 export async function resolveYouTubeMetadata(id: string): Promise<YouTubeMetadata> {
+  const known = knownYouTubeMetadata[id as keyof typeof knownYouTubeMetadata]
+  if (known?.uploadDate) {
+    return {
+      id,
+      title: known.title,
+      uploadDate: known.uploadDate,
+      duration: 'duration' in known ? known.duration : undefined,
+      thumbnailUrl: youTubeThumbFallback(id),
+    }
+  }
+
   let title: string | undefined
   let uploadDate: string | undefined
   let duration: string | undefined

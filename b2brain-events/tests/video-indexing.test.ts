@@ -75,7 +75,7 @@ test('YouTube metadata uses the real upload timestamp and duration', async () =>
     return new Response(null, { status: 200, headers: { 'content-type': 'image/jpeg' } })
   }) as typeof fetch
 
-  const metadata = await resolveYouTubeMetadata('FMrq4fda9W4')
+  const metadata = await resolveYouTubeMetadata('AAAAAAAAAAA')
 
   assert.equal(metadata.title, 'STN EXPO West 2026 Promo')
   assert.equal(metadata.uploadDate, '2026-03-23T16:45:57-07:00')
@@ -103,6 +103,18 @@ test('YouTube player metadata survives a production watch-page consent response'
       return new Response('<html>Consent required</html>', { status: 200 })
     }
     return new Response(null, { status: 200, headers: { 'content-type': 'image/jpeg' } })
+  }) as typeof fetch
+
+  const metadata = await resolveYouTubeMetadata('BBBBBBBBBBB')
+
+  assert.equal(metadata.title, 'STN EXPO West 2026 Promo')
+  assert.equal(metadata.uploadDate, '2026-03-23T16:45:57-07:00')
+  assert.equal(metadata.duration, 'PT2M14S')
+})
+
+test('published video metadata is deterministic when YouTube is unavailable', async () => {
+  globalThis.fetch = (async () => {
+    throw new Error('network unavailable')
   }) as typeof fetch
 
   const metadata = await resolveYouTubeMetadata('FMrq4fda9W4')
