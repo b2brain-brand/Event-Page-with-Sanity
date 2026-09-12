@@ -3,6 +3,7 @@ import { client } from '@/sanity/lib/client'
 import { SITEMAP_CATEGORIES_QUERY, SITEMAP_QUERY } from '@/sanity/lib/queries'
 import { siteUrl } from '@/sanity/env'
 import { getEventWatchVideos } from '@/lib/event-videos'
+import { escapeSitemapXml } from '@/lib/sitemap-xml'
 import type { EventDoc } from '@/lib/types'
 
 /**
@@ -57,10 +58,14 @@ export async function getEventsSitemapEntries(): Promise<MetadataRoute.Sitemap> 
       priority: 0.6,
       videos: [
         {
-          title: video.title,
-          description: video.description,
-          thumbnail_loc: video.thumbnailUrl,
-          player_loc: video.embedUrl,
+          title: escapeSitemapXml(video.title),
+          description: escapeSitemapXml(video.description),
+          thumbnail_loc: escapeSitemapXml(video.thumbnailUrl),
+          // Next's metadata-route serializer writes video URLs verbatim. Query
+          // parameters therefore leave raw `&` characters in the XML and make
+          // the entire sitemap invalid. Google only needs the canonical player
+          // URL here; playback options belong on the watch page iframe.
+          player_loc: escapeSitemapXml(video.embedUrl.split('?')[0]),
         },
       ],
     })),
