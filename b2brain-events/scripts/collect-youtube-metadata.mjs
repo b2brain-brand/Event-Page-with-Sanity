@@ -14,7 +14,7 @@ const client = createClient({
   useCdn: false,
 })
 const rows = await client.fetch(`
-  *[_type == "event" && defined(slug.current)]{
+  *[_type == "event" && !(_id in path("drafts.**")) && defined(slug.current)]{
     heroVideo{ youtubeUrl, openOnYouTube },
     sentiment{ videos[]{ url, openOnYouTube } }
   }
