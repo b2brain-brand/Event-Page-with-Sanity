@@ -82,6 +82,36 @@ test('YouTube metadata uses the real upload timestamp and duration', async () =>
   assert.equal(metadata.duration, 'PT2M14S')
 })
 
+test('YouTube player metadata survives a production watch-page consent response', async () => {
+  globalThis.fetch = (async (input: string | URL | Request) => {
+    const url = String(input)
+    if (url.includes('/oembed?')) return new Response(null, { status: 429 })
+    if (url.includes('/youtubei/v1/player')) {
+      return Response.json({
+        videoDetails: {
+          title: 'STN EXPO West 2026 Promo',
+          lengthSeconds: '134',
+        },
+        microformat: {
+          playerMicroformatRenderer: {
+            uploadDate: '2026-03-23T16:45:57-07:00',
+          },
+        },
+      })
+    }
+    if (url.includes('/watch?v=')) {
+      return new Response('<html>Consent required</html>', { status: 200 })
+    }
+    return new Response(null, { status: 200, headers: { 'content-type': 'image/jpeg' } })
+  }) as typeof fetch
+
+  const metadata = await resolveYouTubeMetadata('FMrq4fda9W4')
+
+  assert.equal(metadata.title, 'STN EXPO West 2026 Promo')
+  assert.equal(metadata.uploadDate, '2026-03-23T16:45:57-07:00')
+  assert.equal(metadata.duration, 'PT2M14S')
+})
+
 test('VideoObject is emitted only when a genuine upload date is available', () => {
   const event = { name: 'Example Expo 2026', slug: 'example-expo-2026' }
   const [video] = getEventWatchVideos({

@@ -149,9 +149,11 @@ function secondsToIsoDuration(value?: string): string | undefined {
 
 /**
  * Resolve the fields Google requires for VideoObject without inventing them.
- * YouTube's oEmbed endpoint supplies the published title; its public watch
- * page carries the original upload timestamp and duration. If YouTube blocks
- * or removes either response, the watch page still renders, but we omit the
+ * YouTube's oEmbed endpoint supplies the published title. Its player metadata
+ * endpoint is the primary source for the original upload timestamp and
+ * duration because production hosting networks are frequently served a
+ * consent page instead of watch-page HTML. The public watch page remains a
+ * fallback. If both sources fail, the watch page still renders, but we omit the
  * incomplete VideoObject rather than publishing invalid structured data.
  */
 export async function resolveYouTubeMetadata(id: string): Promise<YouTubeMetadata> {
@@ -175,6 +177,60 @@ export async function resolveYouTubeMetadata(id: string): Promise<YouTubeMetadat
     })(),
     (async () => {
       try {
+        const response = await fetch('https://www.youtube.com/youtubei/v1/player', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'user-agent':
+              'Mozilla/5.0 (compatible; B2BrainVideoMetadata/1.0; +https://www.b2brain.com/)',
+          },
+          body: JSON.stringify({
+            videoId: id,
+            context: {
+              client: {
+                clientName: 'WEB',
+                clientVersion: '2.20250911.00.00',
+                hl: 'en',
+                gl: 'US',
+              },
+            },
+          }),
+          next: { revalidate: 604800 },
+        })
+        if (response.ok) {
+          const data = (await response.json()) as {
+            videoDetails?: { title?: unknown; lengthSeconds?: unknown }
+            microformat?: {
+              playerMicroformatRenderer?: {
+                uploadDate?: unknown
+                publishDate?: unknown
+              }
+            }
+          }
+          const player = data.microformat?.playerMicroformatRenderer
+          const upload =
+            typeof player?.uploadDate === 'string'
+              ? player.uploadDate
+              : typeof player?.publishDate === 'string'
+                ? player.publishDate
+                : undefined
+          const lengthSeconds =
+            typeof data.videoDetails?.lengthSeconds === 'string'
+              ? data.videoDetails.lengthSeconds
+              : undefined
+          if (!title && typeof data.videoDetails?.title === 'string') {
+            title = data.videoDetails.title.trim() || undefined
+          }
+          if (upload && !Number.isNaN(Date.parse(upload))) uploadDate = upload
+          duration = secondsToIsoDuration(lengthSeconds)
+        }
+      } catch {
+        /* The public watch page below remains an evidence-safe fallback. */
+      }
+
+      if (uploadDate && duration) return
+
+      try {
         const response = await fetch(youTubeWatch(id), {
           headers: {
             'user-agent':
@@ -186,8 +242,8 @@ export async function resolveYouTubeMetadata(id: string): Promise<YouTubeMetadat
         const html = await response.text()
         const upload = html.match(/"uploadDate":"([^"]+)"/)?.[1]
         const lengthSeconds = html.match(/"lengthSeconds":"(\d+)"/)?.[1]
-        if (upload && !Number.isNaN(Date.parse(upload))) uploadDate = upload
-        duration = secondsToIsoDuration(lengthSeconds)
+        if (!uploadDate && upload && !Number.isNaN(Date.parse(upload))) uploadDate = upload
+        if (!duration) duration = secondsToIsoDuration(lengthSeconds)
       } catch {
         /* Never substitute the event date for a video's unknown upload date. */
       }
