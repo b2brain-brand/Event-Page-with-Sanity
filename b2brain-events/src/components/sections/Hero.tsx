@@ -117,6 +117,7 @@ export function Hero({
           thumbUrl={thumbs[videoId]}
           title={v?.caption || `${event.name} video`}
           thumbnailAlt={`${event.name} exhibitors using B2Brain event lead capture while attending the event`}
+          watchHref={`/events/${event.slug}/videos/${videoId}`}
         />
 
         {has(v?.caption) && (

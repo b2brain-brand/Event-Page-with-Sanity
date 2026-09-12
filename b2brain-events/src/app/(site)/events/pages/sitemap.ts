@@ -33,7 +33,13 @@ import { getEventsSitemapEntries } from '@/lib/sitemap-entries'
  * If the client later routes /sitemap.xml itself to Vercel, this becomes
  * redundant but harmless — leave it, GSC allows multiple registered sitemaps.
  */
-export const revalidate = 60
+// Metadata routes are cached by default. The previous deployment served a
+// three-hour-old snapshot that omitted six already-published Sanity events, so
+// this route is request-rendered. The underlying Sanity query still has its
+// own 60-second data cache, which bounds traffic while preventing a deployment
+// artifact from becoming the permanent discovery source.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default function sitemap(): Promise<MetadataRoute.Sitemap> {
   return getEventsSitemapEntries()

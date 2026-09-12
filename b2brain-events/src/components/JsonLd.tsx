@@ -2,6 +2,8 @@ import { has } from '@/lib/format'
 import { S } from '@/lib/defaults'
 import { BRAND } from '@/lib/brand'
 import type { EventDoc, SiteSettings } from '@/lib/types'
+import type { EventWatchVideo } from '@/lib/event-videos'
+import type { YouTubeMetadata } from '@/lib/youtube'
 
 /**
  * =============================================================================
@@ -205,6 +207,86 @@ export function EventJsonLd({
     <script
       type="application/ld+json"
       // Server-rendered from our own CMS data; JSON.stringify escapes the values.
+      dangerouslySetInnerHTML={{ __html: json.replace(/</g, '\\u003c') }}
+    />
+  )
+}
+
+/**
+ * Structured data for a dedicated video watch page.
+ *
+ * Google requires an authentic upload date for VideoObject. If YouTube does
+ * not return one, the watch page remains usable and indexable but this script
+ * is omitted; substituting the event date would be inaccurate and would create
+ * another Search Console validation error.
+ */
+export function VideoJsonLd({
+  event,
+  video,
+  metadata,
+  pageUrl,
+}: {
+  event: Pick<EventDoc, 'name' | 'slug'>
+  video: EventWatchVideo
+  metadata: YouTubeMetadata
+  pageUrl: string
+}) {
+  if (!metadata.uploadDate) return null
+
+  const origin = pageUrl.replace(/\/events\/.*$/, '')
+  const eventUrl = `${origin}/events/${event.slug}`
+  const name = metadata.title || video.title
+  const graph: Record<string, unknown>[] = [
+    {
+      '@type': 'Organization',
+      '@id': `${origin}/#organization`,
+      name: 'B2Brain',
+      url: origin,
+      logo: BRAND.logoSrc,
+      sameAs: BRAND.social.map((item) => item.url),
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name,
+      description: video.description,
+      isPartOf: { '@id': `${origin}/#website` },
+      publisher: { '@id': `${origin}/#organization` },
+      breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+      mainEntity: { '@id': `${pageUrl}#video` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: origin },
+        { '@type': 'ListItem', position: 2, name: 'Events', item: `${origin}/events` },
+        { '@type': 'ListItem', position: 3, name: event.name, item: eventUrl },
+        { '@type': 'ListItem', position: 4, name, item: pageUrl },
+      ],
+    },
+    {
+      '@type': 'VideoObject',
+      '@id': `${pageUrl}#video`,
+      name,
+      description: video.description,
+      thumbnailUrl: [metadata.thumbnailUrl || video.thumbnailUrl],
+      uploadDate: metadata.uploadDate,
+      duration: metadata.duration || undefined,
+      embedUrl: video.embedUrl,
+      url: pageUrl,
+      isFamilyFriendly: true,
+    },
+  ]
+
+  const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, (_k, v) =>
+    v === undefined ? undefined : v,
+  )
+
+  return (
+    <script
+      type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: json.replace(/</g, '\\u003c') }}
     />
   )

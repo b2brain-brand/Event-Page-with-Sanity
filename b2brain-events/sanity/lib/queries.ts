@@ -240,7 +240,12 @@ export const EVENTS_INDEX_QUERY = defineQuery(`
 /** sitemap.xml */
 export const SITEMAP_QUERY = defineQuery(`
   *[_type == "event" && defined(slug.current)]{
+    name,
     "slug": slug.current,
+    tagline,
+    tldr,
+    heroVideo{ youtubeUrl, label, caption, openOnYouTube },
+    sentiment{ videos[]{ title, src, url, openOnYouTube } },
     lastUpdated,
     _updatedAt,
     startDate

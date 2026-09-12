@@ -6,7 +6,8 @@ import { getEventsSitemapEntries } from '@/lib/sitemap-entries'
  * this exists at /events/pages/sitemap.xml, and src/lib/sitemap-entries.ts for
  * the actual query + mapping logic both share.
  */
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default function sitemap(): Promise<MetadataRoute.Sitemap> {
   return getEventsSitemapEntries()

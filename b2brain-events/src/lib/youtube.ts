@@ -121,10 +121,84 @@ export async function resolveYouTubeThumbs(
  * Privacy-preserving embed host — no cookies until the viewer actually plays.
  * `autoplay=1` is correct here because the iframe is only mounted after a click.
  */
-export function youTubeEmbed(id: string): string {
-  return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`
+export function youTubeEmbed(id: string, autoplay = true): string {
+  return `https://www.youtube-nocookie.com/embed/${id}?autoplay=${autoplay ? '1' : '0'}&rel=0&modestbranding=1`
 }
 
 export function youTubeWatch(id: string): string {
   return `https://www.youtube.com/watch?v=${id}`
+}
+
+export type YouTubeMetadata = {
+  id: string
+  title?: string
+  uploadDate?: string
+  duration?: string
+  thumbnailUrl: string
+}
+
+function secondsToIsoDuration(value?: string): string | undefined {
+  const total = Number.parseInt(value || '', 10)
+  if (!Number.isFinite(total) || total < 0) return undefined
+
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const seconds = total % 60
+  return `PT${hours ? `${hours}H` : ''}${minutes ? `${minutes}M` : ''}${seconds || (!hours && !minutes) ? `${seconds}S` : ''}`
+}
+
+/**
+ * Resolve the fields Google requires for VideoObject without inventing them.
+ * YouTube's oEmbed endpoint supplies the published title; its public watch
+ * page carries the original upload timestamp and duration. If YouTube blocks
+ * or removes either response, the watch page still renders, but we omit the
+ * incomplete VideoObject rather than publishing invalid structured data.
+ */
+export async function resolveYouTubeMetadata(id: string): Promise<YouTubeMetadata> {
+  let title: string | undefined
+  let uploadDate: string | undefined
+  let duration: string | undefined
+
+  await Promise.all([
+    (async () => {
+      try {
+        const endpoint = new URL('https://www.youtube.com/oembed')
+        endpoint.searchParams.set('url', youTubeWatch(id))
+        endpoint.searchParams.set('format', 'json')
+        const response = await fetch(endpoint, { next: { revalidate: 604800 } })
+        if (!response.ok) return
+        const data = (await response.json()) as { title?: unknown }
+        if (typeof data.title === 'string' && data.title.trim()) title = data.title.trim()
+      } catch {
+        /* The Sanity title remains the visible fallback. */
+      }
+    })(),
+    (async () => {
+      try {
+        const response = await fetch(youTubeWatch(id), {
+          headers: {
+            'user-agent':
+              'Mozilla/5.0 (compatible; B2BrainVideoMetadata/1.0; +https://www.b2brain.com/)',
+          },
+          next: { revalidate: 604800 },
+        })
+        if (!response.ok) return
+        const html = await response.text()
+        const upload = html.match(/"uploadDate":"([^"]+)"/)?.[1]
+        const lengthSeconds = html.match(/"lengthSeconds":"(\d+)"/)?.[1]
+        if (upload && !Number.isNaN(Date.parse(upload))) uploadDate = upload
+        duration = secondsToIsoDuration(lengthSeconds)
+      } catch {
+        /* Never substitute the event date for a video's unknown upload date. */
+      }
+    })(),
+  ])
+
+  return {
+    id,
+    title,
+    uploadDate,
+    duration,
+    thumbnailUrl: await resolveYouTubeThumb(id),
+  }
 }

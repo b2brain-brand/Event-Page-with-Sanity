@@ -6,6 +6,7 @@ import {
   youTubeEmbed,
   youTubeThumb,
   youTubeThumbFallback,
+  youTubeWatch,
 } from '@/lib/youtube'
 
 /**
@@ -35,6 +36,7 @@ export function YouTubeFacade({
   thumbUrl,
   title,
   thumbnailAlt,
+  watchHref,
   variant = 'hero',
 }: {
   videoId: string
@@ -43,12 +45,14 @@ export function YouTubeFacade({
   title: string
   /** Describes the thumbnail before playback. The button still names the action. */
   thumbnailAlt?: string
+  /** Crawlable dedicated watch page; JS viewers still get the same-page modal. */
+  watchHref?: string
   variant?: keyof typeof VARIANTS
 }) {
   const c = VARIANTS[variant]
   const [playing, setPlaying] = useState(false)
   const [src, setSrc] = useState(thumbUrl || youTubeThumb(videoId))
-  const triggerRef = useRef<HTMLButtonElement>(null)
+  const triggerRef = useRef<HTMLAnchorElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -92,16 +96,19 @@ export function YouTubeFacade({
 
   return (
     <>
-      <button
+      <a
         ref={triggerRef}
-        type="button"
+        href={watchHref || youTubeWatch(videoId)}
         className={c.btn}
-        onClick={() => setPlaying(true)}
+        onClick={(event) => {
+          event.preventDefault()
+          setPlaying(true)
+        }}
         aria-label={`Play video: ${title}`}
         aria-haspopup="dialog"
       >
         {thumb}
-      </button>
+      </a>
 
       {playing && typeof document !== 'undefined'
         ? createPortal(
