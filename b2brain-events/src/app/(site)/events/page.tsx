@@ -6,7 +6,6 @@ import { siteUrl } from '@/sanity/env'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { Section, SectionHead } from '@/components/SectionHead'
-import { FeaturedList } from '@/components/events/FeaturedList'
 import { EventsBrowser } from '@/components/events/EventsBrowser'
 import { FaqList } from '@/components/sections/Faq'
 import { has } from '@/lib/format'
@@ -122,10 +121,6 @@ export default async function EventsIndex() {
   const events = await enrichEventCardMedia(sourceEvents || [])
   const today = new Date().toISOString().slice(0, 10)
 
-  // Featured: hand-picked in the CMS, else the next few upcoming shows.
-  const upcoming = (events || []).filter((e) => (e.startDate || '') >= today)
-  const featured = (page?.featured?.length ?? 0) > 0 ? page!.featured! : upcoming.slice(0, 3)
-
   const faqs = ((page?.faq?.length ? page.faq : FALLBACK.faq) || []).filter(
     (f) => has(f?.q) && has(f?.a),
   )
@@ -183,23 +178,6 @@ export default async function EventsIndex() {
             )}
           </div>
         </section>
-
-        {/* ------------------------------------------------------ FEATURED */}
-        {featured.length > 0 && (
-          <Section id="featured">
-            <div className="fhead">
-              <SectionHead
-                eyebrow={v(page, 'featuredEyebrow')}
-                title={v(page, 'featuredHeading')}
-                variant="dash"
-              />
-              <a href="#all" className="btn btn--ghost">
-                View All Events
-              </a>
-            </div>
-            <FeaturedList events={featured} ctaLabel={v(page, 'cardCtaLabel')} />
-          </Section>
-        )}
 
         {/* --------------------------------------------------- ALL EVENTS */}
         <Section id="all">
