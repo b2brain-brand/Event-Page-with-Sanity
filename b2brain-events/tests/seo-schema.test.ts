@@ -26,27 +26,25 @@ function validationCalls(field: SeoField) {
   return calls
 }
 
-test('event meta titles use the 100–120 character SEO contract', () => {
+test('event meta titles use a maximum-only 120 character SEO contract', () => {
   const metaTitle = seo.fields.find((field) => field.name === 'metaTitle') as SeoField
 
   assert.ok(metaTitle)
-  assert.match(metaTitle.description ?? '', /100–120/)
+  assert.match(metaTitle.description ?? '', /Maximum 120/)
   assert.deepEqual(validationCalls(metaTitle), [
-    ['min', 100],
     ['max', 120],
-    ['warning', 'Use 100–120 characters to match the event-page SEO content contract.'],
+    ['warning', 'Use no more than 120 characters for the event-page meta title.'],
   ])
 })
 
-test('event meta descriptions use the 160–260 character SEO contract', () => {
+test('event meta descriptions use a maximum-only 260 character SEO contract', () => {
   const metaDescription = seo.fields.find((field) => field.name === 'metaDescription') as SeoField
 
   assert.ok(metaDescription)
-  assert.match(metaDescription.description ?? '', /160–260/)
+  assert.match(metaDescription.description ?? '', /Maximum 260/)
   assert.deepEqual(validationCalls(metaDescription), [
-    ['min', 160],
     ['max', 260],
-    ['warning', 'Use 160–260 characters to match the event-page SEO content contract.'],
+    ['warning', 'Use no more than 260 characters for the event-page meta description.'],
   ])
 })
 

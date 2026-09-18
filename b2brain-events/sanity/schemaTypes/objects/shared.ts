@@ -13,12 +13,11 @@ export const seo = defineType({
       title: 'Meta title',
       type: 'string',
       description:
-        '100–120 chars. Include the full event name and year, event-planning intent, lead-capture intent, and verified alternative intent when an official tool is confirmed.',
+        'Maximum 120 characters. Include the full event name and year, event-planning intent, lead-capture intent, and verified alternative intent when an official tool is confirmed.',
       validation: (r) =>
         r
-          .min(100)
           .max(120)
-          .warning('Use 100–120 characters to match the event-page SEO content contract.'),
+          .warning('Use no more than 120 characters for the event-page meta title.'),
     }),
     defineField({
       name: 'metaDescription',
@@ -26,12 +25,11 @@ export const seo = defineType({
       type: 'text',
       rows: 3,
       description:
-        '160–260 chars. Cover the event intent first, then add the relevant lead-capture or verified alternative intent. Falls back to the hero sub-headline, then the Quick answer.',
+        'Maximum 260 characters. Cover the event intent first, then add the relevant lead-capture or verified alternative intent. Falls back to the hero sub-headline, then the Quick answer.',
       validation: (r) =>
         r
-          .min(160)
           .max(260)
-          .warning('Use 160–260 characters to match the event-page SEO content contract.'),
+          .warning('Use no more than 260 characters for the event-page meta description.'),
     }),
     defineField({
       name: 'ogImage',
